@@ -1,0 +1,93 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^password-reset/([^\/]+)(\/|)$  admin.php?page=reset&user_id=$1&token=$1 [NC,QSA]
+RewriteRule ^admin$ admin.php?page=dashboard [QSA,L]
+RewriteRule ^forgot-password(/?|)$ admin.php?page=forgot [QSA,L]
+
+#frontend
+RewriteRule ^about-us(/?|)$ index.php?page=about [QSA,L]
+RewriteRule ^staff(/?|)$ index.php?page=team [QSA,L]
+RewriteRule ^partners(/?|)$ index.php?page=partners [QSA,L] 
+RewriteRule ^director(/?|)$ index.php?page=director-message [QSA,L]
+RewriteRule ^guest-accommodation(/?|)$ index.php?page=guest_accommodation [QSA,L]
+RewriteRule ^contact-us(/?|)$ index.php?page=contact [QSA,L]
+RewriteRule ^publications/([A-Za-z0-9_-]+)(\/|)$ index.php?page=publications&id=$1 [QSA]
+RewriteRule ^pages/([A-Za-z0-9_-]+)(\/|)$ index.php?page=pages&slug=$1 [QSA]
+RewriteRule ^patners/([A-Za-z0-9_-]+)(\/|)$ index.php?page=partners&slug=$1 [QSA]
+RewriteRule ^staff/([A-Za-z0-9_-]+)(\/|)$ index.php?page=team-details&id=$1 [QSA]
+RewriteRule ^student/([A-Za-z0-9_-]+)(\/|)$ index.php?page=student-details&id=$1 [QSA]
+RewriteRule ^alumni/([A-Za-z0-9_-]+)(\/|)$ index.php?page=alumni-details&id=$1 [QSA]
+RewriteRule ^404(/?|)$ index.php?page=404 [QSA,L]
+RewriteRule ^event-details/([A-Za-z0-9_-]+)(\/|)$ index.php?page=event-details&id=$1 [QSA]
+RewriteRule ^departments(/?|)$ index.php?page=departments [QSA,L]
+RewriteRule ^capacity-building/([A-Za-z0-9_-]+)(\/|)$ index.php?page=capacity-details&slug=$1 [QSA]
+RewriteRule ^departments/([A-Za-z0-9_-]+)(\/|)$ index.php?page=department-details&slug=$1 [QSA]
+RewriteRule ^services(/?|)$ index.php?page=services [QSA,L]
+RewriteRule ^services/([A-Za-z0-9_-]+)(\/|)$ index.php?page=service-details&slug=$1 [QSA]
+RewriteRule ^research(/?|)$ index.php?page=research [QSA,L]
+RewriteRule ^research/([A-Za-z0-9_-]+)(\/|)$ index.php?page=research-details&slug=$1 [QSA]
+RewriteRule ^news(/?|)$ index.php?page=news [QSA,L]
+RewriteRule ^news/([A-Za-z0-9_-]+)(\/|)$ index.php?page=news-details&slug=$1 [QSA]
+RewriteRule ^publications(/?|)$ index.php?page=publications [QSA,L]
+RewriteRule ^laboratory(/?|)$ index.php?page=lab [QSA,L]
+RewriteRule ^laboratory/([A-Za-z0-9_-]+)(\/|)$ index.php?page=lab-details&slug=$1 [QSA]
+RewriteRule ^events(/?|)$ index.php?page=events [QSA,L]
+RewriteRule ^gallery(/?|)$ index.php?page=gallery [QSA,L]
+RewriteRule ^trainig(/?|)$ index.php?page=trainig [QSA,L]
+RewriteRule ^logout(/?|)$ index.php?page=logout [QSA]
+RewriteRule ^community-outreach(/?|)$ index.php?page=community [QSA]
+RewriteRule ^$ index.php?page=index [QSA]
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE image/x-icon
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/x-font
+  AddOutputFilterByType DEFLATE application/x-font-truetype
+  AddOutputFilterByType DEFLATE application/x-font-ttf
+  AddOutputFilterByType DEFLATE application/x-font-otf
+  AddOutputFilterByType DEFLATE application/x-font-opentype
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/opentype
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+</IfModule>
+<IfModule mod_security.c>
+  SecFilterScanPOST Off
+</IfModule>
+## EXPIRES CACHING ##
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/jpg "access plus 1 year"
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/gif "access plus 1 year"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType text/css "access plus 1 month"
+ExpiresByType application/pdf "access plus 1 month"
+ExpiresByType text/x-javascript "access plus 1 month"
+ExpiresByType application/x-shockwave-flash "access plus 1 month"
+ExpiresByType image/x-icon "access plus 1 year"
+ExpiresDefault "access plus 1 month"
+</IfModule>
+## EXPIRES CACHING ##
+
+<ifModule mod_headers.c>
+  Header unset Connection
+  Header set Connection keep-alive
+
+  Header unset Keep-Alive
+  Header set Keep-Alive timeout=100,max=500
+</ifModule>

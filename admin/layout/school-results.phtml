@@ -1,0 +1,292 @@
+<center>
+   <div class="card card-info col-md-6">
+      <div class="card-body">
+         <form id="filter" class="needs-validation" novalidate="">
+            <div class="row">
+               <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                     <label class="form-label"></label>
+                     <button type="submit" required class="btn btn-primary btn-block submit">Filter</button>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label class="form-label"></label>
+                     <select class="form-control" name="class_id" >
+                        <option  value="">Select to Filter Results By Class</option>
+                        <?php foreach($db->orderBy('id','ASC')->get('classes') as $key=>$value): ?>
+                        <option value="<?=$value->id?>"><?=$value->name?></option>
+                        <?php endforeach;?>
+                     </select>
+                  </div>
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
+</center>
+<?php if(isset($_GET['class'])):?>
+<div class="card card-info">
+   <div class="card-header">
+      <h4>S.<?=$_GET['class'];?> Students'  Results</h4>
+      <div class="card-header-action">
+         <a href="admin.php?page=new-student&class=<?=$_GET['class']?>" class="btn btn-info">Add New</a>
+      </div>
+   </div>
+   <div class="card-body">
+      <div class="table-responsive">
+         <table class="table table-striped table-hover table-bordered" style="width: 100%">
+            <thead>
+               <tr>
+                  <th>S/N</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>LIN</th>
+                  <th>Class</th>
+                  <th>Exam Type</th>
+                  <th>Subject</th>
+                  <th>Subject Score</th>
+                  <th>Action</th>
+               </tr>
+            </thead>
+            <tbody>
+               <?php $n=1; $student = $db->where('class',$_GET['class'])->getOne('students');  foreach($db->where('student_lin',$student->lin)->get('exam_results') as $key=> $value): ?>
+               <tr>
+                  <td><?= $n++; ?> </td>
+                  <td><?php
+                     $name = $db->where('lin', $value->student_lin)->getOne('students');
+                     
+                     echo  $name->firstname . " ".  $name->lastname;
+                     ;
+                     ?>
+                  </td>
+                  <td><?= $name->email ?></td>
+                  <td><?=$name->lin ?></td>
+                  <td><?php
+                     $class = $db->where('id', $name->class)->getOne('classes');
+                     echo $class->name; 
+                     ?></td>
+                  <td><?php
+                  if($value->exam_type == "Mid"){echo "Mid Term";}else{ echo "End of Term";}; 
+                     ?></td>
+                  <td><?php
+                     $subject = $db->where('id', $project->subject_code)->getOne('subjects');
+                     echo $subject->name;
+                     ?>
+                  </td>
+                  <td><?php
+                     echo $value->score; 
+                     ?></td>
+                     <td>
+                         <div class="d-flex">
+                             <a href="admin.php?page=edit-result&id=<?=$value->id?>" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a>&nbsp;
+                             <a href="javascript:void(0)" onclick="remResult('<?=$value->id?>')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                         </div>
+                     </td>
+               </tr>
+               <?php endforeach ?>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<?php else:?>
+<div class="card card-info">
+   <div class="card-header">
+      <h4>All Students' Results</h4>
+      <div class="card-header-action">
+         <a href="admin.php?page=uploads&id=results" class="btn btn-primary">Upload Results</a>
+		   <button class="btn btn-danger"  onclick="clean('subject_code')"  type="submit">Clean Data</button>
+         <a href="admin.php?page=new-student" class="btn btn-info">Add New</a>
+      </div>
+   </div>
+   <div class="card-body">
+      <div class="table-responsive">
+         <table class="table table-striped table-hover table-bordered" style="width: 100%">
+            <thead>
+               <tr>
+                  <th>S/N</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>LIN</th>
+                  <th>Class</th>
+                  <th>Exam Type</th>
+                  <th>Subject</th>
+                  <th>Subject Score</th>
+                  <th>Action</th>
+               </tr>
+            </thead>
+            <tbody>
+               <?php $n=1; foreach($db->get('exam_results') as $key=> $value): ?>
+               <tr>
+                  <td><?= $n++; ?> </td>
+                  <td><?php
+                     $name = $db->where('lin', $value->student_lin)->getOne('students');
+                     
+                     echo  $name->firstname . " ".  $name->lastname;
+                     ;
+                     ?>
+                  </td>
+                  <td><?= $name->email ?></td>
+                  <td><?=$name->lin ?></td>
+                  <td><?php
+                     $class = $db->where('id', $name->class)->getOne('classes');
+                     echo $class->name; 
+                     ?></td>
+                  <td><?php
+                  if($value->exam_type == "Mid"){echo "Mid Term";}else{ echo "End of Term";}; 
+                     ?></td>
+                  <td><?php
+                     $subject = $db->where('id', $project->subject_code)->getOne('subjects');
+                     echo $subject->name;
+                     ?>
+                  </td>
+                  <td><?php
+                     echo $value->score; 
+                     ?></td>
+                     <td>
+                        <a href="admin.php?page=report-card&lin=<?=$value->student_lin?>" ><button class="badge badge-success">Generate Report</button></a>
+                     </td>
+               </tr>
+               <?php endforeach ?>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<?php endif;?>
+<script type="text/javascript">
+   function remStudent(id){
+   	$.ajax({
+   		url: request()+'?f=students&s=remove',
+   		method: 'POST', 	
+   		data: {id: id},
+   		success: function(data){
+   			console.log(data);
+   			if (data.status == 200) {
+   				iziToast.success({
+   				    title: 'Info',
+   				    message: data.message,
+   				    position: 'topRight'
+   				});
+   				setTimeout(function(){
+                          window.location.href = data.url;
+   				},1000);
+   			}else{
+   				iziToast.error({
+   				    title: 'Alert',
+   				    message: data.message,
+   				    position: 'topRight'
+   				});
+   			}
+   		}
+   	})
+   }
+</script>
+<script type="text/javascript">
+   function remResult(id){
+   	$.ajax({
+   		url: request()+'?f=results&s=remove',
+   		method: 'POST', 	
+   		data: {id: id},
+   		success: function(data){
+   			console.log(data);
+   			if (data.status == 200) {
+   				iziToast.success({
+   				    title: 'Info',
+   				    message: data.message,
+   				    position: 'topRight'
+   				});
+   				setTimeout(function(){
+                          window.location.href = data.url;
+   				},1000);
+   			}else{
+   				iziToast.error({
+   				    title: 'Alert',
+   				    message: data.message,
+   				    position: 'topRight'
+   				});
+   			}
+   		}
+   	})
+   }
+</script>
+<script type="text/javascript">
+   $('#filter').on('submit',function(e){
+      e.preventDefault();
+      var $submitButton = $('.submit');
+      var originalButtonText = $submitButton.text();
+      
+      // Change button text to "Processing" or "Loading"
+      $submitButton.text('Processing...');
+   
+      $.ajax({
+         url: request()+'?f=results&s=filter-results',
+         method: 'POST',
+         contentType: false,
+         processData: false,
+         data: new FormData(this),
+         beforeSend: function(){
+            // Disable button and change its text
+            $submitButton.prop('disabled', true);
+         },
+         success: function(data){
+            console.log(data);
+            if (data.status == 200) {
+               iziToast.success({
+                  title: 'Info',
+                  message: data.message,
+                  position: 'topRight'
+               });
+               setTimeout(function(){
+                  window.location.href = data.url;
+               }, 1000);
+            } else {
+               iziToast.error({
+                  title: 'Alert',
+                  message: data.message,
+                  position: 'topRight'
+               });
+            }
+         },
+         complete: function(){
+            // Restore original button text and enable it
+            $submitButton.text(originalButtonText);
+            $submitButton.prop('disabled', false);
+         }
+      });
+   });
+</script>
+
+
+<script type="text/javascript">
+   function clean(subject_code){
+        var confirmation = confirm("Are you sure you want to Clean?");
+        if (confirmation) {
+			$.ajax({
+				url: request()+'?f=uploads&s=clean-results',
+				method: 'POST', 	
+				data: {subject_code: subject_code},
+				success: function(data){
+					console.log(data);
+					if (data.status == 200) {
+						iziToast.success({
+							title: 'Info',
+							message: data.message,
+							position: 'topRight'
+						});
+						setTimeout(function(){
+							location.reload();
+						},1000);
+					}else{
+						iziToast.error({
+							title: 'Alert',
+							message: data.message,
+							position: 'topRight'
+						});
+					}
+				}
+			})
+		}
+   }
+</script>

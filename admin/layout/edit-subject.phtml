@@ -1,0 +1,68 @@
+<?php
+$id = $_GET['id'];
+$subject = $db->where('id', $id)->getOne('subjects');  
+?>
+
+<div class="card card-primary">
+	<div class="card-header">
+		<h3 class="card-title">Update Subject</h3>
+	</div>
+	<div class="card-body">
+		<form id="subject" class="needs-validation" novalidate="">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="form-label">Subject Name</label>
+						<input type="text" required name="name" class="form-control" value="<?=$subject->name?>">
+						<input type="text" required name="id" class="form-control" value="<?=$subject->id?>" hidden>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label"></label>
+						<button type="submit" required class="btn btn-primary btn-block submit">Submit</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#subject').on('submit',function(e){
+		e.preventDefault();
+		$.ajax({
+			url: request()+'?f=subjects&s=edit',
+			method: 'POST',
+			contentType: false,
+			processData: false,
+			data: new FormData(this),
+			beforeSend: function(){
+				$('.submit').html('');
+				$('.submit').addClass('disabled');
+			},
+			success : function(data){
+				console.log(data);
+				$('.submit').html('Submit');
+				$('.submit').removeClass('disabled');
+				if (data.status == 200) {
+					iziToast.info({
+					    title: 'Success',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						location.reload();
+					},1000);
+				}else{
+					iziToast.error({
+					    title: 'Error',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+			}
+		})
+	});
+
+	
+</script>

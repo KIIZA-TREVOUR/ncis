@@ -1,0 +1,255 @@
+
+<section class="section">
+          <div class="row ">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="card">
+                <div class="card-statistic-4">
+                  <div class="align-items-center justify-content-between">
+                    <div class="row ">
+                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
+                        <div class="card-content">
+                          <h5 class="font-15">All Schools</h5>
+                          <h2 class="mb-3 font-18"><?= number_format($db->getValue('schools','count(*)')) ?></h2>
+                          <p class="mb-0"><span class="col-green">10%</span> Increase</p>
+                        </div>
+                      </div>
+                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
+                        <div class="banner-img">
+                          <img src="<?=$wallet['config']['site_url']?>admin/assets/img/banner/1.png" alt="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="card">
+                <div class="card-statistic-4">
+                  <div class="align-items-center justify-content-between">
+                    <div class="row ">
+                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
+                        <div class="card-content">
+                          <h5 class="font-15"> Visitors</h5>
+                          <h2 class="mb-3 font-18"><?= number_format($db->getValue('visitors','count(*)')) ?></h2>
+                          <p class="mb-0"><span class="col-orange">09%</span> Decrease</p>
+                        </div>
+                      </div>
+                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
+                        <div class="banner-img">
+                          <img src="<?=$wallet['config']['site_url']?>admin/assets/img/banner/2.png" alt="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="card">
+                <div class="card-statistic-4">
+                  <div class="align-items-center justify-content-between">
+                    <div class="row ">
+                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
+                        <div class="card-content">
+                          <h5 class="font-15">Admins</h5>
+                          <h2 class="mb-3 font-18"><?= number_format($db->where('user_type','admin')->getValue('users','count(*)')) ?></h2>
+                          <p class="mb-0"><span class="col-green">18%</span>
+                            Increase</p>
+                        </div>
+                      </div>
+                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
+                        <div class="banner-img">
+                          <img src="<?=$wallet['config']['site_url']?>admin/assets/img/banner/3.png" alt="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="card">
+                <div class="card-statistic-4">
+                  <div class="align-items-center justify-content-between">
+                    <div class="row ">
+                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
+                        <div class="card-content">
+                          <h5 class="font-15">Registered Schools</h5>
+                          <h2 class="mb-3 font-18"><?= number_format($db->where('status',1)->getValue('schools','count(*)')) ?></h2>
+                          <p class="mb-0"><span class="col-green">42%</span> Increase</p>
+                        </div>
+                      </div>
+                      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
+                        <div class="banner-img">
+                          <img src="<?=$wallet['config']['site_url']?>admin/assets/img/banner/4.png" alt="">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 col-sm-12 col-lg-12">
+              <div class="card ">
+                <div class="card-header">
+                  <h4>Site Visitors Statistics</h4>
+                  <div class="card-header-action">
+                    <a href="javascript:void(0)" class="btn btn-primary">View All</a>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div id="chart"></div>
+                      <div class="row mb-0">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                          <div class="list-inline text-center">
+                            <div class="list-inline-item p-r-30"><i data-feather="arrow-up-circle"
+                                class="col-green"></i>
+                                <?php $weekly = mysqli_fetch_array(mysqli_query($wallet['sqlConnect'],"SELECT COUNT(*) as total_weekly_visitors FROM visitors WHERE datetime BETWEEN DATE_SUB(CURDATE(), INTERVAL DAYOFWEEK(CURDATE())-1 DAY) AND CURDATE() ")) ?>
+                              <h5 class="m-b-0"><?= $weekly['total_weekly_visitors'] ?></h5>
+                              <p class="text-muted font-14 m-b-0">Weekly Visitors</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                          <div class="list-inline text-center">
+                            <div class="list-inline-item p-r-30"><i data-feather="arrow-down-circle"
+                                class="col-orange"></i>
+                                <?php $monthly = mysqli_fetch_array(mysqli_query($wallet['sqlConnect'],"SELECT COUNT(*) as total_monthly_visitors FROM visitors WHERE MONTH(datetime) = MONTH(CURRENT_DATE()) AND YEAR(datetime) = YEAR(CURRENT_DATE())")) ?>
+                              <h5 class="m-b-0"><?= $monthly['total_monthly_visitors'] ?></h5>
+                              <p class="text-muted font-14 m-b-0">Monthly Visitors</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                          <div class="list-inline text-center">
+                            <div class="list-inline-item p-r-30"><i data-feather="arrow-up-circle"
+                                class="col-green"></i>
+                                <?php $yearly = mysqli_fetch_array(mysqli_query($wallet['sqlConnect'],"SELECT COUNT(*) as total_yearly_visitors FROM visitors WHERE YEAR(datetime) = YEAR(CURRENT_DATE()) ")) ?>
+                              <h5 class="mb-0 m-b-0"><?= $yearly['total_yearly_visitors'] ?></h5>
+                              <p class="text-muted font-14 m-b-0">Yearly Visitors</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> -->
+<?php
+//$months = array();
+// Retrieve the data from the visitors table for the current year
+$query = "SELECT MONTHNAME(datetime) as month, COUNT(*) as total_visitors FROM visitors WHERE YEAR(datetime) = YEAR(CURRENT_DATE()) GROUP BY MONTH(datetime) ORDER BY MONTH(datetime)";
+$result = mysqli_query($wallet['sqlConnect'], $query);
+
+// Initialize an array to store the chart data
+$chart_data = array();
+
+// Loop through the result set and add the data to the chart_data array
+while ($row = mysqli_fetch_assoc($result)) {
+    $chart_data[] = array(
+        "month" => $row["month"],
+        "total_visitors" => $row["total_visitors"]
+    );
+}
+
+// Add Zero values for the months with no visitors
+$months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+foreach ($months as $month) {
+    $found = false;
+    foreach ($chart_data as $data) {
+        if ($data['month'] == $month) {
+            $found = true;
+            break;
+        }
+    }
+    if (!$found) {
+        $chart_data[] = array(
+            "month" => $month,
+            "total_visitors" => 0
+        );
+    }
+}
+
+// sort the array by month
+usort($chart_data, function ($a, $b) use ($months) {
+  //global $months;
+    return array_search($a['month'], $months) - array_search($b['month'], $months);
+});
+
+// Close the database connection
+//mysqli_close($conn);
+
+// Encode the data in JSON format
+$chart_data = json_encode($chart_data, JSON_NUMERIC_CHECK);
+?>
+
+<script>
+    var chartData = <?php echo $chart_data; ?>;
+
+    function createChart() {
+        var chart = new ApexCharts(document.querySelector("#chart"), {
+            series: [{
+                name: "Visitors",
+                data: chartData.map(function(data) {
+                    return data.total_visitors;
+                }),
+            }],
+            chart: {
+                type: "line",
+                height: 350
+            },
+            xaxis: {
+                type: "category",
+                categories: chartData.map(function(data) {
+                    return data.month;
+                }),
+                labels: {
+                  style: {
+                      colors: "#9aa0ac"
+                  }
+                }
+            },
+            yaxis: {
+                title: {
+                    text: "Total Visitors"
+                },
+                labels: {
+                  style: {
+                      color: "#9aa0ac"
+                  }
+              },
+              min: 1,
+              max: 1000,
+            },
+            dataLabels: {
+                enabled: false
+            },
+            markers: {
+              size: 6
+            },
+            grid: {
+              borderColor: "#e7e7e7",
+              row: {
+                  colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+                  opacity: 0.0
+              }
+            },
+        });
+
+        chart.render();
+    }
+
+    createChart();
+</script>

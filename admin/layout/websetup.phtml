@@ -1,0 +1,101 @@
+
+<section class="section">
+    <div class="section-body">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="mb-0 h6">General Settings</h1>
+                    </div>
+                    <div class="card-body">
+                        <form class="form-horizontal" action="#" method="POST" enctype="multipart/form-data" id="general">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-from-label">System Name</label>
+                                <div class="col-sm-9">
+                                    <input type="hidden" name="types[]" value="site_name">
+                                    <input type="text" name="site_name" class="form-control" value="<?=$wallet['config']['site_name']?>">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-from-label">System Logo - Light</label>
+                                <div class="col-sm-9">
+                                    <input type="hidden" name="images[]" value="system_logo_white">
+                                    <input type="file" name="system_logo_white" class="form-control">
+                                    <div class="file-preview box sm"></div>
+                                    <small>Will be used in Dark mode</small>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-from-label">System Logo - Dark</label>
+                                <div class="col-sm-9">
+                                    <input type="hidden" name="images[]" value="system_logo_black">
+                                    <input type="file" name="system_logo_black" class="form-control">
+                                    <div class="file-preview box sm"></div>
+                                    <small>Will be used in admin panel topbar in mobile + Admin login page</small>
+                                </div>
+                            </div>
+                            <!-- <div class="form-group row">
+                                <label class="col-sm-3 col-from-label">System Timezone</label>
+                                <div class="col-sm-9">
+                                    <input type="hidden" name="types[]" value="timezone">
+                                    <select name="timezone" class="form-control select2" data-live-search="true">
+                                        <?php foreach (timezones() as $key => $value): ?>
+                                            <option value="<?=$value?>" <?php if ($wallet['config']['timezone'] == $value):?>
+                                                selected
+                                            <?php endif?>><?= $key ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
+                            </div> -->
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-from-label">Admin login page background</label>
+                                <div class="col-sm-9">
+                                    <input type="hidden" name="images[]" value="admin_login_background">
+                                    <input type="file" name="admin_login_background"  class="form-control">
+                                    <div class="file-preview box sm"></div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+        						<button type="submit" class="btn btn-primary">Update</button>
+        					</div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    <script>
+
+        $('#general').on('submit',function(e){
+            e.preventDefault();
+            $.ajax({
+                url: request()+'?f=web-setup&s=update',
+                method: 'POST',
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                cache: false,
+                success: function(data){
+                    console.log(data);
+                    if (data.status == 200) {
+                      iziToast.success({
+                         message: data.message,
+                         position: 'topRight'
+                      });
+                      /*setTimeout(function () {
+                         window.location.href = data.url;
+                      }, 1000);*/
+                    }else{
+                      iziToast.error({
+                         title: '',
+                         message: data.message,
+                         position: 'topRight'
+                      });
+                    }
+                }
+            });
+        });
+    </script>

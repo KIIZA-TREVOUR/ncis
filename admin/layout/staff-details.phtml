@@ -1,0 +1,108 @@
+<?php 
+$id = $_GET['id'];
+$staff_details = $db->where('id', $id)->getOne('staff');
+?>
+  <section class="section">
+          <div class="section-body">
+            <div class="row mt-sm-4">
+             
+              <div class="col-12 col-md-12 col-lg-12">
+                <div class="card">
+                  <div class="padding-20">
+                    <ul class="nav nav-tabs" id="myTab2" role="tablist">
+                      <li class="nav-item">
+                        <a class="nav-link active" id="home-tab2" data-toggle="tab" href="#about" role="tab"
+                          aria-selected="true">About</a>
+                      </li>
+                    </ul>
+                     <div class="tab-content tab-bordered" id="myTab3Content">
+                      <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="home-tab2">
+                        <div class="row">
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>First Name</strong>
+                            <br>
+                            <p class="text-muted"><?= $staff_details->firstname?> </p>
+                          </div>
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Lastname</strong>
+                            <br>
+                            <p class="text-muted"><?= $staff_details->lastname?></p>
+                          </div>
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Email</strong>
+                            <br>
+                            <p class="text-muted"><?= $staff_details->email?></p>
+                          </div>
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Contact</strong>
+                            <br>
+                            <p class="text-muted"><?= $staff_details->contact?></p>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Contact</strong>
+                            <br>
+                            <p class="text-muted"><?= $staff_details->contact?></p>
+                          </div>
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Role</strong>
+                            <br>
+                            <p class="text-muted"><?= $staff_details->role?></p>
+                          </div>
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Created On</strong>
+                            <br>
+                            <p class="text-muted"><?= $staff_details->date_created?></p>
+                          </div>
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Social Handles</strong>
+                            <br>
+                            <p class="text-muted"><a href="<?= $staff_details->facebook?>"><i class="fab fa-facebook btn btn-sm btn-info"></i></a>&nbsp;<a href="<?= $staff_details->twitter?>"><i class="fab fa-twitter btn btn-sm btn-info"></i></a>&nbsp;<a href="<?= $staff_details->instagram?>"><i class="fab fa-instagram btn btn-sm btn-info"></i></a>&nbsp;<a href="<?= $staff_details->linkedin?>"><i class="fab fa-linkedin btn btn-sm btn-info"></i></a></p>
+                          </div>
+                        </div>
+                     <div class="row align-items-center mb-6">
+                       <div class="col-lg-5 col-12">
+                          <img class="img-fluid w-100" src="<?=$wallet['config']['site_url']."/".$staff_details->image?>" alt="">
+                        </div>
+                        <div class="col-lg-7 col-12 mt-5 mt-lg-0 ps-lg-5">
+                        <div class="section-title">Description</div>
+                        <p class="m-t-30"><?= $staff_details->description?></p>
+                      </div>
+                  </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <script type="text/javascript">
+  $(document).ready(function() {
+    $('#addservice').on('submit', function(e) {
+ 
+      e.preventDefault();
+      $.ajax({
+        url: request()+'?f=service&s=delete&id='+"test",
+        method: 'POST',
+        data: $(this).serialize(),
+        beforesend: function() {
+
+        },
+        success: function(response) {
+          console.log(response);
+
+            if (response.status == 200) {
+            setTimeout(function() {
+              window.location.href = response.url;
+            }, 2e3);
+          } else {
+           alert(response.message);
+          }
+         
+        }
+      });
+    });
+
+  })
+</script>
+

@@ -1,0 +1,122 @@
+<?php
+$id = $_GET['id'];
+$student = $db->where('id', $id)->getOne('students');  
+?>
+
+<div class="card card-primary">
+	<div class="card-header">
+		<h3 class="card-title">Update Student</h3>
+	</div>
+	<div class="card-body">
+		<form id="edit" class="needs-validation" novalidate="">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">First Name</label>
+						<input type="text" required name="firstname" class="form-control" value="<?=$student->firstname?>" placeholder="Enter Firstname">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Last Name</label>
+						<input type="text" value="<?=$student->lastname?>" required name="lastname" class="form-control" placeholder="Enter Lastname">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Email</label>
+						<input type="email" required value="<?=$student->email?>" name="email" class="form-control" placeholder="Enter Email Address">
+						<input type="text" required value="<?=$student->id?>" name="id" class="form-control" hidden>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">LIN</label>
+						<input type="text" required value="<?=$student->lin?>" name="lin" class="form-control" placeholder="Enter Contact Number">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Image  (364 x 364 Pixels Recommended)</label>
+						<input type="file" name="image" class="form-control" ><img src="<?=$wallet['config']['site_url'].$student->image?>" height="40" onerror="this.onerror=null;this.src='<?=$wallet['config']['site_url'] ?>layout/assets/images/placeholder-rect.jpg';">
+						<input type="text" value="<?=$student->image?>" name="uimage" hidden class="form-control" >
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+                      <label class="form-label">Class</label>
+                      <select  class="form-control" name="class">
+						<?php $class = $db->where('id', $student->class)->getOne('classes'); ?>
+					  <option value="<?= $student->class ?> " selected><?=$class->name ?></option>
+						<?php foreach ($db->get('classes') as $key => $value) : ?>
+							<option value="<?=$value->id?> "><?=$value->name ?></option>
+						<?php endforeach; ?>
+						
+					  </select>
+                    </div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                      <label class="form-label">Date of Birth</label>
+                      <input type="date" class="form-control" placeholder="Enter ebook Link" name="dob" value="<?=$student->dob?>">
+                    </div>
+				</div>	
+				<div class="col-md-3">
+					<div class="form-group">
+                      <label class="form-label">Gender</label>
+                      <select  class="form-control" name="gender">
+						<option value="<?=$student->gender?>"><?=$student->gender ?></option>
+						<option value="Male">Male</option>
+						<option value="Female">Female</option>
+					  </select>
+                    </div>
+				</div>	
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label"></label>
+						<button type="submit" required class="btn btn-primary btn-block submit">Update</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#edit').on('submit',function(e){
+		e.preventDefault();
+		$.ajax({
+			url: request()+'?f=students&s=edit',
+			method: 'POST',
+			contentType: false,
+			processData: false,
+			data: new FormData(this),
+			beforeSend: function(){
+				$('.submit').html('');
+				$('.submit').addClass('disabled');
+			},
+			success : function(data){
+				console.log(data);
+				$('.submit').html('Processing');
+				$('.submit').removeClass('disabled');
+				if (data.status == 200) {
+					iziToast.info({
+					    title: 'Success',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						window.location.href = data.url;
+           				 }, 2e3);
+				}else{
+					iziToast.error({
+					    title: 'Error',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+			}
+		})
+	});
+
+	
+</script>

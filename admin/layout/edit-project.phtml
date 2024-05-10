@@ -1,0 +1,107 @@
+<?php
+$id = $_GET['id'];
+$project = $db->where('id', $id)->getOne('projects');  
+?>
+
+<div class="card card-primary">
+	<div class="card-header">
+		<h3 class="card-title">Update Project </h3>
+	</div>
+	<div class="card-body">
+		<form id="project" class="needs-validation" novalidate="">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="form-label">Project Name</label>
+						<input type="text" required name="name" class="form-control" value="<?=$project->name?>">
+						<input type="text" required name="id" class="form-control" value="<?=$project->id?>" hidden>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="form-label">Description</label>
+						<textarea type="text" required name="description" class="form-control" ><?=$project->description?></textarea>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="form-label">Subject</label>
+                        <select type="text"  name="subject_code" class="form-control">
+                            <option value="<?=$project->code?>"><?=$db->where('code',$project->subject_code)->getOne('subjects')->name?></option>
+                            <?php foreach($db->orderBy('id','DESC')->get('subjects') as $key=>$value): ?>
+                            <option value="<?=$value->code?>"><?=$value->name?></option>
+                            <?php endforeach;?>
+                        </select>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="form-label">Class</label>
+                        <select type="text"  name="class_id" class="form-control">
+                            <option value="<?=$project->class_id?>"><?=$db->where('id',$project->class_id)->getOne('classes')->name?></option>
+                            <?php  foreach($db->orderBy('id','DESC')->get('classes') as $key=>$value): ?>
+                            <option value="<?=$value->id?>"><?=$value->name?></option>
+                            <?php endforeach;?>
+                        </select>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="form-label">Project Type </label>
+                        <select type="text"  name="project_type" class="form-control">
+                            <option value="<?=$project->project_type?>"><?php if($project->project_type == 1){echo'Individual';}else{echo'Group';}?></option>
+                            <option>-----Select Project Type-----</option>
+                            <option value="1">Individual</option>
+                            <option value="2">Group</option>
+                        </select>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label"></label>
+						<button type="submit" required class="btn btn-primary btn-block submit">Submit</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#project').on('submit',function(e){
+		e.preventDefault();
+		$.ajax({
+			url: request()+'?f=projects&s=edit',
+			method: 'POST',
+			contentType: false,
+			processData: false,
+			data: new FormData(this),
+			beforeSend: function(){
+				$('.submit').html('');
+				$('.submit').addClass('disabled');
+			},
+			success : function(data){
+				console.log(data);
+				$('.submit').html('Submit');
+				$('.submit').removeClass('disabled');
+				if (data.status == 200) {
+					iziToast.info({
+					    title: 'Success',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						window.location.href = data.url;
+					},1000);
+				}else{
+					iziToast.error({
+					    title: 'Error',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+			}
+		})
+	});
+
+	
+</script>

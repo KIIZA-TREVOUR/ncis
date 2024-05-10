@@ -1,0 +1,75 @@
+<div class="card card-info">
+    <div class="card-header">
+    	<h4>All Projects</h4>
+    	<div class="card-header-action">
+      		<a href="admin.php?page=new-project" class="btn btn-info">Add New</a>
+    	</div>
+    </div>
+    <div class="card-body">
+    	<div class="table-responsive">
+			<table class="table table-striped table-hover table-bordered" style="width: 100%">
+				<thead>
+					<tr>
+						<th>S/N</th>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Subject</th>
+						<th>Class</th>
+						<th>Project Type</th>
+						<th>Date Added</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php $n=1; foreach($db->orderBy('id','DESC')->get('projects') as $key=>$value): 
+					$class = $db->where('id',$value->class_id)->getOne('classes');
+					$subject = $db->where('id',$value->subject_id)->getOne('subjects');
+					?>
+					<tr>
+						<td><?= $n++; ?> </td>
+						<td><?= $value->name ?> </td>
+						<td><?= $value->description ?></td>
+						<td><?= $subject->name ?></td>
+						<td><?= $class->name ?></td>
+						<td><?php if($value->project_type == 1){echo 'Individual';}else{ echo 'Group';} ?></td>
+						<td><?= filterDate($value->date_created) ?></td>
+						<td>
+							<div class="d-flex">
+								<a href="admin.php?page=edit-project&id=<?=$value->id?>" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a>&nbsp;
+							</div>
+						</td>
+					</tr>
+				<?php endforeach ?>
+				</tbody>
+			</table>
+		</div>
+    </div>
+</div>
+<script type="text/javascript">
+	function remProject(id){
+		$.ajax({
+			url: request()+'?f=project&s=remove',
+			method: 'POST', 	
+			data: {id: id},
+			success: function(data){
+				console.log(data);
+				if (data.status == 200) {
+					iziToast.success({
+					    title: 'Info',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						location.reload();
+					},1000);
+				}else{
+					iziToast.error({
+					    title: 'Alert',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+			}
+		})
+	}
+</script>

@@ -1,0 +1,10 @@
+"id","name","code","upload_id","date_created","created_by","date_modified","modified_by"
+"3","Math","S100",NULL,"2023-04-19 17:06:54","1",NULL,NULL
+"4","Biology","S101",NULL,"2023-04-19 17:07:03","1",NULL,NULL
+"5","History","S102",NULL,"2023-04-19 17:07:10","1",NULL,NULL
+"6","English","S103",NULL,"2023-04-20 06:13:09","1",NULL,NULL
+"7","Agriculture","S104",NULL,"2023-04-20 06:13:21","1",NULL,NULL
+"8","Physics","S105",NULL,"2023-04-20 06:13:26","1",NULL,NULL
+"10","Commerce","S106",NULL,"2023-04-20 06:14:00","1",NULL,NULL
+"11","Entrepreneurship","S107",NULL,"2023-04-20 06:14:10","1",NULL,NULL
+"12","IRE","S108",NULL,"2023-04-21 09:52:00","1",NULL,NULL

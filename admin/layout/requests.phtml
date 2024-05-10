@@ -1,0 +1,120 @@
+<div class="card card-info">
+    <div class="card-header">
+    	<h4>All Edit Requests</h4>
+            <!-- <div class="card-header-action">
+                <a href="admin.php?page=new-staff" class="btn btn-info">Add New</a>
+            </div> -->
+    </div>
+    <div class="card-body">
+    	<div class="table-responsive">
+			<table class="table table-striped table-hover table-bordered" style="width: 100%">
+				<thead>
+					<tr>
+						<th>S/N</th>
+						<th>Staff Name</th>
+						<th>Student LIN</th>
+						<th>Project</th>
+						<th>Subject</th>
+						<th>Request</th>
+						<th>Date Requested</th>
+						<th>Date Approved</th>
+						<th>Approve</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php $num=0; foreach($db->orderBy('id','DESC')->get('requests') as $key=>$value): 
+                    $score = $db->where('id', $value->pid)->getOne('project_scores'); 
+                    $student = $db->where('id', $score->student_id)->getOne('students'); 
+                    $class = $db->where('id', $student->class)->getOne('classes');
+                    $project = $db->where('id', $score->project_id)->getOne('projects');
+                    $subject = $db->where('id', $project->subject_id)->getOne('subjects');
+                    $staff = $db->where('id', $wallet['staff']['id'])->getOne('staff');
+                    ?>
+					<tr>
+                        <td><?=$num+=1?></td>
+						<td><?= $staff->firstname ?> <?= $staff->lastname ?></td>
+						<td><?= $student->lin ?></td>
+						<td><?=$project->name ?></td>
+						<td><?=$subject->name ?></td>
+						<td><?=$value->request ?></td>
+						<td><?=filterDate($value->date_created) ?></td>
+						<td><?=filterDate($value->date_modified) ?></td>
+						<td> 
+                            <div class="d-flex">
+                                <?php if($score->status ==2):?>
+                                <a href="javascript:void(0)"><button type="button" class="btn btn-icon btn-sm btn-success" title="Approve"><i class="fa fa-check">Approved</i></button></a>
+                                <?php elseif($score->status ==3):?>
+                                <a href="javascript:void(0)"><button type="button" class="btn btn-icon btn-sm btn-success" title="Approve"><i class="fa fa-check">Updated</i></button></a>
+                                <?php else:?>
+                                <a href="javascript:void(0)" onclick="approve('<?=$value->id?>')"><button type="button" class="btn btn-icon btn-sm btn-info" title="Approve"><i class="fa fa-check">Approve</i></button></a>
+                                <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="btn-sm btn btn-danger">Reject</a>
+                                <?php endif;?>
+                            </div>
+                        </td>
+					</tr>
+				<?php endforeach ?>
+				</tbody>
+			</table>
+		</div>
+    </div>
+</div>
+<script type="text/javascript">
+	function remStaff(id){
+		$.ajax({
+			url: request()+'?f=staff&s=remove',
+			method: 'POST', 	
+			data: {id: id},
+			success: function(data){
+				console.log(data);
+				if (data.status == 200) {
+					iziToast.success({
+					    title: 'Info',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						location.reload();
+					},1000);
+				}else{
+					iziToast.error({
+					    title: 'Alert',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+			}
+		})
+	}
+</script>
+
+<script type = "text/javascript" >
+   function approve($id) {
+        alert('Hey');
+      $.ajax({
+         url: request() + '?f=projects&s=approve',
+         method: 'POST',
+         data: {
+            id: $id
+         },
+         success: function (data) {
+            console.log(data);
+            if (data.status == 200) {
+               iziToast.success({
+                  title: 'Info',
+                  message: data.message,
+                  position: 'topRight'
+               });
+                    setTimeout(function() {
+                        window.location.href = data.url;
+                    }, 2e3);
+            } else {
+               iziToast.error({
+                  title: 'Alert',
+                  message: data.message,
+                  position: 'topRight'
+               });
+            }
+         }
+      })
+   } 
+</script> 

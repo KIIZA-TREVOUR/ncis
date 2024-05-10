@@ -1,0 +1,130 @@
+<?php
+$id = $_GET['id'];
+$staff = $db->where('id', $id)->getOne('staff');  
+?>
+
+<div class="card card-primary">
+	<div class="card-header">
+		<h3 class="card-title">Update Staff Member</h3>
+	</div>
+	<div class="card-body">
+		<form id="edit" class="needs-validation" novalidate="">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">First Name</label>
+						<input type="text" required name="firstname" class="form-control" value="<?=$staff->firstname?>" placeholder="Enter Firstname">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Last Name</label>
+						<input type="text" value="<?=$staff->lastname?>" required name="lastname" class="form-control" placeholder="Enter Lastname">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Email</label>
+						<input type="email" required value="<?=$staff->email?>" name="email" class="form-control" placeholder="Enter Email Address">
+						<input type="text" required value="<?=$staff->id?>" name="id" class="form-control" hidden>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Contact</label>
+						<input type="text" required value="<?=$staff->contact?>" name="contact" class="form-control" placeholder="Enter Contact Number">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Image (364 x 364 Pixels Recommended)</label>
+						<input type="file" name="image" class="form-control" ><img src="<?=$wallet['config']['site_url'].$staff->image?>" height="40" onerror="this.onerror=null;this.src='<?=$wallet['config']['site_url'] ?>layout/assets/images/placeholder-rect.jpg';">
+						<input type="text" value="<?=$staff->image?>" name="uimage" hidden class="form-control" >
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+                      <label class="form-label">Role</label>
+                      <input type="text" value="<?=$staff->role?>" class="form-control" placeholder="Enter Role" name="role" required>
+                    </div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                      <label class="form-label">Facebook Link</label>
+                      <input type="text" class="form-control" placeholder="Enter ebook Link" name="facebook" value="<?=$staff->facebook?>">
+                    </div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                      <label class="form-label">Instagram</label>
+                      <input type="text" class="form-control" placeholder="Enter Instagram Link" value="<?=$staff->instagram?>" name="instagram" >
+                    </div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                      <label class="form-label">Twitter</label>
+                      <input type="text" class="form-control" value="<?=$staff->twitter?>" placeholder="Enter Twitter Link" name="twitter" >
+                    </div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+                      <label class="form-label">Linkedin</label>
+                      <input type="text" class="form-control" value="<?=$staff->linkedin?>" placeholder="Enter LinkedIn Link" name="linkedin" >
+                    </div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="form-label">Description</label>
+						<textarea type="text" name="description" class="form-control editor" placeholder="Enter brief description"><?=$staff->description?></textarea>
+					</div>
+				</div>
+				
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label"></label>
+						<button type="submit" required class="btn btn-primary btn-block submit">Update</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#edit').on('submit',function(e){
+		e.preventDefault();
+		$.ajax({
+			url: request()+'?f=staff&s=edit',
+			method: 'POST',
+			contentType: false,
+			processData: false,
+			data: new FormData(this),
+			beforeSend: function(){
+				$('.submit').html('');
+				$('.submit').addClass('disabled');
+			},
+			success : function(data){
+				console.log(data);
+				$('.submit').html('Processing');
+				$('.submit').removeClass('disabled');
+				if (data.status == 200) {
+					iziToast.info({
+					    title: 'Success',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						location.reload();
+					},1000);
+				}else{
+					iziToast.error({
+					    title: 'Error',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+			}
+		})
+	});
+
+	
+</script>

@@ -1,0 +1,94 @@
+<div class="card card-info">
+    <div class="card-header">
+    	<h4>All Senior Two Students</h4>
+    	<div class="card-header-action">
+      		<a href="admin.php?page=new-student" class="btn btn-info">Add New</a>
+    	</div>
+    </div>
+    <div class="card-body">
+    	<div class="table-responsive">
+			<table class="table table-striped table-hover table-bordered" style="width: 100%">
+				<thead>
+					<tr>
+						<th>Image</th>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Gender</th>
+						<th>LIN</th>
+						<th>DOB</th>
+						<th>Subjects</th>
+						<th>Date Added</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php foreach($db->orderBy('firstname','ASC')->where('class', '2')->get('students') as $key => $value):  ?>
+					<tr>
+						<td> <img src="<?=$wallet['config']['site_url'].$value->image?>" height="40" onerror="this.onerror=null;this.src='<?=$wallet['config']['site_url'] ?>layout/assets/images/placeholder-rect.jpg';"> </td>
+						<td><?= $value->firstname ?> <?= $value->lastname ?></td>
+						<td><?= $value->email ?></td>
+						<td><?=$value->gender ?></td>
+						<td><?=$value->lin ?></td>
+						<td><?=$value->dob ?></td>
+						<td><?php
+
+							$subjects = $db->where('student_id', $value->id)->getOne('student_subject');
+                                if(empty($subjects)){
+                                    echo "Subjects Not assigned yet";
+                                }else {
+							 $sub = $subjects->subject_id;
+							 $one = explode(","," $sub");
+							
+							 foreach($one as $key=> $s) {?>
+								<?php
+									$subname = $db->where('id', $s)->getOne('subjects');
+									echo $subname->name;
+									if ($key < count($one) - 1) {
+										echo ', '; 
+									}
+								?>
+
+							 <?php } } ?></td>
+						<td><?= date('d/m/Y', strtotime($value->date_created)) ?></td>
+						<td>
+							<div class="d-flex">
+								<a href="admin.php?page=student-subject&id=<?=$value->id?>" class="btn btn-sm btn-info">Assign Subject</a>&nbsp;
+								<a href="admin.php?page=edit-student&id=<?=$value->id?>" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a>&nbsp;
+								<a href="javascript:void(0)" onclick="remStaff('<?=$value->id?>')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+							</div>
+						</td>
+					</tr>
+				<?php endforeach ?>
+				</tbody>
+			</table>
+		</div>
+    </div>
+</div>
+<script type="text/javascript">
+	function remStaff(id){
+		$.ajax({
+			url: request()+'?f=staff&s=remove',
+			method: 'POST', 	
+			data: {id: id},
+			success: function(data){
+				console.log(data);
+				if (data.status == 200) {
+					iziToast.success({
+					    title: 'Info',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						location.reload();
+					},1000);
+				}else{
+					iziToast.error({
+					    title: 'Alert',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+			}
+		})
+	}
+</script>

@@ -1,0 +1,100 @@
+<div class="card card-info">
+    <div class="card-header">
+    	<h4>All Subjects</h4>
+    	<div class="card-header-action">
+         <a href="admin.php?page=uploads&id=subjects" class="btn btn-primary">Upload Subjects</a>
+		 <button class="btn btn-danger"  onclick="clean('name')"  type="submit">Clean Data</button>
+      		<a href="admin.php?page=new-subject" class="btn btn-info">Add New</a>
+    	</div>
+    </div>
+    <div class="card-body">
+    	<div class="table-responsive">
+			<table class="table table-striped table-hover table-bordered" style="width: 100%">
+				<thead>
+					<tr>
+						<th>S/N</th>
+						<th>Name</th>
+						<th>Date Created</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php $n=1; foreach($db->orderBy('id','DESC')->get('subjects') as $key=>$value): ?>
+					<tr>
+						<td><?= $n++; ?> </td>
+						<td><?= $value->name ?> </td>
+						<td><?= filterDate($value->date_created) ?></td>
+						<td>
+							<div class="d-flex">
+								<a href="admin.php?page=edit-subject&id=<?=$value->id?>" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a>&nbsp;
+								<a href="javascript:void(0)" onclick="remSubject('<?=$value->id?>')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+							</div>
+						</td>
+					</tr>
+				<?php endforeach ?>
+				</tbody>
+			</table>
+		</div>
+    </div>
+</div>
+<script type="text/javascript">
+	function remSubject(id){
+		$.ajax({
+			url: request()+'?f=subjects&s=remove',
+			method: 'POST', 	
+			data: {id: id},
+			success: function(data){
+				console.log(data);
+				if (data.status == 200) {
+					iziToast.success({
+					    title: 'Info',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						location.reload();
+					},1000);
+				}else{
+					iziToast.error({
+					    title: 'Alert',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+			}
+		})
+	}
+</script>
+
+
+<script type="text/javascript">
+   function clean(name){
+        var confirmation = confirm("Are you sure you want to Clean?");
+        if (confirmation) {
+			$.ajax({
+				url: request()+'?f=uploads&s=clean-subjects',
+				method: 'POST', 	
+				data: {name: name},
+				success: function(data){
+					console.log(data);
+					if (data.status == 200) {
+						iziToast.success({
+							title: 'Info',
+							message: data.message,
+							position: 'topRight'
+						});
+						setTimeout(function(){
+							location.reload();
+						},1000);
+					}else{
+						iziToast.error({
+							title: 'Alert',
+							message: data.message,
+							position: 'topRight'
+						});
+					}
+				}
+			})
+		}
+   }
+</script>

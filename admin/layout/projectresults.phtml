@@ -1,0 +1,249 @@
+<center>
+   <div class="card card-info col-md-6">
+      <div class="card-body">
+         <form id="filter" class="needs-validation" novalidate="">
+            <div class="row">
+               <div class="col-md-6 mb-3">
+                  <div class="form-group">
+                     <label class="form-label"></label>
+                     <button type="submit" required class="btn btn-primary btn-block submit">Filter</button>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label class="form-label"></label>
+                     <select class="form-control" name="class_id" >
+                        <option  value="">Select to Filter Results By Class</option>
+                        <?php foreach($db->orderBy('id','ASC')->get('classes') as $key=>$value): ?>
+                        <option value="<?=$value->id?>"><?=$value->name?></option>
+                        <?php endforeach;?>
+                     </select>
+                  </div>
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
+</center>
+<?php if(isset($_GET['class'])):?>
+<div class="card card-info">
+   <div class="card-header">
+      <h4>S.<?=$_GET['class'];?> Students' Project Results</h4>
+      <div class="card-header-action">
+         <a href="admin.php?page=new-student&class=<?=$_GET['class']?>" class="btn btn-info">Add New</a>
+      </div>
+   </div>
+   <div class="card-body">
+      <div class="table-responsive">
+         <table class="table table-striped table-hover table-bordered" style="width: 100%">
+            <thead>
+               <tr>
+                  <th>S/N</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>LIN</th>
+                  <th>Class</th>
+                  <th>Project</th>
+                  <th>Subject</th>
+                  <th>Project Score</th>
+                  <th>Annual Contribution</th>
+                  <th>Final 20% Contribution</th>
+                  <th>Request Update</th>
+               </tr>
+            </thead>
+            <tbody>
+               <?php $n=1; $student = $db->where('class',$_GET['class'])->getOne('students');  foreach($db->where('student_lin',$student->lin)->get('project_scores') as $key=> $value): ?>
+               <tr>
+                  <td><?= $n++; ?> </td>
+                  <td><?php
+                     $name = $db->where('lin', $value->student_lin)->getOne('students');
+                     
+                     echo  $name->firstname . " ".  $name->lastname;
+                     ;
+                     ?>
+                  </td>
+                  <td><?= $name->email ?></td>
+                  <td><?=$name->lin ?></td>
+                  <td><?php
+                     $class = $db->where('id', $name->class)->getOne('classes');
+                     echo $class->name; 
+                     ?></td>
+                  <td><?php
+                     $project = $db->where('id', $value->project_id)->getOne('projects');
+                     echo $project->name; 
+                     ?></td>
+                  <td><?php
+                     $subject = $db->where('id', $project->subject_code)->getOne('subjects');
+                     echo $subject->name;
+                     ?>
+                  </td>
+                  <td><?php
+                     echo $value->score; 
+                     ?></td>
+                  <td><?=($value->score/100)*5*$name->class;?></td>
+                  <td><?=($value->score/100)*20  ?></td>
+                  <td>
+                     <?php if($value->status ==1):?>
+                     <a href="javascript:void()" class="badge badge-warning">Pending Approval</a>
+                  </td>
+                  <?php elseif($value->status ==2):?>
+                  <a href="admin.php?page=edit-project-scores&id=<?=$value->id?>" class="badge badge-warning">Edit</a></td> 
+                  <?php elseif($value->status ==3):?>
+                  <a href="javascript:void(0)" disabled class="badge badge-primary">Already Updated</a></td> 
+                  <?php else:?>
+                  <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a></td> 
+                  <?php endif;?>
+               </tr>
+               <?php endforeach ?>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<?php else:?>
+<div class="card card-info">
+   <div class="card-header">
+      <h4>All Students' Project Results</h4>
+      <div class="card-header-action">
+         <a href="admin.php?page=new-student" class="btn btn-info">Add New</a>
+      </div>
+   </div>
+   <div class="card-body">
+      <div class="table-responsive">
+         <table class="table table-striped table-hover table-bordered" style="width: 100%">
+            <thead>
+               <tr>
+                  <th>S/N</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>LIN</th>
+                  <th>Class</th>
+                  <th>Project</th>
+                  <th>Subject</th>
+                  <th>Project Score</th>
+                  <th>Annual Contribution</th>
+                  <th>Final 20% Contribution</th>
+                  <th>Request Update</th>
+               </tr>
+            </thead>
+            <tbody>
+               <?php $n=1; foreach($db->get('project_scores') as $key=> $value): 
+				// var_dump($db->get('project_scores'));return; 
+				?>
+               <tr>
+                  <td><?= $n++; ?> </td>
+                  <td><?php $name = $db->where('lin', $value->student_lin)->getOne('students');
+                     echo  $name->firstname . " ".  $name->lastname; ?></td>
+                  <td><?= $name->email ?></td>
+                  <td><?=$name->lin ?></td>
+                  <td><?php
+                     $class = $db->where('id', $name->class)->getOne('classes');
+                     echo $class->name; 
+                     ?></td>
+                  <td><?php
+                     $project = $db->where('id', $value->project_id)->getOne('projects');
+                     echo $project->name; 
+                     ?></td>
+                  <td><?php
+                     $subject = $db->where('code', $project->subject_code)->getOne('subjects');
+                     echo $subject->name;
+                     ?>
+                  </td>
+                  <td><?php
+                     echo $value->score; 
+                     ?></td>
+                  <td><?=($value->score/100)*5*$name->class;?></td>
+                  <td><?=($value->score/100)*20  ?></td>
+                  <td>
+                     <?php if($value->status ==1):?>
+                     <a href="javascript:void()" class="badge badge-warning">Pending Approval</a>
+                  </td>
+                  <?php elseif($value->status ==2):?>
+                  <a href="admin.php?page=edit-project-scores&id=<?=$value->id?>" class="badge badge-warning">Edit</a></td> 
+                  <?php elseif($value->status ==3):?>
+                  <a href="javascript:void(0)" disabled class="badge badge-primary">Already Updated</a></td> 
+                  <?php else:?>
+                  <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a></td> 
+                  <?php endif;?>
+               </tr>
+               <?php endforeach ?>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<?php endif;?>
+<script type="text/javascript">
+   function remStudent(id){
+   	$.ajax({
+   		url: request()+'?f=students&s=remove',
+   		method: 'POST', 	
+   		data: {id: id},
+   		success: function(data){
+   			console.log(data);
+   			if (data.status == 200) {
+   				iziToast.success({
+   				    title: 'Info',
+   				    message: data.message,
+   				    position: 'topRight'
+   				});
+   				setTimeout(function(){
+                          window.location.href = data.url;
+   				},1000);
+   			}else{
+   				iziToast.error({
+   				    title: 'Alert',
+   				    message: data.message,
+   				    position: 'topRight'
+   				});
+   			}
+   		}
+   	})
+   }
+</script>
+<script type="text/javascript">
+   $('#filter').on('submit',function(e){
+      e.preventDefault();
+      var $submitButton = $('.submit');
+      var originalButtonText = $submitButton.text();
+      
+      // Change button text to "Processing" or "Loading"
+      $submitButton.text('Processing...');
+   
+      $.ajax({
+         url: request()+'?f=projects&s=filter-results',
+         method: 'POST',
+         contentType: false,
+         processData: false,
+         data: new FormData(this),
+         beforeSend: function(){
+            // Disable button and change its text
+            $submitButton.prop('disabled', true);
+         },
+         success: function(data){
+            console.log(data);
+            if (data.status == 200) {
+               iziToast.success({
+                  title: 'Info',
+                  message: data.message,
+                  position: 'topRight'
+               });
+               setTimeout(function(){
+                  window.location.href = data.url;
+               }, 1000);
+            } else {
+               iziToast.error({
+                  title: 'Alert',
+                  message: data.message,
+                  position: 'topRight'
+               });
+            }
+         },
+         complete: function(){
+            // Restore original button text and enable it
+            $submitButton.text(originalButtonText);
+            $submitButton.prop('disabled', false);
+         }
+      });
+   });
+</script>

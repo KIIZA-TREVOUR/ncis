@@ -1,0 +1,132 @@
+<?php 
+
+$scores = $db->where('student_id',$wallet['student']['id'])->getOne('project_scores');
+$student = $db->where('id',$wallet['student']['id'])->getOne('students');
+$project = $db->where('id',$scores->project_id)->getOne('projects');
+$subject = $db->where('id',$project->subject_id)->getOne('subjects');
+
+?>
+  <section class="section">
+          <div class="section-body">
+            <div class="row mt-sm-4">
+             
+              <div class="col-12 col-md-12 col-lg-12">
+                <div class="card">
+                  <div class="padding-20">
+                    <ul class="nav nav-tabs" id="myTab2" role="tablist">
+                      <li class="nav-item">
+                        <a class="nav-link  btn btn-info" id="home-tab2" data-toggle="tab" href="#about" role="tab"
+                          aria-selected="true">My Results</a>
+                      </li>
+                    </ul>
+                     <div class="tab-content tab-bordered" id="myTab3Content">
+                      <div class="tab-pane fade show active" id="about" role="tabpanel" aria-labelledby="home-tab2">
+                      
+                        </div>
+                     <div class="row align-items-center mb-6">
+                        <div class="col-lg-5 col-12">
+                          <img class="img-fluid w-100" src="<?=$wallet['config']['site_url'].$student->image?>" alt="">
+                        </div>
+                        <div class="col-lg-7 col-12 mt-5 mt-lg-0 ps-lg-5">  <div class="row">
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>First Name</strong>
+                            <br>
+                            <p class="text-muted"><?= $student->firstname?> </p>
+                          </div>
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Lastname</strong>
+                            <br>
+                            <p class="text-muted"><?= $student->lastname?></p>
+                          </div>
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Email</strong>
+                            <br>
+                            <p class="text-muted"><?= $student->email?></p>
+                          </div>
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>LIN</strong>
+                            <br>
+                            <p class="text-muted"><?= $student->lin?></p>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Class</strong>
+                            <br>
+                            <p class="text-muted"><?= $db->where('id',$student->class)->getOne('classes')->name;?></p>
+                          </div>
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Date of Birth</strong>
+                            <br>
+                            <p class="text-muted"><?= $student->dob?></p>
+                          </div>
+                          <div class="col-md-3 col-6 b-r">
+                            <strong>Gender</strong>
+                            <br>
+                            <p class="text-muted"><?= $student->gender?></p>
+                          </div>
+                        </div>
+                    </div>
+                        <table class="table table-striped table-hover table-bordered" style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Subject</th>
+                                    <th>Project</th>
+                                    <th>Project Type</th>
+                                    <th>Marks</th>
+                                    <th>20% Contribution</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                          <?php $n=1;foreach($db->where('student_id',$wallet['student']['id'])->get('project_scores') as $key => $value): 
+                            $pro =  $db->where('id',$value->project_id)->getOne('projects');
+                            $sub = $db->where('id',$pro->subject_id)->getOne('subjects');
+                            ?>
+                                <tr>
+                                    <td><?= $n++; ?> </td>
+                                    <td><?= $sub->name ?> </td>
+                                    <td><?= $pro->name ?></td>
+                                    <td><?php if($pro->project_type == 1){echo 'Individual';}else{ echo 'Group';} ?></td>
+                                    <td><?= $value->score ?></td>
+                                    <td><?= ($value->score/100)*20 ?></td>
+                                </tr>
+                            <?php endforeach ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <script type="text/javascript">
+  $(document).ready(function() {
+    $('#addservice').on('submit', function(e) {
+ 
+      e.preventDefault();
+      $.ajax({
+        url: request()+'?f=service&s=delete&id='+"test",
+        method: 'POST',
+        data: $(this).serialize(),
+        beforesend: function() {
+
+        },
+        success: function(response) {
+          console.log(response);
+
+            if (response.status == 200) {
+            setTimeout(function() {
+              window.location.href = response.url;
+            }, 2e3);
+          } else {
+           alert(response.message);
+          }
+         
+        }
+      });
+    });
+
+  })
+</script>
+

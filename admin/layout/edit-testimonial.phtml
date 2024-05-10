@@ -1,0 +1,88 @@
+<?php
+$id = $_GET['id'];
+$testimonial = $db->where('id', $id)->getOne('front_cms_testimonial');  
+?>
+
+<div class="card card-primary">
+	<div class="card-header">
+		<h3 class="card-title">Update Testimonial</h3>
+	</div>
+	<div class="card-body">
+		<form id="edit" class="needs-validation" novalidate="">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label"> Name</label>
+						<input type="text" required name="name" class="form-control" value="<?=$testimonial->name?>" placeholder="Enter Name">
+						<input type="text" required name="id" class="form-control" value="<?=$testimonial->id?>" hidden>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Location</label>
+						<input type="text" value="<?=$testimonial->location?>" required name="location" class="form-control" placeholder="Enter Location">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Image (80 x 80 Pixels Recommended)</label>
+						<input type="file" name="image" class="form-control" ><img src="<?=$wallet['config']['site_url'].$testimonial->image?>" height="40" onerror="this.onerror=null;this.src='<?=$wallet['config']['site_url'] ?>layout/assets/images/placeholder-rect.jpg';">
+						<input type="text" value="<?=$testimonial->image?>" name="uimage" hidden class="form-control" >
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="form-label">Description</label>
+						<textarea type="text" name="description" class="form-control editor" placeholder="Enter brief description"><?=$testimonial->description?></textarea>
+					</div>
+				</div>
+				
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label"></label>
+						<button type="submit" required class="btn btn-primary btn-block submit">Update</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#edit').on('submit',function(e){
+		e.preventDefault();
+		$.ajax({
+			url: request()+'?f=testimonials&s=edit',
+			method: 'POST',
+			contentType: false,
+			processData: false,
+			data: new FormData(this),
+			beforeSend: function(){
+				$('.submit').html('');
+				$('.submit').addClass('disabled');
+			},
+			success : function(data){
+				console.log(data);
+				$('.submit').html('Processing');
+				$('.submit').removeClass('disabled');
+				if (data.status == 200) {
+					iziToast.info({
+					    title: 'Success',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						location.reload();
+					},1000);
+				}else{
+					iziToast.error({
+					    title: 'Error',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+			}
+		})
+	});
+
+	
+</script>

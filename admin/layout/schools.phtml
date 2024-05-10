@@ -1,0 +1,143 @@
+<div class="card card-info">
+    <div class="card-header">
+    	<h4>All Schools</h4>
+    	<div class="card-header-action">
+      		<a href="admin.php?page=new-school" class="btn btn-info">Add New</a>
+    	</div>
+    </div>
+    <div class="card-body">
+    	<div class="table-responsive">
+			<table class="table table-striped table-hover table-bordered" style="width: 100%">
+				<thead>
+					<tr>
+						<th>S/N</th>
+						<th>Name</th>
+						<th>Registration Number</th>
+						<th>Email</th>
+						<th>Address</th>
+						<th>Status</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php $n=1; foreach($db->orderBy('id','DESC')->get('schools') as $key=>$value): ?>
+					<tr>
+						<td><?= $n++; ?> </td>
+						<td><?= $value->name ?> </td>
+						<td><?= $value->reg_no ?></td>
+						<td><?=$value->email ?></td>
+						<td><?=$value->address ?></td>
+                        <td>
+                             <?php 
+                             if($value->status == 0){?>
+                             <span class="btn btn-warning">Un Verified</span>
+                             <?php }else{?>
+                                <span class="btn btn-success">Approved</span>
+                            <?php }?>
+                        </td>
+						<td>
+							<div class="d-flex">
+                                <?php if($value->status==0){ ?>
+                                 <a href="javascript:void(0)" onclick="approve('<?=$value->id?>')"><button type="button" class="btn btn-icon btn-lg btn-info" title="Approve">Approve</button></a><?php }else{?>
+                                    <a href="javascript:void(0)" onclick="disapprove('<?=$value->id?>')"><button type="button" class="btn btn-icon btn-lg btn-warning" title="Disapprove">Disapprove</button></a>
+                                 <?php }?>
+								<a href="admin.php?page=edit-school&id=<?=$value->id?>" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a>&nbsp;
+								<a href="javascript:void(0)" onclick="remSchool('<?=$value->id?>')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+							</div>
+						</td>
+					</tr>
+				<?php endforeach ?>
+				</tbody>
+			</table>
+		</div>
+    </div>
+</div>
+<script type="text/javascript">
+	function remSchool(id){
+		$.ajax({
+			url: request()+'?f=schools&s=remove',
+			method: 'POST', 	
+			data: {id: id},
+			success: function(data){
+				console.log(data);
+				if (data.status == 200) {
+					iziToast.success({
+					    title: 'Info',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						location.reload();
+					},1000);
+				}else{
+					iziToast.error({
+					    title: 'Alert',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+			}
+		})
+	}
+</script>
+
+<script type="text/javascript">
+   function approve($id){
+   	$.ajax({
+   		url: request()+'?f=schools&s=approve',
+   		method: 'POST', 
+   		data :{
+   			id : $id,
+   		},
+   		success: function(data){
+   			console.log(data);
+   			if (data.status == 200) {
+   				iziToast.success({
+   				    title: 'Info',
+   				    message: data.message,
+   				    position: 'topRight'
+   				});
+   				setTimeout(function(){
+   					location.reload();
+   				},1000);
+   			}else{
+   				iziToast.error({
+   				    title: 'Alert',
+   				    message: data.message,
+   				    position: 'topRight'
+   				});
+   			}
+   		}
+   	})
+   }
+</script>
+<script type="text/javascript">
+   function disapprove($id){
+   	$.ajax({
+   		url: request()+'?f=schools&s=disapprove',
+   		method: 'POST', 
+   		data :{
+   			id : $id,
+   		},
+   		success: function(data){
+   			console.log(data);
+   			if (data.status == 200) {
+   				iziToast.success({
+   				    title: 'Info',
+   				    message: data.message,
+   				    position: 'topRight'
+   				});
+   				setTimeout(function(){
+   					location.reload();
+   				},1000);
+   			}else{
+   				iziToast.error({
+   				    title: 'Alert',
+   				    message: data.message,
+   				    position: 'topRight'
+   				});
+   			}
+   		}
+   	})
+   }
+</script>

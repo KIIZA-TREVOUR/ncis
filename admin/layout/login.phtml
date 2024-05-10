@@ -1,0 +1,93 @@
+<div id="app">
+
+<section class="section">
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
+          <div class="card card-primary">
+            <center>
+            <img  width='120' height="100" src="<?=$wallet['config']['site_url']?>layout/assets/img/sms.png"/></center>
+            <div class="card-header">
+              <h4>Login</h4>
+            </div>
+            <div class="card-body">
+              <form id="login" class="needs-validation" novalidate="">
+                <div class="form-group">
+                  <label for="email">Email/LIN Number</label>
+                  <input id="email" type="email" class="form-control" name="email" tabindex="1" placeholder="eg nana@gmail.com or US1-00001" required autofocus>
+                  <div class="invalid-feedback">
+                    Please fill in your email
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input id="password" type="password" class="form-control" name="password" tabindex="2" required>
+                  <div class="invalid-feedback">
+                    Please fill in your password
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="user_type">Select User Type</label>
+                  <select id="user_type" name="user_type" class="form-control" required>
+                    <option value="admin">Admin</option>
+                    <option value="staff">Staff</option>
+                    <option value="student">Student</option>
+                  </select>
+                  <div class="invalid-feedback">Please select a user type</div>
+                </div>
+
+                <div class="form-group">
+                  <button type="submit" class="btn btn-primary btn-lg btn-block button" tabindex="4">Login</button>
+                </div>
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script type="text/javascript">
+      $('#login').on('submit', function(e){
+          e.preventDefault();
+          $.ajax({
+              url: request()+"?f=auth&s=login",
+              method: 'POST',
+              data: $(this).serialize(),
+              beforeSend: function(){
+                  $('.button').html('Processing');
+                  $('.button').addClass('disabled');
+              },
+              success: function(data){
+                  $('.button').html('Log In');
+                  $('.button').removeClass('disabled');
+                  console.log(data);
+				if (data.status == 200) {
+					iziToast.info({
+					    title: 'Success',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						location.reload();
+					},1000);
+				}else{
+					iziToast.error({
+					    title: 'Error',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+              }
+          })
+      });
+
+      $('#login').on('submit', function(d){
+          d.preventDefault();
+          $.ajax({
+              url: request()+"?f=auth&s=login",
+          })
+
+      });
+  </script>
