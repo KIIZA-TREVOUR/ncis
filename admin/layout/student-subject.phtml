@@ -13,7 +13,7 @@ $student = $db->where('id', $id)->getOne('students');
 					<div class="form-group">
 						<label class="form-label">Name</label>
 						<input type="text" required name="name" value="<?=$student->firstname?> <?=$student->lastname?>" class="form-control" disabled>
-						<input type="text" required name="student_id" value="<?=$student->id?>" class="form-control" hidden>
+						<input type="text" required name="student_lin" value="<?=$student->lin?>" class="form-control" hidden>
 					</div>
 				</div>
 				<div class="col-md-6">
@@ -26,7 +26,7 @@ $student = $db->where('id', $id)->getOne('students');
                             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
                                     <?php $n=1; foreach($db->orderBy('id','DESC')->get('subjects') as $key=>$value): ?>
                                 <li class="col-md-12">
-                                    <input name="subjects[]" type="checkbox" id="inlineCheckbox1" value="<?=$value->id?>">
+                                    <input name="subjects[]" type="checkbox" id="inlineCheckbox1" value="<?=$value->code?>">
                                     <label class="form-check-label" for="inlineCheckbox1"><?=$value->name?></label> 
                                 </li>
                                     <?php endforeach;?>    

@@ -127,8 +127,7 @@
                </tr>
             </thead>
             <tbody>
-               <?php $n=1; foreach($db->get('project_scores') as $key=> $value): 
-				// var_dump($db->get('project_scores'));return; 
+               <?php $n=1; foreach($db->get('project_scores') as $key=> $value):
 				?>
                <tr>
                   <td><?= $n++; ?> </td>
@@ -142,26 +141,26 @@
                      ?></td>
                   <td><?php
                      $project = $db->where('id', $value->project_id)->getOne('projects');
-                     echo $project->name; 
+                     echo $project->subject_code; 
                      ?></td>
                   <td><?php
-                     $subject = $db->where('code', $project->subject_code)->getOne('subjects');
+                     $subject = $db->where('code','S103')->getOne('subjects');
                      echo $subject->name;
                      ?>
                   </td>
                   <td><?php
                      echo $value->score; 
                      ?></td>
-                  <td><?=($value->score/100)*5*$name->class;?></td>
-                  <td><?=($value->score/100)*20  ?></td>
+                  <td></td>
+                  <td></td>
                   <td>
                      <?php if($value->status ==1):?>
                      <a href="javascript:void()" class="badge badge-warning">Pending Approval</a>
-                  </td>
+                  </td><td>
                   <?php elseif($value->status ==2):?>
-                  <a href="admin.php?page=edit-project-scores&id=<?=$value->id?>" class="badge badge-warning">Edit</a></td> 
+                  <a href="admin.php?page=edit-project-scores&id=<?=$value->id?>" class="badge badge-warning">Edit</a></td> <td>
                   <?php elseif($value->status ==3):?>
-                  <a href="javascript:void(0)" disabled class="badge badge-primary">Already Updated</a></td> 
+                  <a href="javascript:void(0)" disabled class="badge badge-primary">Already Updated</a></td> <td>
                   <?php else:?>
                   <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a></td> 
                   <?php endif;?>

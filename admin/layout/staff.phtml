@@ -31,9 +31,9 @@
 						<td><?=$value->contact ?></td>
 						<td><?=$value->role ?></td>
 						<td><?php
-							$subjects = $db->where('staff_id', $value->id)->getOne('staff_subject');
+							$subjects = $db->where('staff_email', $value->id)->getOne('staff_subject');
 							if(!empty($subjects)){
-							 $sub = $subjects->subject_id;
+							 $sub = $subjects->subject_code;
 								$one = explode(","," $sub");
 							   
 								foreach($one as $key=> $s) {?>

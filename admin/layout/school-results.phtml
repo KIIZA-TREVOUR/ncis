@@ -37,52 +37,32 @@
       <div class="table-responsive">
          <table class="table table-striped table-hover table-bordered" style="width: 100%">
             <thead>
+               <?php
+               // var_dump(fetchStudentResults());exit;?>
                <tr>
                   <th>S/N</th>
                   <th>Name</th>
-                  <th>Email</th>
                   <th>LIN</th>
                   <th>Class</th>
-                  <th>Exam Type</th>
-                  <th>Subject</th>
-                  <th>Subject Score</th>
                   <th>Action</th>
                </tr>
             </thead>
             <tbody>
-               <?php $n=1; $student = $db->where('class',$_GET['class'])->getOne('students');  foreach($db->where('student_lin',$student->lin)->get('exam_results') as $key=> $value): ?>
+               <?php $n=1; $students = fetchStudentResultsByClass($_GET['class']);
+               foreach($students as $value):
+               $student = $db->where('lin',$value['student_lin'])->getOne('students');
+               $class = $db->where('id', $student->class)->getOne('classes');
+               ?>
                <tr>
-                  <td><?= $n++; ?> </td>
-                  <td><?php
-                     $name = $db->where('lin', $value->student_lin)->getOne('students');
-                     
-                     echo  $name->firstname . " ".  $name->lastname;
-                     ;
-                     ?>
+                  <td><?= $n++;?></td>
+                  <td><?=$student->firstname?> <?=$student->lastname?></td>
+                  <td><?=$student->lin ?></td>
+                  <td><?=$class->name?></td>
+                  <td>
+                     <div class="d-flex">
+                        <a href="admin.php?page=report-card&lin=<?=$student->lin?>" ><button class="badge badge-success">Generate Report</button></a>
+                     </div>
                   </td>
-                  <td><?= $name->email ?></td>
-                  <td><?=$name->lin ?></td>
-                  <td><?php
-                     $class = $db->where('id', $name->class)->getOne('classes');
-                     echo $class->name; 
-                     ?></td>
-                  <td><?php
-                  if($value->exam_type == "Mid"){echo "Mid Term";}else{ echo "End of Term";}; 
-                     ?></td>
-                  <td><?php
-                     $subject = $db->where('id', $project->subject_code)->getOne('subjects');
-                     echo $subject->name;
-                     ?>
-                  </td>
-                  <td><?php
-                     echo $value->score; 
-                     ?></td>
-                     <td>
-                         <div class="d-flex">
-                             <a href="admin.php?page=edit-result&id=<?=$value->id?>" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a>&nbsp;
-                             <a href="javascript:void(0)" onclick="remResult('<?=$value->id?>')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
-                         </div>
-                     </td>
                </tr>
                <?php endforeach ?>
             </tbody>
@@ -107,46 +87,27 @@
                <tr>
                   <th>S/N</th>
                   <th>Name</th>
-                  <th>Email</th>
                   <th>LIN</th>
                   <th>Class</th>
-                  <th>Exam Type</th>
-                  <th>Subject</th>
-                  <th>Subject Score</th>
                   <th>Action</th>
                </tr>
             </thead>
             <tbody>
-               <?php $n=1; foreach($db->get('exam_results') as $key=> $value): ?>
+               <?php $n=1; $students = fetchStudentResults();
+               foreach($students as $value):
+               $student = $db->where('lin',$value['student_lin'])->getOne('students');
+               $class = $db->where('id', $student->class)->getOne('classes');
+               ?>
                <tr>
-                  <td><?= $n++; ?> </td>
-                  <td><?php
-                     $name = $db->where('lin', $value->student_lin)->getOne('students');
-                     
-                     echo  $name->firstname . " ".  $name->lastname;
-                     ;
-                     ?>
+                  <td><?= $n++;?></td>
+                  <td><?=$student->firstname?> <?=$student->lastname?></td>
+                  <td><?=$student->lin ?></td>
+                  <td><?=$class->name?></td>
+                  <td>
+                     <div class="d-flex">
+                        <a href="admin.php?page=report-card&lin=<?=$student->lin?>" ><button class="badge badge-success">Generate Report</button></a>
+                     </div>
                   </td>
-                  <td><?= $name->email ?></td>
-                  <td><?=$name->lin ?></td>
-                  <td><?php
-                     $class = $db->where('id', $name->class)->getOne('classes');
-                     echo $class->name; 
-                     ?></td>
-                  <td><?php
-                  if($value->exam_type == "Mid"){echo "Mid Term";}else{ echo "End of Term";}; 
-                     ?></td>
-                  <td><?php
-                     $subject = $db->where('id', $project->subject_code)->getOne('subjects');
-                     echo $subject->name;
-                     ?>
-                  </td>
-                  <td><?php
-                     echo $value->score; 
-                     ?></td>
-                     <td>
-                        <a href="admin.php?page=report-card&lin=<?=$value->student_lin?>" ><button class="badge badge-success">Generate Report</button></a>
-                     </td>
                </tr>
                <?php endforeach ?>
             </tbody>

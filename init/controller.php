@@ -398,4 +398,59 @@ function exists($table, $condition)
 	}
 	return false;
 }
+
+function fetchStudentResults()
+{
+    global $sqlConnect; // Assuming $sqlConnect is your MySQLi connection
+
+    $sql = "SELECT DISTINCT student_lin
+            FROM exam_results ";
+
+    $result = mysqli_query($sqlConnect, $sql);
+
+    if (!$result) {
+        // Handle query error
+        return false;
+    }
+
+    $studentDetails = array();
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $studentDetails[] = $row;
+    }
+
+    mysqli_free_result($result);
+
+    return $studentDetails;
+}
+function fetchStudentResultsByClass($class)
+{
+    global $sqlConnect; // Assuming $sqlConnect is your MySQLi connection
+
+    $sql = "SELECT DISTINCT student_lin
+            FROM exam_results WHERE class_id ='".$class."'";
+    $result = mysqli_query($sqlConnect, $sql);
+
+    if (!$result) {
+        // Handle query error
+        return false;
+    }
+
+    $studentDetails = array();
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $studentDetails[] = $row;
+    }
+
+    mysqli_free_result($result);
+
+    return $studentDetails;
+}
+
+function getCurrentDate()
+{
+    date_default_timezone_set("Africa/Kampala");
+    $date = date("Y-m-d h:i:s");
+    return $date;
+}
 ?>

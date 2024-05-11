@@ -84,8 +84,8 @@
 			
 			$url = '';
 			$insert = array(
-				'student_id'	=>	__secure($_POST['student_id']),
-				'subject_id'	=>	$subjects,
+				'student_lin'	=>	__secure($_POST['student_lin']),
+				'subject_code'	=>	$subjects,
 			);
 			if (save_data('student_subject',$insert)) {
 				$data = array(
@@ -115,5 +115,23 @@
 				);
 			}
 		}
+
+		
+		if ($s == 'filter-student-subjects') {
+			$class_id = __secure($_POST['class_id']);
+			if (!empty($class_id)) {
+				$data = array(
+					'status'	=>	200,
+					'message'	=>	'Filtering S.'.$class_id.' Student Results',
+                    'url' => 'admin.php?page=student-subjects&class='.$class_id.'',
+				);
+			}else{
+				$data = array(
+					'status'	=>	201,
+					'message'	=>	'Please Select All Fields to filter Summary'
+				);
+			}
+		}
+
 	}
 ?>

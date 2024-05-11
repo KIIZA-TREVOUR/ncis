@@ -14,6 +14,7 @@
 					<tr>
 						<th>S/N</th>
 						<th>Name</th>
+						<th>Subject Code</th>
 						<th>Date Created</th>
 						<th>Action</th>
 					</tr>
@@ -23,6 +24,7 @@
 					<tr>
 						<td><?= $n++; ?> </td>
 						<td><?= $value->name ?> </td>
+						<td><?= $value->code ?> </td>
 						<td><?= filterDate($value->date_created) ?></td>
 						<td>
 							<div class="d-flex">
