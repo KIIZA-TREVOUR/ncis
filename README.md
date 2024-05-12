@@ -1,7 +1,3 @@
-Certainly! Below is a sample README file for your Results Management System:
-
----
-
 # Results Management System
 
 Welcome to the Results Management System (RMS) repository! This system is designed to manage and display results efficiently. Whether you're a student checking your grades or an administrator managing scores, RMS has you covered.
