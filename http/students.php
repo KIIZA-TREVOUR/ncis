@@ -14,12 +14,12 @@
 				'firstname'	=>	__secure($_POST['firstname']),
 				'lastname'	=>	__secure($_POST['lastname']),
 				'email'	=>	__secure($_POST['email']),
-				'lin'	=>	__secure($_POST['lin']),
+				'lin'	=>	getStudentLinNumber(),
 				'class'	=>	__secure($_POST['class']),
 				'dob'	=>	__secure($_POST['dob']),
 				'gender'	=>	__secure($_POST['gender']),
 				'image'	=>	__secure($url),
-				'password'	=>	__secure(md5($_POST['password'])),
+				'password'	=>	__secure(md5('@'.getStudentLinNumber())),
 			);
 			if (save_data('students',$insert)) {
 				$data = array(

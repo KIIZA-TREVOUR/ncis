@@ -18,6 +18,9 @@
 			$dataImported = false; // A flag to check if data was imported
 		
 			foreach ($reader as $key => $row) {
+				if($key==0){
+					continue;
+				}
 				$name = $row[0];
 				$code = $row[1];
 				$upload_id = getLatestId('id','upload_history');
@@ -94,20 +97,23 @@
 			$dataImported = false; // A flag to check if data was imported
 		
 			foreach ($reader as $key => $row) {
+				if($key==0){
+					continue;
+				}
 				$sch_id = $row[0];
 				$firstname = $row[1];
 				$lastname = $row[2];
 				$email = $row[3];
-				$lin = $row[4];
-				$image = $row[5];
-				$class = $row[6];
-				$dob = $row[7];
-				$gender = $row[8];
-				$password = $row[9];
+				$lin = getStudentLinNumber();
+				$image = $row[4];
+				$class = $row[5];
+				$dob = $row[6];
+				$gender = $row[7];
+				$password = md5('@'.$lin);
 				$upload_id = getLatestId('id','upload_history');
 		
 				// Check if the record already exists
-				$exists = exists('students', 'WHERE lin = "'.$lin.'"');
+				$exists = exists('students', 'WHERE email = "'.$email.'"');
 				if (!$exists) {
 					// Use prepared statements to prevent SQL injection
 					$query = "INSERT INTO students (sch_id, firstname, lastname, email, lin, image, class, dob, gender, password, upload_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
@@ -158,7 +164,6 @@
 					'url' => 'index.php?page=reports',
 				);
 			}
-		
 			// Close the statements
 			mysqli_stmt_close($stmt);
 			mysqli_stmt_close($history_stmt);
@@ -181,6 +186,9 @@
 			$reader = new SpreadsheetReader($targetDirectory);
 			$dataImported = false; // A flag to check if data was imported
             foreach ($reader as $key => $row) {
+				if($key==0){
+					continue;
+				}
 				$firstname = $row[0];
 				$lastname = $row[1];
 				$email = $row[2];
@@ -265,6 +273,9 @@
 			$reader = new SpreadsheetReader($targetDirectory);
 			$dataImported = false; // A flag to check if data was imported
             foreach ($reader as $key => $row) {
+				if($key==0){
+					continue;
+				}
 				$student_lin = $row[0];
 				$subject_code = $row[1];
 				$score = $row[2];
@@ -329,11 +340,15 @@
 		}
 		if ($s == 'remove') {
 			$id = __secure($_POST['id']);
+			$filepath = $db->where('id',$id)->getOne('upload_history');
 			if ($db->where('id',$id)->delete('upload_history')) {
 				$db->where('upload_id',$id)->delete('subjects');
 				$db->where('upload_id',$id)->delete('staff');
 				$db->where('upload_id',$id)->delete('students');
 				$db->where('upload_id',$id)->delete('exam_results');
+				if(exists('upload_history','WHERE file ="'.$filepath->file.'"')){
+					unlink($filepath->file);
+				}
 				$data = array(
 					'status'	=>	200,
 					'message'	=>	'Data Related to this Upload Deleted Successfully'

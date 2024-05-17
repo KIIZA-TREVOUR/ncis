@@ -13,8 +13,10 @@
    if (!$wallet['loggedin'] && @$_GET['page'] != 'login') {
        if (@$_GET['page'] == 'forgot') {
            $page = 'forgot';
-       } elseif (@$_GET['page'] == 'reset') {
-           $page = 'reset';
+         } elseif (@$_GET['page'] == 'reset') {
+             $page = 'reset';
+         } elseif (@$_GET['page'] == 'register-school') {
+             $page = 'register-school';
        } else {
            $page = 'login';
        }
@@ -171,7 +173,7 @@
    <body>
       <div class="loader"></div>
       <div id="app">
-         <?php if ($page == 'login' || $page == 'forgot' || $page == 'reset'):
+         <?php if ($page == 'login' || $page == 'forgot' || $page == 'reset'|| $page == 'register-school'):
             echo $page_loaded;
             else:
              ?>

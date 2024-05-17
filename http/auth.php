@@ -128,5 +128,103 @@
                // }
            }
        }
+
+	   
+	   if ($s == 'register') {
+        $school_config = $school['config'];
+        $school_config['email'] = __secure($_POST['cemail']);
+        $school_config['phone'] = __secure($_POST['ccontact']);
+        $school_config['address'] = __secure($_POST['caddress']);
+        $school_config['logo'] = 'default';
+        $school_config['footer_description'] = 'default';
+        $school_config['country'] = __secure($_POST['country']);
+        $school_config['web_description'] = 'Results Management';
+        $school_config['web_paragraph'] = 'Results Management';
+        $school_config['badge'] = 'badge';
+    
+        $notifications = json_encode([
+            "notifyShipmentStatus" => 0,
+            "notifyStatusChange" => 0,
+            "notifyNewCustomer" => 0
+        ]);
+    
+        $channels = json_encode([
+            "whatsapp" => 0,
+            "email" => 0,
+            "sms" => 0
+        ]);
+    
+        $insert = array(
+            "company_name" => __secure($_POST['cname']),
+            "config" => json_encode($school_config),
+            "notifications" => $notifications,
+            "channels" => $channels
+        );
+         $email = $school_config['email'];
+        if (exists('schools', "WHERE JSON_EXTRACT(config, '$.email') = '" . $email . "'")) {
+                $data = array(
+                    'status' => 201,
+                    'message' => 'School Account Already Exists'
+                );
+                return;
+        }elseif (exists('schools', "WHERE name = '".__secure($_POST['name'])."' OR reg_no = '".__secure($_POST['reg_no'])."'")) {
+             $data = array(
+                    'status' => 201,
+                    'message' => 'School Account Already Exists'
+                );
+                return;
+        }
+    
+        $id = insert_id('companies', $insert);
+    
+        if ($id > 0) {
+            $fullname = __secure($_POST['name']);
+            $fname = $lname = '';
+            $p = explode(' ', $fullname);
+            
+            if (count($p) > 1) {
+                $fname = $p[0];
+                $lname = $p[1];
+            }
+    
+            $user = array(
+                "firstname" => __secure($fname),
+                "lastname" => __secure($lname),
+                "username" => mb_strtolower(str_replace(" ", ".", $fullname) . '.' . rand(1, 9)),
+                "email" => __secure($_POST['email']),
+                "password" => md5(__secure($_POST['password'])),
+                "phone" => __secure($_POST['phone']),
+                "company_id" => __secure($id),
+                'user_type' => 'company'
+            );
+    
+            $email = $school_config['email'];
+            if (save_data('users', $user)) {
+                    $data = array(
+                        'status' => 200,
+                        'message' => 'Company Account Created Successfully',
+                        'url' => 'index.php?page=login'
+                    );
+                } else if (exists('companies', "WHERE JSON_EXTRACT(config, '$.email') = '" . $email . "'")) {
+                $data = array(
+                    'status' => 201,
+                    'message' => 'Company Account Already Exists'
+                );
+            } else {
+                    $data = array(
+                        'status' => 201,
+                        'message' => 'Account Creation Failed'
+                    );
+            }
+    
+             
+        } else {
+            $data = array(
+                'status' => 201,
+                'message' => 'Company Creation Failed'
+            );
+        }
+    }
+    
    }
    ?>

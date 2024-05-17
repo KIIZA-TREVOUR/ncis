@@ -5,19 +5,7 @@
 	<div class="card-body">
 		<form id="project" class="needs-validation" novalidate="">
 			<div class="row">
-				<div class="col-md-6">
-					<div class="form-group">
-						<label class="form-label">Project Name</label>
-						<input type="text" required name="name" class="form-control" placeholder="Enter Project Name eg Group">
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="form-group">
-						<label class="form-label">Description</label>
-						<textarea type="text" required name="description" class="form-control" ></textarea>
-					</div>
-				</div>
-				<div class="col-md-6">
+				<div class="col-md-4">
 					<div class="form-group">
 						<label class="form-label">Subject</label>
                         <select type="text"  name="subject_code" class="form-control">
@@ -27,13 +15,24 @@
                         </select>
 					</div>
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-4">
 					<div class="form-group">
 						<label class="form-label">Class</label>
                         <select type="text"  name="class_id" class="form-control">
                             <?php  foreach($db->orderBy('id','DESC')->get('classes') as $key=>$value): ?>
                             <option value="<?=$value->id?>"><?=$value->name?></option>
                             <?php endforeach;?>
+                        </select>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Term </label>
+                        <select type="text"  name="term" class="form-control">
+                            <option>-----Select Term-----</option>
+                            <option value="1">Term One</option>
+                            <option value="2">Term Two</option>
+                            <option value="3">Term Three</option>
                         </select>
 					</div>
 				</div>
@@ -45,6 +44,18 @@
                             <option value="1">Individual</option>
                             <option value="2">Group</option>
                         </select>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="form-label">Project Name</label>
+						<input type="text" required name="name" class="form-control" placeholder="Enter Project Name eg Group">
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="form-group">
+						<label class="form-label">Description</label>
+						<textarea type="text" required name="description" class="form-control" ></textarea>
 					</div>
 				</div>
 				<div class="col-md-4">

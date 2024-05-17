@@ -39,8 +39,7 @@
 <?php if(isset($_GET['class'])):?>
 <div class="card card-info">
    <div class="card-header">
-      <?php $subject=$db->where('code',$_GET['subject'])->getOne('subjects'); ?>
-      <h4>S.<?=$_GET['class'];?> Students' <?=$subject->name;?> Project Results</h4>
+      <h4>S.<?=$_GET['class'];?> Students' Project Results</h4>
       <div class="card-header-action">
          <a href="admin.php?page=new-student&class=<?=$_GET['class']?>" class="btn btn-info">Add New</a>
       </div>
@@ -52,21 +51,50 @@
                <tr>
                   <th>S/N</th>
                   <th>Name</th>
+                  <th>Email</th>
                   <th>LIN</th>
-                  <th>Action</th>
+                  <th>Class</th>
+                  <th>Project</th>
+                  <th>Project Score</th>
+                  <th>Annual Contribution</th>
+                  <th>Final 20% Contribution</th>
+                  <th>Request Update</th>
                </tr>
             </thead>
             <tbody>
-               <?php $n=1; $students = $db->where('class',$_GET['class'])->get('students');
-               foreach($students as $key=>$student):?>
+               <?php $n=1; $student = $db->where('class',$_GET['class'])->getOne('students');
+                     $projects = $db->where('subject_code', $_GET['subject_code'])->get('projects'); 
+                  
+               // var_dump($projects);exit; 
+               foreach($projects as $pro):
+               $scores =$db->where('project_id',$pro->id)->groupBy('student_lin')->where('student_lin',$student->lin)->get('project_scores'); 
+               foreach( $scores as $key=> $value):
+                     $student = $db->where('lin', $value->student_lin)->getOne('students');
+                     $class = $db->where('id', $student->class)->getOne('classes');
+                     $project = $db->where('id', $value->project_id)->getOne('projects'); ?>
                <tr>
                   <td><?= $n++; ?> </td>
                   <td><?=$student->firstname?> <?=$student->lastname?></td>
+                  <td><?= $student->email ?></td>
                   <td><?=$student->lin ?></td>
+                  <td><?=$class->name?></td>
+                  <td><?=$project->name;?></td>
+                  <td><?= $value->score; ?></td>
+                  <td>wjksjsd</td>
+                  <td>eiwe</td>
                   <td>
-                     <a href="javascript:void()" class="badge badge-warning">View  Results</a>
+                     <?php if($value->status ==1):?>
+                     <a href="javascript:void()" class="badge badge-warning">Pending Approval</a>
                   </td>
+                  <?php elseif($value->status ==2):?>
+                  <a href="admin.php?page=edit-project-scores&id=<?=$value->id?>" class="badge badge-warning">Edit</a></td> 
+                  <?php elseif($value->status ==3):?>
+                  <a href="javascript:void(0)" disabled class="badge badge-primary">Already Updated</a></td> 
+                  <?php else:?>
+                  <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a></td> 
+                  <?php endif;?>
                </tr>
+               <?php endforeach ?>
                <?php endforeach ?>
             </tbody>
          </table>
@@ -83,28 +111,62 @@
    </div>
    <div class="card-body">
       <div class="table-responsive">
-         
-      <table class="table table-striped table-hover table-bordered" style="width: 100%">
+         <table class="table table-striped table-hover table-bordered" style="width: 100%">
             <thead>
                <tr>
                   <th>S/N</th>
                   <th>Name</th>
+                  <th>Email</th>
                   <th>LIN</th>
-                  <th>Action</th>
+                  <th>Class</th>
+                  <th>Project</th>
+                  <th>Subject</th>
+                  <th>Project Score</th>
+                  <th>Annual Contribution</th>
+                  <th>Final 20% Contribution</th>
+                  <th>Request Update</th>
                </tr>
             </thead>
             <tbody>
-               <?php $n=1; $students = $db->get('students');
-               foreach($students as $key=>$student):?>
+               <?php $n=1; foreach($db->get('project_scores') as $key=> $value):
+				?>
                <tr>
                   <td><?= $n++; ?> </td>
-                  <td><?=$student->firstname?> <?=$student->lastname?></td>
-                  <td><?=$student->lin ?></td>
-                  <td>
-                     <a href="admin.php?page=individual-presults&lin=<?=$student->lin?>" class="badge badge-success">View  Results</a>
+                  <td><?php $name = $db->where('lin', $value->student_lin)->getOne('students');
+                     echo  $name->firstname . " ".  $name->lastname; ?></td>
+                  <td><?= $name->email ?></td>
+                  <td><?=$name->lin ?></td>
+                  <td><?php
+                     $class = $db->where('id', $name->class)->getOne('classes');
+                     echo $class->name; 
+                     ?></td>
+                  <td><?php
+                     $project = $db->where('id', $value->project_id)->getOne('projects');
+                     echo $project->subject_code; 
+                     ?></td>
+                  <td><?php
+                     $subject = $db->where('code','S103')->getOne('subjects');
+                     echo $subject->name;
+                     ?>
                   </td>
+                  <td><?php
+                     echo $value->score; 
+                     ?></td>
+                  <td></td>
+                  <td></td>
+                  <td>
+                     <?php if($value->status ==1):?>
+                     <a href="javascript:void()" class="badge badge-warning">Pending Approval</a>
+                  </td><td>
+                  <?php elseif($value->status ==2):?>
+                  <a href="admin.php?page=edit-project-scores&id=<?=$value->id?>" class="badge badge-warning">Edit</a></td> <td>
+                  <?php elseif($value->status ==3):?>
+                  <a href="javascript:void(0)" disabled class="badge badge-primary">Already Updated</a></td> <td>
+                  <?php else:?>
+                  <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a></td> 
+                  <?php endif;?>
                </tr>
-               <?php endforeach; ?>
+               <?php endforeach ?>
             </tbody>
          </table>
       </div>

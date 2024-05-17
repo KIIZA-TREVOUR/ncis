@@ -9,7 +9,7 @@ $student = $db->where('lin', $lin)->getOne('students');
 	<div class="card-body">
 		<form id="staff" class="needs-validation" novalidate="">
 			<div class="row">
-				<div class="col-md-5">
+				<div class="col-md-4">
 					<div class="form-group">
 						<label class="form-label">Name</label>
 						<input type="text" required name="name" value="<?=$student->firstname?> <?=$student->lastname?>" class="form-control" disabled>
@@ -17,24 +17,17 @@ $student = $db->where('lin', $lin)->getOne('students');
 						<input type="text" required name="class" value="<?= $student->class ?>" class="form-control" hidden>
 					</div>
 				</div>
-				<div class="col-md-3">
-                    <div class="form-group">
-                    <label class="form-label">Projects</label>
-                        <div class="dropdown">
-                            <button style="width:250px" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                            Select Projects
-                            </button>
-                            <ul style="width:250px" class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
-                                    <?php $n=1; foreach($db->where('class_id',$student->class)->get('projects') as $key=>$value): ?>
-                                <li class="col-md-12">
-                                    <input name="project" type="checkbox" id="inlineCheckbox1" value="<?=$value->id?>">
-                                    <label class="form-check-label" for="inlineCheckbox1"><?=$value->name?></label> 
-                                </li>
-                                    <?php endforeach;?>    
-                            </ul>
-                        </div>  
-                    </div>
-                </div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Select Project</label>
+                        <select type="text"  name="project" class="form-control">
+							<option value="">--------Choose Project-------</option>
+							<?php $n=1; foreach($db->where('class_id',$student->class)->get('projects') as $key=>$value): ?>
+                            <option value="<?=$value->id?>"><?=$value->name?></option>
+                            <?php endforeach;?>
+                        </select>
+					</div>
+				</div>
                 <div class="col-md-4">
 					<div class="form-group">
 						<label class="form-label">Marks</label>
@@ -55,7 +48,7 @@ $student = $db->where('lin', $lin)->getOne('students');
 	$('#staff').on('submit',function(e){
 		e.preventDefault();
 		$.ajax({
-			url: request()+'?f=project&s=assign',
+			url: request()+'?f=projects&s=assign',
 			method: 'POST',
 			contentType: false,
 			processData: false,

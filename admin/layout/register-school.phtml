@@ -6,17 +6,18 @@
         <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
           <div class="card card-primary">
             <center>
-            <img  width='120' height="100" src="<?=$wallet['config']['site_url']?>layout/assets/img/sms.png"/></center>
+            <!-- <img  width='120' height="100" src="<?=$wallet['config']['site_url']?>layout/assets/img/sms.png"/></center> -->
+</center>
             <div class="card-header">
-              <h4>Login</h4>
+              <h4>Register School</h4>
             </div>
             <div class="card-body">
-              <form id="login" class="needs-validation" novalidate="">
+              <form id="register-school" class="needs-validation" novalidate="">
                 <div class="form-group">
-                  <label for="email">Email/LIN Number</label>
-                  <input id="email" type="email" class="form-control" name="email" tabindex="1" placeholder="eg nana@gmail.com or US1-00001" required autofocus>
+                  <label for="email">School Name</label>
+                  <input id="email" type="name" class="form-control" name="name" tabindex="1" placeholder="eg Laaro Secondary School" required autofocus>
                   <div class="invalid-feedback">
-                    Please fill in your email
+                    Please fill in your School Name
                   </div>
                 </div>
                 <div class="form-group">
@@ -36,7 +37,7 @@
                   <div class="invalid-feedback">Please select a user type</div>
                 </div>
                 <div class="form-group">
-                  <button type="submit" class="btn btn-primary btn-lg btn-block button" tabindex="4">Login</button><p>Dont have an account? <a href="admin.php?page=register-school">Register</a></p>
+                  <button type="submit" class="btn btn-primary btn-lg btn-block button" tabindex="4">Login</button><p>Dont have an account? <a href="admin.php?page=register">Register</a></p>
                 </div>
               </form>
               </div>

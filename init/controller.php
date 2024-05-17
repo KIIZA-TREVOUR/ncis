@@ -363,6 +363,34 @@ function getLatestId($columnName,$tableName)
     }
 }
 
+ 
+function generateStudentNumber() {
+    // Get the last two digits of the current year
+    $year = date("y");
+    
+    // Append "0100" to the year
+    $studentNumber = $year . "0100";
+    
+    return $studentNumber;
+}
+
+function getStudentLinNumber()
+{
+    global $sqlConnect;
+    $sql = "SELECT MAX(lin) AS max_id FROM students";
+    $result = mysqli_query($sqlConnect, $sql);
+    $row = mysqli_fetch_assoc($result);
+    
+    // Check if the latest ID is empty, null, or 0
+    if ($row['max_id'] === null || $row['max_id'] === '' || $row['max_id'] == 0) {
+        return generateStudentNumber()+1;
+    } else {
+        return $row['max_id']+1;
+    }
+}
+
+
+
 function record_visitor(){
     global $db, $sqlConnect;
     // Get the visitor's IP address
