@@ -51,7 +51,6 @@
 				'firstname'	=>	__secure($_POST['firstname']),
 				'lastname'	=>	__secure($_POST['lastname']),
 				'email'	=>	__secure($_POST['email']),
-				'lin'	=>	__secure($_POST['lin']),
 				'dob'	=>	__secure($_POST['dob']),
 				'gender'	=>	__secure($_POST['gender']),
 				'class'	=>	__secure($_POST['class']),

@@ -481,4 +481,47 @@ function getCurrentDate()
     $date = date("Y-m-d h:i:s");
     return $date;
 }
+
+function getProjectScoresByTerm($student_lin, $term,$class)
+{
+    global $sqlConnect;
+    $sql = "
+        SELECT ps.*, p.subject_code, p.name 
+        FROM project_scores ps
+        JOIN projects p ON ps.project_id = p.id
+        WHERE ps.student_lin = ? AND p.term = ? AND p.class_id =?
+    ";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($sqlConnect, $sql);
+    if (!$stmt) {
+        die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, 'sii', $student_lin, $term,$class);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        die("MySQL execute statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Fetch the data
+    $data = array();
+    while ($row = mysqli_fetch_object($result)) {
+        // Convert the score from out of 100 to out of 5
+        $row->score = ($row->score / 100) * 1.67;
+        array_push($data, $row);
+    }
+
+    // Close the statement
+    mysqli_stmt_close($stmt);
+
+    return $data;
+}
+
 ?>

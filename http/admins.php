@@ -8,8 +8,6 @@
 					$url = share_file('image','uploads/admins/',true,364,364);
 				}
 			}
-			
-			
 			$insert = array(
 				'firstname'	=>	__secure($_POST['firstname']),
 				'lastname'	=>	__secure($_POST['lastname']),
@@ -48,7 +46,7 @@
 				'firstname'	=>	__secure($_POST['firstname']),
 				'lastname'	=>	__secure($_POST['lastname']),
 				'email'	=>	__secure($_POST['email']),
-				'school_id'	=>	__secure($_POST['school_id']),
+				'sch_id'	=>	__secure($_POST['school_id']),
 				'image'	=>	__secure($url),
 			);
 			if (update_data('admins',$insert,'WHERE id = "'.$id.'"')) {

@@ -153,6 +153,22 @@
 				);
 			}
 		}
+		if ($s == 'filter-results-edit') {
+			$class_id = __secure($_POST['class_id']);
+			$subject_code = __secure($_POST['subject_code']);
+			if (!empty($class_id)) {
+				$data = array(
+					'status'	=>	200,
+					'message'	=>	'Filtering S.'.$class_id. ' '.$subject_code.' Project Results',
+                    'url' => 'admin.php?page=editpresults&class='.$class_id.'&subject='.$subject_code,
+				);
+			}else{
+				$data = array(
+					'status'	=>	201,
+					'message'	=>	'Please Select All Fields to filter Summary'
+				);
+			}
+		}
 		if ($s == 'filter-result-asign') {
 			$class_id = __secure($_POST['class_id']);
 			if (!empty($class_id)) {

@@ -366,13 +366,14 @@
                            <li><a class="nav-link" href="admin.php?page=projects">All Projects</a></li>
                         </ul>
                      </li>
-                     <li class="dropdown <?php if($page == 'school-results' || $page == 'assign-results'|| $page == 'projectresults'){echo 'active';}?>">
+                     <li class="dropdown <?php if($page == 'school-results' || $page == 'assign-results'|| $page == 'projectresults'|| $page ==  'individual-presults'|| $page ==  'editpresults'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="users"></i><span>Manage Results</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=school-results">All Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=assign-results">Assign Project Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=projectresults">All Project Results</a></li>
+                           <li><a class="nav-link" href="admin.php?page=editpresults">Edit Project Results</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'student-subjects'){echo 'active';}?>">
@@ -793,37 +794,24 @@
             endif; ?>
       </div>
       <!-- Template JS File -->
-      <script src="<?= $wallet['config'][
-         'site_url'
-         ] ?>admin/assets/js/scripts.js"></script>
-      <script src="<?= $wallet['config'][
-         'site_url'
-         ] ?>admin/assets/bundles/datatables/datatables.min.js"></script>
-      <script
-         src="<?= $wallet['config'][
-            'site_url'
-            ] ?>admin/assets/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+      <script src="<?= $wallet['config']['site_url'] ?>admin/assets/js/scripts.js"></script>
+      <script src="<?= $wallet['config']['site_url'] ?>admin/assets/bundles/datatables/datatables.min.js"></script>
+      <script src="<?= $wallet['config']['site_url'] ?>admin/assets/bundles/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+      <script src="<?= $wallet['config']['site_url'] ?>admin/assets/bundles/datatables/export-tables/dataTables.buttons.min.js"></script>
+      <script src="<?= $wallet['config']['site_url'] ?>admin/assets/bundles/datatables/export-tables/buttons.flash.min.js"></script>
+      <script src="<?= $wallet['config']['site_url'] ?>admin/assets/bundles/datatables/export-tables/jszip.min.js"></script>
+      <script src="<?= $wallet['config']['site_url'] ?>admin/assets/bundles/datatables/export-tables/pdfmake.min.js"></script>
+      <script src="<?= $wallet['config']['site_url'] ?>admin/assets/bundles/datatables/export-tables/vfs_fonts.js"></script>
+      <script src="<?= $wallet['config']['site_url'] ?>admin/assets/bundles/datatables/export-tables/buttons.print.min.js"></script>
+      <script src="<?= $wallet['config']['site_url'] ?>admin/assets/js/page/datatables.js"></script>
       <!-- Custom JS File -->
-      <script src="<?= $wallet['config'][
-         'site_url'
-         ] ?>admin/assets/js/custom.js"></script>
+      <script src="<?= $wallet['config']['site_url'] ?>admin/assets/js/custom.js"></script>
       <script type="text/javascript">
-         $('table').DataTable({
-         "scrollX": true,
-         stateSave: true
-         });
-         $('.editor').summernote();
-         
-         $('.mark-all').on('click',function(e){
-         $.ajax({
-         url: request()+'?f=contact-us&s=mark-all',
-         success: function(resp){
-         if (resp.status == 200) {
-         location.reload();
-         }
-         }
-         });
-         })
+         // $('table').DataTable({
+         // "scrollX": true,
+         // stateSave: true
+         // });
+      </script>
       </script>
    </body>
 </html>
