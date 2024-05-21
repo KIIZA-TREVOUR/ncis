@@ -8,8 +8,6 @@
 					$url = share_file('image','uploads/staff/',true,364,364);
 				}
 			}
-			
-			
 			$insert = array(
 				'firstname'	=>	__secure($_POST['firstname']),
 				'lastname'	=>	__secure($_POST['lastname']),
@@ -20,10 +18,17 @@
 				'description'	=>	mysqli_real_escape_string($sqlConnect,$_POST['description']),
 				'image'	=>	__secure($url),
 				'facebook'	=>	__secure($_POST['facebook']),
-				'password'	=>	__secure(md5($_POST['password'])),
+				'password'	=>__secure(md5('!'.$_POST['email'])),
 				'twitter'	=>	__secure($_POST['twitter']),
 			);
+			$uinsert = array(
+				'name'	=>	__secure($_POST['firstname']) ." " .__secure($_POST['lastname']),
+				'email'	=>	__secure($_POST['email']),
+				'password'	=>__secure(md5('!'.$_POST['email'])),
+				'user_type'	=>	'staff',
+			);
 			if (save_data('staff',$insert)) {
+				save_data('users',$uinsert);
 				$data = array(
 					'status'	=>	200,
 					'message'	=>	'Staff Member added successfully'
@@ -61,7 +66,12 @@
 				'facebook'	=>	__secure($_POST['facebook']),
 				'twitter'	=>	__secure($_POST['twitter']),
 			);
+			$uinsert = array(
+				'name'	=>	__secure($_POST['firstname']) ." " .__secure($_POST['lastname']),
+				'email'	=>	__secure($_POST['email']),
+			);
 			if (update_data('staff',$insert,'WHERE id = "'.$id.'"')) {
+				update_data('users',$uinsert,'WHERE email = "'.$_POST['email'].'"');
 				$data = array(
 					'status' => 200,
 					'message'	=>	'Staff Updated Successfully',
@@ -107,6 +117,8 @@
 		if ($s == 'remove') {
 			$id = __secure($_POST['id']);
 			if ($db->where('id',$id)->delete('staff')) {
+				$user = $db->where('id',$id)->getOne('staff');
+				$db->where('email',$user->email)->delete('users');
 				$data = array(
 					'status'	=>	200,
 					'message'	=>	'Staff Deleted Successfully'

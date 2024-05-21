@@ -1,6 +1,71 @@
 <?php 
    if ($f == 'auth') {
-   	if ($s == 'login') {
+	
+
+if ($s == 'login') {
+    $username = __secure($_POST['email']); // Username can be email or lin
+    $password = __secure($_POST['password']);
+    $hashed_password = md5($password);
+    
+    $isLoggedIn = false;
+
+    if (isEmail($username)) {
+        $isLoggedIn = login($username, $hashed_password);
+    } elseif (isNumber($username)) {
+        $isLoggedIn = studentLogin($username, $hashed_password);
+    }
+
+    if ($isLoggedIn) {
+        // Fetch user from database
+        if (isEmail($username)) {
+            $user = $db->where('email', $username)->getOne('users');
+        } else {
+            $user = $db->where('lin', $username)->getOne('students');
+        }
+
+        if ($user) {
+            $_SESSION['user_id'] = $user->id;
+            $_COOKIE['user_id'] = $user->id;
+
+            if ($user->user_type == 'admin') {
+                $data = array(
+                    'status' => 200,
+                    'message' => 'Admin Login Successful',
+                    'url' => 'admin.php?page=index'
+                );
+            } elseif ($user->user_type == 'staff') {
+                $data = array(
+                    'status' => 200,
+                    'message' => 'Staff Login Successful',
+                    'url' => 'admin.php?page=index'
+                );
+            } elseif ($user->user_type == 'student') {
+                $data = array(
+                    'status' => 200,
+                    'message' => 'Student Login Successful',
+                    'url' => 'admin.php?page=index'
+                );
+            } else {
+                $data = array(
+                    'status' => 201,
+                    'message' => 'Not Registered, Contact Admin'
+                );
+            }
+        } else {
+            $data = array(
+                'status' => 201,
+                'message' => 'User not found'
+            );
+        }
+    } else {
+        $data = array(
+            'status' => 201,
+            'message' => 'Incorrect Login Credentials'
+        );
+    }
+}
+
+   	if ($s == 'logins') {
    		$email = __secure($_POST['email']);
    		$lin = __secure($_POST['email']);
    		$password = md5(__secure($_POST['password']));
@@ -53,8 +118,6 @@
 							'message' => 'Incorrect Login Credentials'
 						);
 			}
-
-
    		}else{
 			if(login_student($email,$password)){
 				$student = $db->where('lin',$lin)->getOne('students');
@@ -118,7 +181,7 @@
                // 	$data = array(
    			// 	'status' => 200,
    			// 	'message'	=>	'We have sent you a Verification Code to your email address '.$email,
-   			// 	'url' => 'index.php?page=forgot'
+   			// 	'url' => 'admin.php?page=forgot'
    			// );
                // }else{
    	        //     	$data = array(
@@ -203,7 +266,7 @@
                     $data = array(
                         'status' => 200,
                         'message' => 'Company Account Created Successfully',
-                        'url' => 'index.php?page=login'
+                        'url' => 'admin.php?page=login'
                     );
                 } else if (exists('companies', "WHERE JSON_EXTRACT(config, '$.email') = '" . $email . "'")) {
                 $data = array(

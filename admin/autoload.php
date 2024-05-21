@@ -21,6 +21,21 @@
            $page = 'login';
        }
    }
+   $who = $wallet['user']['user_type'];
+   switch($who){
+      case 'admin':
+          $role = "Admin";
+          break;
+      case 'staff':
+          $role = "Staff";
+          break;
+      case 'student':
+          $role = "Student";
+          break;
+      default:
+          $role = "";
+          break;
+    }
    
    // if ($wallet['loggedin'] && $wallet['user']['user_type'] != 'admin') {
    // $page = 'login';
@@ -177,7 +192,7 @@
             echo $page_loaded;
             else:
              ?>
-         <?php if (!empty($wallet['user'])): ?>
+         <?php  if(logged_in() && $wallet['user']['user_type']=='admin'):?>
          <div class="main-wrapper main-wrapper-1">
             <div class="navbar-bg"></div>
             <nav class="navbar navbar-expand-lg main-navbar sticky">
@@ -284,7 +299,7 @@
                      <img alt="image"  src="<?= $wallet['config']['site_url'] .$wallet['user']['image'] ?>" class="user-img-radious-style" onerror="this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/avatar.png'"> <span
                         class="d-sm-none d-lg-inline-block"></span></a>
                      <div class="dropdown-menu dropdown-menu-right pullDown">
-                        <div class="dropdown-title">Hello <?= $wallet['user']['lastname'] ?></div>
+                        <div class="dropdown-title">Hello <?=$wallet['user']['name']?></div>
                         <a href="#" class="dropdown-item has-icon"> 
                         <i class="far fa-user"></i> Profile
                         </a> 
@@ -415,7 +430,7 @@
                </div>
             </footer>
          </div>
-         <?php elseif (!empty($wallet['staff'])): ?>
+         <?php elseif(logged_in() && $wallet['user']['user_type']=='staff'):?>
          <div class="main-wrapper main-wrapper-1">
             <div class="navbar-bg"></div>
             <nav class="navbar navbar-expand-lg main-navbar sticky">
@@ -527,8 +542,8 @@
                         ] ?>" class="user-img-radious-style" onerror="this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/avatar.png'"> <span
                         class="d-sm-none d-lg-inline-block"></span></a>
                      <div class="dropdown-menu dropdown-menu-right pullDown">
-                        <div class="dropdown-title">Hello <?= $wallet['staff'][
-                           'lastname'
+                        <div class="dropdown-title">Hello <?= $wallet['user'][
+                           'name'
                            ] ?></div>
                         <a href="#" class="dropdown-item has-icon"> 
                         <i class="far fa-user"></i> Profile
@@ -548,44 +563,42 @@
                      <a href="admin.php"> <img alt="image"
                         src="<?= $wallet['config']['site_url'] .
                            $wallet['config']['logo'] ?>"
-                        class="header-logo" onerror = "this.onerror=null;this.src='<?= $wallet[
-                           'config'
-                           ]['site_url'] ?>layout/assets/img/sms.png'" />
+                        class="header-logo" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/sms.png'" />
                      </a>
                   </div>
                   <ul class="sidebar-menu">
                      <li class="menu-header">Main</li>
                      <li class="dropdown <?php if($page == 'staff-dashboard'){echo 'active';}?>">
-                        <a href="admin.php?page=staff-dashboard" class="nav-link"><i
+                        <a href="admin.php?page=dashboard" class="nav-link"><i
                            data-feather="monitor"></i><span>Dashboard</span></a>
                      </li>
                      <li class="dropdown <?php if($page == 'staff' || $page == 'new-staff'|| $page == 'edit-staff'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="users"></i><span>Staff</span></a>
                         <ul class="dropdown-menu">
-                           <li><a class="nav-link" href="admin.php?page=rstaff">Staff List</a></li>
+                           <li><a class="nav-link" href="admin.php?page=staff">Staff List</a></li>
                         </ul>
                      </li>
-                     <li class="dropdown <?php if($page == 'rstudents' || $page == 'new-student'|| $page == 'edit-student'){echo 'active';}?>">
+                     <li class="dropdown <?php if($page == 'students' || $page == 'new-student'|| $page == 'edit-student'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="users"></i><span>Students</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=new-student">New Student</a></li>
-                           <li><a class="nav-link" href="admin.php?page=rstudents">All Students</a></li>
+                           <li><a class="nav-link" href="admin.php?page=students">All Students</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'rsubjects'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="users"></i><span>Subjects</span></a>
                         <ul class="dropdown-menu">
-                           <li><a class="nav-link" href="admin.php?page=rsubjects">All Subjects</a></li>
+                           <li><a class="nav-link" href="admin.php?page=subjects">All Subjects</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'rclasses' || $page == 'new-class'|| $page == 'edit-class'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="users"></i><span>Classes</span></a>
                         <ul class="dropdown-menu">
-                           <li><a class="nav-link" href="admin.php?page=rclasses">All Classes</a></li>
+                           <li><a class="nav-link" href="admin.php?page=classes">All Classes</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'rprojects' || $page == 'new-project'|| $page == 'edit-project'){echo 'active';}?>">
@@ -593,14 +606,17 @@
                            data-feather="users"></i><span>Projects</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=new-project">New Project</a></li>
-                           <li><a class="nav-link" href="admin.php?page=rprojects">All Projects</a></li>
+                           <li><a class="nav-link" href="admin.php?page=projects">All Projects</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'projectresults'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="users"></i><span>Project Results</span></a>
                         <ul class="dropdown-menu">
-                           <li><a class="nav-link" href="admin.php?page=projectresults">All Students Results</a></li>
+                           <li><a class="nav-link" href="admin.php?page=school-results">All Results</a></li>
+                           <li><a class="nav-link" href="admin.php?page=assign-results">Assign Project Results</a></li>
+                           <li><a class="nav-link" href="admin.php?page=projectresults">All Project Results</a></li>
+                           <li><a class="nav-link" href="admin.php?page=editpresults">Edit Project Results</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'student-subjects'){echo 'active';}?>">

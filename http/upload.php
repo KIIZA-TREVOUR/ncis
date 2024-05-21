@@ -131,8 +131,8 @@
 					$insert = array(
 						'name' => $row[1]." ". $row['2'],
 						'email' => $row[3],
-						'password' => $password,
-						'lin'=>$lin,
+						'lin' => $lin,
+						'password' => md5('@'.$lin),
 						'user_type' => 'student'
 					); 
 					save_data('users',$insert);
@@ -172,103 +172,95 @@
 					'url' => 'index.php?page=reports',
 				);
 			}
-			
+			// Close the statements
+			mysqli_stmt_close($stmt);
+			mysqli_stmt_close($history_stmt);
 		}
-		
 		if ($s == 'upload-staff') {
 			global $sqlConnect; // Assuming $sqlConnect is defined globally
 		
 			$fileName = $_FILES["staff_data"]["name"];
+			// Remove the file extension from the filename
 			$fileNameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
-			$fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
+			$fileExtension = explode('.', $fileName);
+			$fileExtension = strtolower(end($fileExtension));
 			$newFileName = $fileNameWithoutExtension . " on " . date("h.i.sa") . "." . $fileExtension;
 			$targetDirectory = "uploads/uploads/staff/" . $newFileName;
+			move_uploaded_file($_FILES['staff_data']['tmp_name'], $targetDirectory);
+			require 'init/excel/excel_reader2.php';
+			require 'init/excel/SpreadsheetReader.php';
 		
-			if (move_uploaded_file($_FILES['staff_data']['tmp_name'], $targetDirectory)) {
-				require 'init/excel/excel_reader2.php';
-				require 'init/excel/SpreadsheetReader.php';
+			$reader = new SpreadsheetReader($targetDirectory);
+			$dataImported = false; // A flag to check if data was imported
 		
-				$reader = new SpreadsheetReader($targetDirectory);
-				$dataImported = false; // A flag to check if data was imported
-		
-				foreach ($reader as $key => $row) {
-					if ($key == 0) {
-						continue; // Skip the header row
-					}
-		
-					$firstname = $row[0];
-					$lastname = $row[1];
-					$email = $row[2];
-					$contact = $row[3];
-					$role = $row[4];
-					$password = md5('!' . $email);
-					$upload_id = getLatestId('id', 'upload_history');
-		
-					// Check if the record already exists
-					$exists = exists('staff', 'WHERE email = "' . $email . '"');
-		
-					if (!$exists) {
-						// Use prepared statements to prevent SQL injection
-						$query = "INSERT INTO staff (firstname, lastname, email, contact, role, password, upload_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
-		
-						// Prepare the statement
-						if ($stmt = mysqli_prepare($sqlConnect, $query)) {
-							mysqli_stmt_bind_param($stmt, "ssssssi", $firstname, $lastname, $email, $contact, $role, $password, $upload_id);
-		
-							if (mysqli_stmt_execute($stmt)) {
-								$dataImported = true;
-								mysqli_stmt_close($stmt); // Close the statement
-							}
-						}
-					}
-					
-					
-		
-						// Insert data into 'users' table
-						$insert = array(
-							'name' => $firstname. " " . $lastname,
-							'email' => $email,
-							'password' => md5('!' . $email),
-							'user_type' => 'staff'
-						);
-						save_data('users', $insert);
-		
+			foreach ($reader as $key => $row) {
+				if($key==0){
+					continue;
 				}
+				$firstname = $row[1];
+				$lastname = $row[2];
+				$email = $row[3];
+				$contact = $row[4];
+				$role = $row[5];
+				$password = md5('!'.$email);
+				$upload_id = getLatestId('id','upload_history');
 		
-				// Save the upload history only once, after processing all rows
-				if ($dataImported) {
-					$history = array(
-						'file_name' => $fileNameWithoutExtension,
-						'file' => $targetDirectory,
-						'uploaded_by' => $wallet['user']['id'],
-						'category' => 'students',
-					);
-					$history_query = "INSERT INTO upload_history (file_name, file, uploaded_by, category) VALUES (?, ?, ?, ?)";
-					if ($history_stmt = mysqli_prepare($sqlConnect, $history_query)) {
-						mysqli_stmt_bind_param($history_stmt, "ssss", $history['file_name'], $history['file'], $history['uploaded_by'], $history['category']);
+				// Check if the record already exists
+				$exists = exists('staff', 'WHERE email = "'.$email.'"');
+				if (!$exists) {
+					// Use prepared statements to prevent SQL injection
+					$query = "INSERT INTO staff (firstname, lastname, email, contact, role ,password, upload_id) VALUES (?,?,?,?,?,?,?,?)";
 		
-						if (mysqli_stmt_execute($history_stmt)) {
-							mysqli_stmt_close($history_stmt); // Close the statement
-							$data = array(
-								'status' => 200,
-								'message' => 'Student Data Imported Successfully',
-								'url' => 'index.php?page=upload',
-							);
+					// Prepare the statement
+					$stmt = mysqli_prepare($sqlConnect, $query);
+		
+					if ($stmt) {
+						mysqli_stmt_bind_param($stmt, "ssssssi", $firstname, $lastname, $email, $contact, $role, $password, $upload_id);
+		
+						if (mysqli_stmt_execute($stmt)) {
+							$dataImported = true;
 						}
 					}
+					$insert = array(
+						'name' => $row[1]." ". $row['2'],
+						'email' => $row[3],
+						'password' => md5('!'.$email),
+						'user_type' => 'staff'
+					); 
+					save_data('users',$insert);
 				} else {
-					$data = array(
-						'status' => 201,
-						'message' => 'All records already exist. No new data imported.',
-						'url' => 'index.php?page=reports',
-					);
+					// If the record already exists, skip insertion
+					continue;
+				}
+			}
+		
+			$history = array(
+				'file_name' => $fileNameWithoutExtension, // Use the filename without extension
+				'file' => $targetDirectory,
+				'uploaded_by' => $wallet['user']['id'],
+				'category' => 'students',
+			);
+			// Save the upload history only once, after processing all rows
+			if ($dataImported) {
+				$history_query = "INSERT INTO upload_history (file_name, file, uploaded_by,category) VALUES (?, ?, ?,?)";
+				$history_stmt = mysqli_prepare($sqlConnect, $history_query);
+		
+				if ($history_stmt) {
+					mysqli_stmt_bind_param($history_stmt, "ssss", $history['file_name'], $history['file'], $history['uploaded_by'], $history['category']);
+		
+					if (mysqli_stmt_execute($history_stmt)) {
+						$data = array(
+							'status' => 200,
+							'message' => 'Student Data Imported Successfully',
+							'url' => 'index.php?page=upload',
+						);
+					}
 				}
 			} else {
-				// Handle file upload error
 				$data = array(
-					'status' => 500,
-					'message' => 'Failed to upload file.',
-					'url' => 'index.php?page=upload',
+					'status' => 201,
+					'message' => 'All records already exist. No new data imported.',
+					'url' => 'index.php?page=reports',
 				);
 			}
 		}

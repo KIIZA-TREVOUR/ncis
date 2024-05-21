@@ -9,19 +9,28 @@
 				}
 			}
 			
-			
+			$password =__secure(md5('@'.getStudentLinNumber()));
+			$lin = getStudentLinNumber();
 			$insert = array(
 				'firstname'	=>	__secure($_POST['firstname']),
 				'lastname'	=>	__secure($_POST['lastname']),
 				'email'	=>	__secure($_POST['email']),
-				'lin'	=>	getStudentLinNumber(),
+				'lin'	=>	$lin,
 				'class'	=>	__secure($_POST['class']),
 				'dob'	=>	__secure($_POST['dob']),
 				'gender'	=>	__secure($_POST['gender']),
 				'image'	=>	__secure($url),
-				'password'	=>	__secure(md5('@'.getStudentLinNumber())),
+				'password'	=>	$password
+			);
+			$uinsert = array(
+				'name'	=>	__secure($_POST['firstname']) ." " .__secure($_POST['lastname']),
+				'email'	=>	__secure($_POST['email']),
+				'password'	=>	$password,
+				'lin'	=>	$lin,
+				'user_type'	=>	'student',
 			);
 			if (save_data('students',$insert)) {
+				save_data('users',$uinsert);
 				$data = array(
 					'status'	=>	200,
 					'message'	=>	'Student Member added successfully'
@@ -58,7 +67,13 @@
 				'date_modified' => date('Y-m-d h:i:sa'),
 				'modified_by' => 1
 			);
+			$uinsert = array(
+				'name'	=>	__secure($_POST['firstname']) ." " .__secure($_POST['lastname']),
+				'email'	=>	__secure($_POST['email']),
+			);
 			if (update_data('students',$insert,'WHERE id = "'.$id.'"')) {
+				$user = $db->where('id',$id)->getOne('students');
+				update_data('users',$uinsert,'WHERE email = "'.$user->email.'"');
 				$data = array(
 					'status' => 200,
 					'message'	=>	'Student Updated Successfully',

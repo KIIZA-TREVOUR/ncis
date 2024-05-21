@@ -55,7 +55,7 @@ $sqlConnect   = $wallet['sqlConnect'] = null;
 
     if (logged_in() == true) {
         $session_id         = (!empty($_SESSION['user_id'])) ? $_SESSION['user_id'] : $_COOKIE['user_id'];
-        $wallet['user'] = mysqli_fetch_array(mysqli_query($sqlConnect,"SELECT * FROM admins WHERE id = '$session_id'"));
+        $wallet['user'] = mysqli_fetch_array(mysqli_query($sqlConnect,"SELECT * FROM users WHERE id = '$session_id'"));
         $wallet['sch_id'] = $wallet['user']['sch_id'];
       
         $wallet['staff'] = mysqli_fetch_array(mysqli_query($sqlConnect,"SELECT * FROM staff WHERE id = '$session_id'"));

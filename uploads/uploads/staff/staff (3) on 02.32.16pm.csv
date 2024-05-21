@@ -1,0 +1,4 @@
+firstname,lastname,email,contact,image,role,description,sch_id,twitter,facebook,linkedin,instagram,date_created,date_modified
+Staff,Member,staff@gmail.com,782921575,uploads/staff/ae9d181c4868294aae78e5d8e3cb868a.jpeg,Lecturer,,3,,,NULL,NULL,5/6/2024 15:53,NULL
+Nana,Ken,staff1@gmail.com,782921575,uploads/staff/ae9d181c4868294aae78e5d8e3cb868a.jpeg,Lecturer,,3,,,NULL,NULL,5/6/2024 15:53,NULL
+Ochen,Jimmy,ocen@gmail.com,782921575,uploads/staff/ae9d181c4868294aae78e5d8e3cb868a.jpeg,Lecturer,,3,,,NULL,NULL,5/6/2024 15:53,NULL

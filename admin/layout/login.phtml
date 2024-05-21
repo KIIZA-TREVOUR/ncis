@@ -6,7 +6,7 @@
         <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
           <div class="card card-primary">
             <center>
-            <img  width='120' height="100" src="<?=$wallet['config']['site_url']?>layout/assets/img/sms.png"/></center>
+            <img  width='120' height="100" src="<?=$wallet['config']['site_url']?>layout/assets/img/logo.png"/></center>
             <div class="card-header">
               <h4>Login</h4>
             </div>
@@ -14,7 +14,7 @@
               <form id="login" class="needs-validation" novalidate="">
                 <div class="form-group">
                   <label for="email">Email/LIN Number</label>
-                  <input id="email" type="email" class="form-control" name="email" tabindex="1" placeholder="eg nana@gmail.com or US1-00001" required autofocus>
+                  <input id="email" type="email" class="form-control" name="email" tabindex="1" placeholder="eg nana@gmail.com or 240100" required autofocus>
                   <div class="invalid-feedback">
                     Please fill in your email
                   </div>
@@ -26,7 +26,7 @@
                     Please fill in your password
                   </div>
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                   <label for="user_type">Select User Type</label>
                   <select id="user_type" name="user_type" class="form-control" required>
                     <option value="admin">Admin</option>
@@ -34,9 +34,10 @@
                     <option value="student">Student</option>
                   </select>
                   <div class="invalid-feedback">Please select a user type</div>
-                </div>
+                </div> -->
                 <div class="form-group">
-                  <button type="submit" class="btn btn-primary btn-lg btn-block button" tabindex="4">Login</button><p>Dont have an account? <a href="admin.php?page=register-school">Register</a></p>
+                  <button type="submit" class="btn btn-primary btn-lg btn-block button" tabindex="4">Login</button>
+                  <!-- <p>Dont have an account? <a href="admin.php?page=register-school">Register</a></p> -->
                 </div>
               </form>
               </div>

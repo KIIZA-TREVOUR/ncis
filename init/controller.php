@@ -98,6 +98,23 @@ function login($email,$password){
     }
     return false;
 }
+function studentLogin($lin,$password){
+    global $sqlConnect,$db;
+    $d = mysqli_query($sqlConnect,"SELECT * FROM users WHERE lin = '$lin' AND password = '$password'");
+
+    if (mysqli_num_rows($d) > 0) {
+        return true;
+    }
+    return false;
+}
+	// Helper functions
+    function isEmail($input) {
+        return filter_var($input, FILTER_VALIDATE_EMAIL) !== false;
+    }
+    function isNumber($input) {
+        return preg_match('/^[0-9]+$/', $input);
+    }
+    
 
 function logins($email,$password,$table){
     global $sqlConnect,$db;
@@ -489,7 +506,7 @@ function getProjectScoresByTerm($student_lin, $term,$class)
         SELECT ps.*, p.subject_code, p.name 
         FROM project_scores ps
         JOIN projects p ON ps.project_id = p.id
-        WHERE ps.student_lin = ? AND p.term = ? AND p.class_id =?
+    WHERE ps.student_lin = ? AND p.term = ? AND p.class_id =?
     ";
 
     // Prepare the statement
