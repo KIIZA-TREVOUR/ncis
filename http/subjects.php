@@ -3,18 +3,28 @@
 		if ($s == 'new') {
 			$insert = array(
 				'name'	=>	__secure($_POST['name']),
+				'code'	=>	__secure($_POST['code']),
 				'created_by'	=>	1,
 			);
-			if (save_data('subjects',$insert)) {
-				$data = array(
-					'status'	=>	200,
-					'message'	=>	'Subject Registered successfully'
-				);
-			}else{
+			if(exists('subjects','WHERE code = "'.__secure($_POST['code']).'"')){
+
 				$data = array(
 					'status'	=>	201,
-					'message'	=>	'Something went wrong'
+					'message'	=>	'Subject Already Exists'
 				);
+			}else{
+				if (save_data('subjects',$insert)) {
+					$data = array(
+						'status'	=>	200,
+						'message'	=>	'Subject Registered successfully'
+					);
+				}else{
+					$data = array(
+						'status'	=>	201,
+						'message'	=>	'Something went wrong'
+					);
+				}
+
 			}
         }
 
@@ -22,18 +32,27 @@
 			$id = __secure($_POST['id']);
 			$insert = array(
 				'name'	=>	__secure($_POST['name']),
+				'code'	=>	__secure($_POST['code']),
 				'modified_by'	=>	1,
 			);
-			if (update_data('subjects',$insert,'WHERE id = "'.$id.'"')) {
+			if(exists('subjects','WHERE code = "'.__secure($_POST['code']).'"')){
+
 				$data = array(
-					'status' => 200,
-					'message'	=>	'Subject Updated Successfully',
+					'status'	=>	201,
+					'message'	=>	'Subject Already Exists'
 				);
 			}else{
-				$data = array(
-					'status' => 201,
-					'message'	=>	'Something went wrong'
-				);
+				if (update_data('subjects',$insert,'WHERE id = "'.$id.'"')) {
+					$data = array(
+						'status' => 200,
+						'message'	=>	'Subject Updated Successfully',
+					);
+				}else{
+					$data = array(
+						'status' => 201,
+						'message'	=>	'Something went wrong'
+					);
+				}
 			}
 			
 		}

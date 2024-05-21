@@ -29,17 +29,25 @@
 				'lin'	=>	$lin,
 				'user_type'	=>	'student',
 			);
-			if (save_data('students',$insert)) {
-				save_data('users',$uinsert);
-				$data = array(
-					'status'	=>	200,
-					'message'	=>	'Student Member added successfully'
-				);
-			}else{
+			if(exists('students','WHERE email = "'.__secure($_POST['email']).'" OR lin = "'.__secure($_POST['email']).'"')){
 				$data = array(
 					'status'	=>	201,
-					'message'	=>	'Something went wrong'
+					'message'	=>	'Student Already Exists'
 				);
+			}else{
+				if (save_data('students',$insert)) {
+					save_data('users',$uinsert);
+					$data = array(
+						'status'	=>	200,
+						'message'	=>	'Student Member added successfully'
+					);
+				}else{
+					$data = array(
+						'status'	=>	201,
+						'message'	=>	'Something went wrong'
+					);
+				}
+
 			}
 			
 		}

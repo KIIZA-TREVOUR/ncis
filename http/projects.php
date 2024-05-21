@@ -9,17 +9,24 @@
 				'term'	=>	__secure($_POST['term']),
 				'project_type'	=>	__secure($_POST['project_type']),
 			);
-			if (save_data('projects',$insert)) {
-				$data = array(
-					'status'	=>	200,
-					'message'	=>	'Project Added successfully',
-					'url'	=>	'admin.php?page=projects',
-				);
-			}else{
+			if(exists('projects','WHERE name = "'.__secure($_POST['name']).'" AND subject_code ="'.__secure($_POST['subject_code']).'" AND class_id = "'.__secure($_POST['class_id']).'"')){
 				$data = array(
 					'status'	=>	201,
-					'message'	=>	'Something went wrong'
+					'message'	=>	'Project Already Exists'
 				);
+			}else{
+				if (save_data('projects',$insert)) {
+					$data = array(
+						'status'	=>	200,
+						'message'	=>	'Project Added successfully',
+						'url'	=>	'admin.php?page=projects',
+					);
+				}else{
+					$data = array(
+						'status'	=>	201,
+						'message'	=>	'Something went wrong'
+					);
+				}
 			}
         }
 
@@ -61,17 +68,24 @@
 				'term'	=>	__secure($_POST['term']),
 				'project_type'	=>	__secure($_POST['project_type']),
 			);
-			if (update_data('projects',$insert,'WHERE id = "'.$id.'"')) {
+			if(exists('projects','WHERE name = "'.__secure($_POST['name']).'" AND subject_code ="'.__secure($_POST['subject_code']).'" AND class_id = "'.__secure($_POST['class_id']).'"')){
 				$data = array(
-					'status' => 200,
-					'message'	=>	'Project Updated Successfully',
-					'url'	=>	'admin.php?page=projects',
+					'status'	=>	201,
+					'message'	=>	'Project Already Exists'
 				);
 			}else{
-				$data = array(
-					'status' => 201,
-					'message'	=>	'Something went wrong'
-				);
+				if (update_data('projects',$insert,'WHERE id = "'.$id.'"')) {
+					$data = array(
+						'status' => 200,
+						'message'	=>	'Project Updated Successfully',
+						'url'	=>	'admin.php?page=projects',
+					);
+				}else{
+					$data = array(
+						'status' => 201,
+						'message'	=>	'Something went wrong'
+					);
+				}
 			}
 			
 		}
