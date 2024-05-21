@@ -352,7 +352,7 @@
                      </li>
                      <li class="dropdown <?php if($page == 'subjects' || $page == 'new-subject'|| $page == 'edit-subject'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Subjects</span></a>
+                           data-feather="command"></i><span>Subjects</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=new-subject">New Subject</a></li>
                            <li><a class="nav-link" href="admin.php?page=subjects">All Subjects</a></li>
@@ -360,14 +360,14 @@
                      </li>
                      <li class="dropdown <?php if($page == 'requests' || $page == 'new-request'|| $page == 'edit-request'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Requests</span></a>
+                           data-feather="command"></i><span>Requests</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=requests">All Requests</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'classes' || $page == 'new-class'|| $page == 'edit-class'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Classes</span></a>
+                           data-feather="command"></i><span>Classes</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=new-class">New Class</a></li>
                            <li><a class="nav-link" href="admin.php?page=classes">All Classes</a></li>
@@ -375,7 +375,7 @@
                      </li>
                      <li class="dropdown <?php if($page == 'projects' || $page == 'new-project'|| $page == 'edit-project'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Projects</span></a>
+                           data-feather="command"></i><span>Projects</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=new-project">New Project</a></li>
                            <li><a class="nav-link" href="admin.php?page=projects">All Projects</a></li>
@@ -383,7 +383,7 @@
                      </li>
                      <li class="dropdown <?php if($page == 'school-results' || $page == 'assign-results'|| $page == 'projectresults'|| $page ==  'individual-presults'|| $page ==  'editpresults'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Manage Results</span></a>
+                           data-feather="command"></i><span>Manage Results</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=school-results">All Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=assign-results">Assign Project Results</a></li>
@@ -393,14 +393,14 @@
                      </li>
                      <li class="dropdown <?php if($page == 'student-subjects'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Student Subjects</span></a>
+                           data-feather="command"></i><span>Student Subjects</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=student-subjects">All Student Subjects</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'uploads' || $page == 'upload-history'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>ManageUploads</span></a>
+                           data-feather="command"></i><span>ManageUploads</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=uploads">New Upload</a></li>
                            <li><a class="nav-link" href="admin.php?page=upload-history">Upload History</a></li>
@@ -589,21 +589,21 @@
                      </li>
                      <li class="dropdown <?php if($page == 'rsubjects'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Subjects</span></a>
+                           data-feather="command"></i><span>Subjects</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=subjects">All Subjects</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'rclasses' || $page == 'new-class'|| $page == 'edit-class'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Classes</span></a>
+                           data-feather="command"></i><span>Classes</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=classes">All Classes</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'rprojects' || $page == 'new-project'|| $page == 'edit-project'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Projects</span></a>
+                           data-feather="command"></i><span>Projects</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=new-project">New Project</a></li>
                            <li><a class="nav-link" href="admin.php?page=projects">All Projects</a></li>
@@ -611,7 +611,7 @@
                      </li>
                      <li class="dropdown <?php if($page == 'projectresults'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Project Results</span></a>
+                           data-feather="command"></i><span>Project Results</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=school-results">All Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=assign-results">Assign Project Results</a></li>
@@ -621,7 +621,7 @@
                      </li>
                      <li class="dropdown <?php if($page == 'student-subjects'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Student Subjects</span></a>
+                           data-feather="command"></i><span>Student Subjects</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=student-subjects">All Student Subjects</a></li>
                         </ul>

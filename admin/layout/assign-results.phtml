@@ -2,12 +2,6 @@
 	<div class="card-body">
 		<form id="filter" class="needs-validation" novalidate="">
 			<div class="row">
-				<div class="col-md-6 mb-3">
-					<div class="form-group">
-						<label class="form-label"></label>
-						<button type="submit" required class="btn btn-primary btn-block submit">Filter</button>
-					</div>
-				</div>
 				<div class="col-md-6">
 					<div class="form-group">
 						<label class="form-label"></label>
@@ -17,6 +11,12 @@
 						<option value="<?=$value->id?>"><?=$value->name?></option>
 						<?php endforeach;?>
 					</select>
+					</div>
+				</div>
+				<div class="col-md-6 mb-3">
+					<div class="form-group">
+						<label class="form-label"></label>
+						<button type="submit" required class="btn btn-primary btn-block submit">Filter</button>
 					</div>
 				</div>
 			</div>
