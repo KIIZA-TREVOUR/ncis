@@ -119,6 +119,12 @@
          'site_url'
          ] ?>admin/assets/bundles/jquery-selectric/jquery.selectric.min.js"></script>
       <!-- JS Libraies -->
+  <link rel="stylesheet" href="<?= $wallet['config'][
+         'site_url'
+         ] ?>admin/assets/bundles/select2/dist/css/select2.min.css">
+  <link rel="stylesheet" href="<?= $wallet['config'][
+         'site_url'
+         ] ?>admin/assets/bundles/jquery-selectric/selectric.css">
       <script src="<?= $wallet['config'][
          'site_url'
          ] ?>admin/assets/bundles/apexcharts/apexcharts.min.js"></script>
@@ -568,7 +574,7 @@
                   </div>
                   <ul class="sidebar-menu">
                      <li class="menu-header">Main</li>
-                     <li class="dropdown <?php if($page == 'staff-dashboard'){echo 'active';}?>">
+                     <li class="dropdown <?php if($page == 'dashboard'){echo 'active';}?>">
                         <a href="admin.php?page=dashboard" class="nav-link"><i
                            data-feather="monitor"></i><span>Dashboard</span></a>
                      </li>
@@ -587,21 +593,21 @@
                            <li><a class="nav-link" href="admin.php?page=students">All Students</a></li>
                         </ul>
                      </li>
-                     <li class="dropdown <?php if($page == 'rsubjects'){echo 'active';}?>">
+                     <li class="dropdown <?php if($page == 'subjects'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="command"></i><span>Subjects</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=subjects">All Subjects</a></li>
                         </ul>
                      </li>
-                     <li class="dropdown <?php if($page == 'rclasses' || $page == 'new-class'|| $page == 'edit-class'){echo 'active';}?>">
+                     <li class="dropdown <?php if($page == 'classes' || $page == 'new-class'|| $page == 'edit-class'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="command"></i><span>Classes</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=classes">All Classes</a></li>
                         </ul>
                      </li>
-                     <li class="dropdown <?php if($page == 'rprojects' || $page == 'new-project'|| $page == 'edit-project'){echo 'active';}?>">
+                     <li class="dropdown <?php if($page == 'projects' || $page == 'new-project'|| $page == 'edit-project'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="command"></i><span>Projects</span></a>
                         <ul class="dropdown-menu">
@@ -609,7 +615,7 @@
                            <li><a class="nav-link" href="admin.php?page=projects">All Projects</a></li>
                         </ul>
                      </li>
-                     <li class="dropdown <?php if($page == 'projectresults'){echo 'active';}?>">
+                     <li class="dropdown <?php if($page == 'projectresults'|| $page == 'assign-results'|| $page == 'school-results'|| $page == 'projectresults'|| $page == 'editpresults'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="command"></i><span>Project Results</span></a>
                         <ul class="dropdown-menu">
@@ -780,14 +786,22 @@
                   <ul class="sidebar-menu">
                      <li class="menu-header">Main</li>
                      <li class="dropdown active">
-                        <a href="admin.php?page=sdashboard" class="nav-link"><i
+                        <a href="admin.php?page=dashboard" class="nav-link"><i
                            data-feather="monitor"></i><span>Dashboard</span></a>
+                     </li>
+                     <li class="dropdown <?php if($page == 'projects' || $page == 'new-project'|| $page == 'edit-project'){echo 'active';}?>">
+                        <a href="#" class="menu-toggle nav-link has-dropdown"><i
+                           data-feather="command"></i><span>Projects</span></a>
+                        <ul class="dropdown-menu">
+                           <li><a class="nav-link" href="admin.php?page=projects">All Projects</a></li>
+                        </ul>
                      </li>
                      <li class="dropdown">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="briefcase"></i><span>My Results</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=my-project-results">Project Results</a></li>
+                           <li><a class="nav-link" href="admin.php?page=report-card">Report Card</a></li>
                         </ul>
                      </li>
                   </ul>
@@ -822,6 +836,10 @@
       <script src="<?= $wallet['config']['site_url'] ?>admin/assets/js/page/datatables.js"></script>
       <!-- Custom JS File -->
       <script src="<?= $wallet['config']['site_url'] ?>admin/assets/js/custom.js"></script>
+  <script src="<?= $wallet['config']['site_url'] ?>admin/assets/bundles/select2/dist/js/select2.full.min.js"></script>
+  <script src="<?= $wallet['config']['site_url'] ?>admin/assets/bundles/jquery-selectric/jquery.selectric.min.js"></script>
+  <!-- Page Specific JS File -->
+  <script src="<?= $wallet['config']['site_url'] ?>admin/assets/js/page/forms-advanced-forms.js"></script>
       <script type="text/javascript">
          // $('table').DataTable({
          // "scrollX": true,

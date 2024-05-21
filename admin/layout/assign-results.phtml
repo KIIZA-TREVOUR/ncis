@@ -50,7 +50,7 @@
 				<?php $n=1; foreach($db->orderBy('firstname','ASC')->where('class',$_GET['class'])->get('students') as $key=>$value): ?>
 					<tr>
 						<td><?= $n++; ?> </td>
-						<td> <img src="<?=$wallet['config']['site_url'].$value->image?>" height="40" onerror="this.onerror=null;this.src='<?=$wallet['config']['site_url'] ?>layout/assets/images/placeholder-rect.jpg';"> </td>
+                  		<td> <img src="<?=$wallet['config']['site_url'].$value->image?>" height="40" onerror="this.onerror=null;this.src='<?=$wallet['config']['site_url'] ?>layout/assets/img/avatar.png';"> </td>
 						<td><?= $value->firstname ?> <?= $value->lastname ?></td>
 						<td><?= $value->email ?></td>
 						<td><?=$value->lin ?></td>
@@ -95,7 +95,7 @@
 				<?php $n=1; foreach($db->orderBy('class','asc')->orderBy('firstname','ASC')->get('students') as $key=>$value): ?>
 					<tr>
 						<td><?= $n++; ?> </td>
-						<td> <img src="<?=$wallet['config']['site_url'].$value->image?>" height="40" onerror="this.onerror=null;this.src='<?=$wallet['config']['site_url'] ?>layout/assets/images/placeholder-rect.jpg';"> </td>
+                  		<td> <img src="<?=$wallet['config']['site_url'].$value->image?>" height="40" onerror="this.onerror=null;this.src='<?=$wallet['config']['site_url'] ?>layout/assets/img/avatar.png';"> </td>
 						<td><?= $value->firstname ?> <?= $value->lastname ?></td>
 						<td><?= $value->email ?></td>
 						<td><?=$value->lin ?></td>

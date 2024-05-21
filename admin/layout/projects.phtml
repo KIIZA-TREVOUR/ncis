@@ -116,9 +116,9 @@ if(logged_in() && $wallet['user']['user_type']=='admin'):?>
 <?php elseif(logged_in() && $wallet['user']['user_type']=='student'):?>
 <div class="card card-info">
     <div class="card-header">
-    	<h4>All Projects</h4>
+    	<h4>All My Projects</h4>
     	<div class="card-header-action">
-      		<a href="admin.php?page=new-project" class="btn btn-info">Add New</a>
+      		<!-- <a href="admin.php?page=new-project" class="btn btn-info">Add New</a> -->
     	</div>
     </div>
     <div class="card-body">
@@ -133,7 +133,6 @@ if(logged_in() && $wallet['user']['user_type']=='admin'):?>
 						<th>Class</th>
 						<th>Term</th>
 						<th>Project Type</th>
-						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>

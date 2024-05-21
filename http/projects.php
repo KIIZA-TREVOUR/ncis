@@ -48,7 +48,7 @@
 				$data = array(
 					'status'	=>	200,
 					'message'	=>	'Request Submitted for Approval',
-					'url'	=>	'admin.php?page=projectresults',
+					'url'	=>	'admin.php?page=editprequests',
 				);
 			}else{
 				$data = array(
@@ -159,6 +159,21 @@
 					'status'	=>	200,
 					'message'	=>	'Filtering S.'.$class_id. ' '.$subject_code.' Project Results',
                     'url' => 'admin.php?page=projectresults&class='.$class_id.'&subject='.$subject_code,
+				);
+			}else{
+				$data = array(
+					'status'	=>	201,
+					'message'	=>	'Please Select All Fields to filter Summary'
+				);
+			}
+		}
+		if ($s == 'filter-results-lin') {
+			$lin = __secure($_POST['student_lin']);
+			if (!empty($lin)) {
+				$data = array(
+					'status'	=>	200,
+					'message'	=>	'Filtering Results for '.$lin,
+                    'url' => 'admin.php?page=editpresults&lin='.$lin,
 				);
 			}else{
 				$data = array(
