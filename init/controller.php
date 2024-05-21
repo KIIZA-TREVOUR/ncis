@@ -540,5 +540,68 @@ function getProjectScoresByTerm($student_lin, $term,$class)
 
     return $data;
 }
+function getSingleProjectScoreContribution($student_lin, $term, $class, $project_id) {
+    global $sqlConnect;
+    $sql = "
+        SELECT ps.*, p.subject_code, p.name 
+        FROM project_scores ps
+        JOIN projects p ON ps.project_id = p.id
+        WHERE ps.student_lin = ? AND p.term = ? AND p.class_id = ? AND ps.project_id = ?
+    ";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($sqlConnect, $sql);
+    if (!$stmt) {
+        die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, 'siii', $student_lin, $term, $class, $project_id);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        die("MySQL execute statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Fetch the data
+    $row = mysqli_fetch_object($result);
+    if ($row) {
+        // Convert the score from out of 100 to out of 1.67
+        $row->score = ($row->score / 100) * 1.67;
+    } else {
+        $row = null;
+    }
+
+    // Close the statement
+    mysqli_stmt_close($stmt);
+
+    return $row ? $row->score : null;
+}
+
+function getAnnualProjectContribution($student_lin, $class) {
+    // Initialize an array to store the total scores of each term
+    $terms = [1, 2, 3];
+    $totalScore = 0;
+
+    // Loop through each term and accumulate the scores
+    foreach ($terms as $term) {
+        $termScores = getProjectScoresByTerm($student_lin, $term, $class);
+
+        foreach ($termScores as $score) {
+            $totalScore += $score->score;
+        }
+    }
+
+    // The sum of the scores is already converted to be out of 1.67
+    // Normalize the total score to be out of 5%
+    $annualContribution = $totalScore;
+
+    return $annualContribution;
+}
+
 
 ?>

@@ -37,43 +37,87 @@
    <div class="card-body">
       <div class="table-responsive">
          <table class="table table-striped table-hover table-bordered" id="tableExport"  style="width: 100%">
+         <?php
+            // Fetch all project scores for the student
+            $projectScores = $db->where('student_lin', $_GET['lin'])->get('project_scores');
+
+            // Initialize an array to hold subjects and their respective project scores by term and class
+            $subjectClassProjects = [];
+
+            // Group projects by subject, term, and class
+            foreach ($projectScores as $value) {
+                $project = $db->where('id', $value->project_id)->getOne('projects');
+                $subject = $db->where('code', $value->subject_code)->getOne('subjects');
+
+                // Initialize the subject entry if it doesn't exist
+                if (!isset($subjectClassProjects[$subject->name])) {
+                    $subjectClassProjects[$subject->name] = [];
+                }
+
+                // Initialize the class entry if it doesn't exist
+                if (!isset($subjectClassProjects[$subject->name][$project->class_id])) {
+                    $subjectClassProjects[$subject->name][$project->class_id] = [
+                        'terms' => [
+                            'term1' => 0,
+                            'term2' => 0,
+                            'term3' => 0
+                        ],
+                        'annualContribution' => 0
+                    ];
+                }
+
+                // Determine the term and add the project score to the respective term and class
+                if ($project->term == 1) {
+                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term1'] += round(getSingleProjectScoreContribution($_GET['lin'], 1, $project->class_id, $project->id), 2);
+                } elseif ($project->term == 2) {
+                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term2'] += round(getSingleProjectScoreContribution($_GET['lin'], 2, $project->class_id, $project->id), 2);
+                } elseif ($project->term == 3) {
+                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term3'] += round(getSingleProjectScoreContribution($_GET['lin'], 3, $project->class_id, $project->id), 2);
+                }
+
+                // Calculate the annual contribution for this class and subject
+                $subjectClassProjects[$subject->name][$project->class_id]['annualContribution'] =
+                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term1'] +
+                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term2'] +
+                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term3'];
+            }
+            ?>
             <thead>
-               <tr>
-                  <th>S/N</th>
-                  <th>Project</th>
-                  <th>Subject</th>
-                  <th>Project Score</th>
-                  <th>Annual Contribution</th>
-                  <th>Final 20% Contribution</th>
-                  <th>Request Update</th>
-               </tr>
+            <tr>
+                <th>S/N</th>
+                <th>Subject</th>
+                <th>Term 1</th>
+                <th>Term 2</th>
+                <th>Term 3</th>
+                <th>Annual Contribution (5%)</th>
+                <th>Contribution Towards 20%</th>
+            </tr>
             </thead>
             <tbody>
-               <?php $n=1; foreach($db->groupBy('subject_code')->where('student_lin',$_GET['lin'])->get('project_scores') as $key=> $value):
-               $project = $db->where('id',$value->project_id)->getOne('projects'); 
-               $student = $db->where('lin', $value->student_lin)->getOne('students');
-               $subject = $db->where('code', $value->subject_code)->getOne('subjects');
-				?>
-               <tr>
-                  <td><?= $n++; ?> </td>
-                  <td><?=$project->name?></td>
-                  <td><?=$subject->name?></td>
-                  <td><?=$value->score?></td>
-                  <td><?=$value->score?></td>
-                  <td><?=$value->score?></td>
-                  <td>
-                     <?php if($value->status ==1):?>
-                     <a href="javascript:void()" class="badge badge-warning">Pending Approval</a>
-                  </td><td>
-                  <?php elseif($value->status ==2):?>
-                  <a href="admin.php?page=edit-project-scores&id=<?=$value->id?>" class="badge badge-warning">Edit</a></td> <td>
-                  <?php elseif($value->status ==3):?>
-                  <a href="javascript:void(0)" disabled class="badge badge-primary">Already Updated</a></td> <td>
-                  <?php else:?>
-                  <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a></td> 
-                  <?php endif;?>
-               </tr>
-               <?php endforeach ?>
+            <?php $n = 1; foreach ($subjectClassProjects as $subjectName => $classProjects): ?>
+            <?php
+                // Initialize total contributions
+                $totalTerm1 = $totalTerm2 = $totalTerm3 = $totalAnnualContribution = 0;
+                // Sum up contributions from all classes for the subject
+                foreach ($classProjects as $classId => $data) {
+                    $totalTerm1 += $data['terms']['term1'];
+                    $totalTerm2 += $data['terms']['term2'];
+                    $totalTerm3 += $data['terms']['term3'];
+                    $totalAnnualContribution += $data['annualContribution'];
+                }
+                // Calculate the contribution towards 20%
+                $contributionTowards20 = min(20, $totalAnnualContribution);
+            ?>
+            <tr>
+                <td><?= $n++; ?></td>
+                <td><?= $subjectName; ?></td>
+                <td><?= $totalTerm1; ?></td>
+                <td><?= $totalTerm2; ?></td>
+                <td><?= $totalTerm3; ?></td>
+                <td><?= round($totalAnnualContribution, 2); ?></td>
+                <td><?= round($contributionTowards20, 2); ?></td>
+            </tr>
+            <?php endforeach; ?>
             </tbody>
          </table>
       </div>
@@ -114,7 +158,7 @@
                   <td><?=$project->name?></td>
                   <td><?=$subject->name?></td>
                   <td><?=$value->score?></td>
-                  <td><?=$value->score?></td>
+                  <td><?=getAnnualProjectContribution($value->student_lin,$student->class)?></td>
                   <td><?=$value->score?></td>
                   <td>
                      <?php if($value->status ==1):?>
