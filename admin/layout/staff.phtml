@@ -114,7 +114,7 @@ if(logged_in() && $wallet['user']['user_type']=='admin'):?>
 						<td><?=$value->contact ?></td>
 						<td><?=$value->role ?></td>
 						<td><?php
-							$subjects = $db->where('staff_email', $value->id)->getOne('staff_subject');
+							$subjects = $db->where('staff_email', $value->email)->getOne('staff_subject');
 							if(!empty($subjects)){
 							 $sub = $subjects->subject_code;
 								$one = explode(","," $sub");

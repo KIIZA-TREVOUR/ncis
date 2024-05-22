@@ -321,7 +321,7 @@
             <div class="main-sidebar sidebar-style-2">
                <aside id="sidebar-wrapper">
                   <div class="sidebar-brand">
-                     <a href="admin.php"> <img alt="image"
+                     <a href="admin.php?page=dashboard"> <img alt="image"
                         src="<?= $wallet['config']['site_url'].$wallet['config']['logo'] ?>"
                         class="header-logo" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/sms.png'" />
                      </a>
@@ -564,7 +564,7 @@
             <div class="main-sidebar sidebar-style-2">
                <aside id="sidebar-wrapper">
                   <div class="sidebar-brand">
-                     <a href="admin.php"> <img alt="image"
+                     <a href="admin.php?page=dashboard"> <img alt="image"
                         src="<?= $wallet['config']['site_url'] .
                            $wallet['config']['logo'] ?>"
                         class="header-logo" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/sms.png'" />
@@ -783,7 +783,7 @@
             <div class="main-sidebar sidebar-style-2">
                <aside id="sidebar-wrapper">
                   <div class="sidebar-brand">
-                     <a href="admin.php"> <img alt="image"
+                     <a href="admin.php?page=dashboard"> <img alt="image"
                         src="<?= $wallet['config']['site_url'] .
                            $wallet['config']['logo'] ?>"
                         class="header-logo" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/sms.png'" />

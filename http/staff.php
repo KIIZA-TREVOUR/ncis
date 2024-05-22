@@ -95,8 +95,8 @@
 			
 			$url = '';
 			$insert = array(
-				'staff_id'	=>	__secure($_POST['staff_id']),
-				'subject_id'	=>	$subjects,
+				'staff_email'	=>	__secure($_POST['staff_email']),
+				'subject_code'	=>	$subjects,
 			);
 			if (save_data('staff_subject',$insert)) {
 				$data = array(
