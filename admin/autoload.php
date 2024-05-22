@@ -394,7 +394,7 @@
                            <li><a class="nav-link" href="admin.php?page=school-results">All Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=assign-results">Assign Project Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=projectresults">All Project Results</a></li>
-                           <li><a class="nav-link" href="admin.php?page=editpresults">Edit Project Results</a></li>
+                           <li><a class="nav-link" href="admin.php?page=editpresults">Track Project Results</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'student-subjects'){echo 'active';}?>">
@@ -622,7 +622,7 @@
                            <li><a class="nav-link" href="admin.php?page=school-results">All Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=assign-results">Assign Project Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=projectresults">All Project Results</a></li>
-                           <li><a class="nav-link" href="admin.php?page=editpresults">Edit Project Results</a></li>
+                           <li><a class="nav-link" href="admin.php?page=editpresults">Track Project Results</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'student-subjects'){echo 'active';}?>">
