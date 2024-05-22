@@ -17,18 +17,20 @@
 						<th>Subject</th>
 						<th>Request</th>
 						<th>Date Requested</th>
-						<th>Date Approved</th>
 						<th>Approve</th>
 					</tr>
 				</thead>
 				<tbody>
-				<?php $num=0; foreach($db->orderBy('id','DESC')->get('requests') as $key=>$value): 
-                    $score = $db->where('id', $value->pid)->getOne('project_scores'); 
-                    $student = $db->where('id', $score->student_id)->getOne('students'); 
-                    $class = $db->where('id', $student->class)->getOne('classes');
-                    $project = $db->where('id', $score->project_id)->getOne('projects');
-                    $subject = $db->where('id', $project->subject_id)->getOne('subjects');
-                    $staff = $db->where('id', $wallet['staff']['id'])->getOne('staff');
+				<?php $num=0; 
+				$requests = $db->orderBy('id','DESC')->get('requests');
+				
+				foreach($requests as $key=>$value): 
+                    $score = $db->where('id', $value->pid)->getOne('project_scores');
+                    $student = $db->where('lin', $score->student_lin)->getOne('students');
+                    $project = $db->where('project_code', $score->project_code)->getOne('projects');
+                    $class = $db->where('id', $project->class_id)->getOne('classes');  
+                    $subject = $db->where('code', $project->subject_code)->getOne('subjects');
+                    $staff = $db->where('email', $value->staff_email)->getOne('staff');
                     ?>
 					<tr>
                         <td><?=$num+=1?></td>
@@ -38,7 +40,6 @@
 						<td><?=$subject->name ?></td>
 						<td><?=$value->request ?></td>
 						<td><?=filterDate($value->date_created) ?></td>
-						<td><?=filterDate($value->date_modified) ?></td>
 						<td> 
                             <div class="d-flex">
                                 <?php if($score->status ==2):?>

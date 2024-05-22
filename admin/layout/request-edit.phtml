@@ -3,7 +3,7 @@ $id = $_GET['id'];
 $score = $db->where('id', $id)->getOne('project_scores'); 
 $student = $db->where('lin', $score->student_lin)->getOne('students'); 
 $class = $db->where('id', $student->class)->getOne('classes');
-$project = $db->where('id', $score->project_id)->getOne('projects');
+$project = $db->where('project_code', $score->project_code)->getOne('projects');
 $subject = $db->where('code', $project->subject_code)->getOne('subjects');
 $staff = $db->where('id', $_SESSION['user_id'])->getOne('staff');
 ?>
@@ -26,7 +26,7 @@ $staff = $db->where('id', $_SESSION['user_id'])->getOne('staff');
 					<div class="form-group">
 						<label class="form-label">Class Name</label>
 						<input type="text" required disabled  value="<?=$class->name?>" class="form-control">
-						<input type="text" required name="cid" value="<?=$class->id?>" class="form-control"hidden>
+						<input type="text" required name="cid" value="<?=$project->class_id?>" class="form-control"hidden>
 					</div>
 				</div>
 				<div class="col-md-4">

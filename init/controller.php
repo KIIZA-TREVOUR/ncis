@@ -504,6 +504,61 @@ function getCurrentDate()
     $date = date("Y-m-d h:i:s");
     return $date;
 }
+function getCurrentDateWithTwoMonthsAdded()
+{
+    date_default_timezone_set("Africa/Kampala");
+
+    // Get the current date
+    $currentDate = date_create();
+
+    // Add 2 months to the current date
+    date_add($currentDate, date_interval_create_from_date_string('2 months'));
+
+    // Format the date as desired
+    $formattedDate = date_format($currentDate, 'Y-m-d h:i:s');
+
+    return $formattedDate;
+}
+function getTotalScoresByTerm($term) {
+    global $sqlConnect;
+    $sql = "
+        SELECT ps.score
+        FROM project_scores ps
+        JOIN projects p ON ps.project_code = p.project_code
+        WHERE p.term = ?
+    ";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($sqlConnect, $sql);
+    if (!$stmt) {
+        die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, 'i', $term);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        die("MySQL execute statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Calculate the total score
+    $totalScore = 0;
+    while ($row = mysqli_fetch_object($result)) {
+        // Convert the score from out of 100 to out of 5
+        $score =$row->score;
+        $totalScore += $score;
+    }
+
+    // Close the statement
+    mysqli_stmt_close($stmt);
+
+    return $totalScore;
+}
 
 function getProjectScoresByTerm($student_lin, $term,$class)
 {
@@ -546,6 +601,101 @@ function getProjectScoresByTerm($student_lin, $term,$class)
 
     return $data;
 }
+
+function getProjectScoresByClassSubjectTerm($class_id, $subject_code, $term)
+{
+    global $sqlConnect;
+
+    $sql = "
+        SELECT ps.*, p.name, p.description, p.class_id, p.project_type, p.term, p.year 
+        FROM project_scores ps
+        JOIN projects p ON ps.project_code = p.project_code
+        WHERE p.class_id = ? AND p.subject_code = ? AND p.term = ?
+    ";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($sqlConnect, $sql);
+    if (!$stmt) {
+        die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, 'isi', $class_id, $subject_code, $term);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        die("MySQL execute statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Fetch the data
+    $data = array();
+    while ($row = mysqli_fetch_object($result)) {
+        array_push($data, $row);
+    }
+
+    // Close the statement
+    mysqli_stmt_close($stmt);
+
+    return $data;
+}
+
+function getTotalScoresForSubject($student_lin, $subject_code, $class)
+{
+    global $sqlConnect;
+    
+    // Initialize total score
+    $totalScore = 0;
+
+    // Loop through each term (assuming 3 terms: 1, 2, and 3)
+    for ($term = 1; $term <= 3; $term++) {
+        $sql = "
+            SELECT ps.score 
+            FROM project_scores ps
+            JOIN projects p ON ps.project_code = p.project_code
+            WHERE ps.student_lin = ? AND p.subject_code = ? AND p.term = ? AND p.class_id = ?
+        ";
+
+        // Prepare the statement
+        $stmt = mysqli_prepare($sqlConnect, $sql);
+        if (!$stmt) {
+            die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
+        }
+
+        // Bind the parameters
+        mysqli_stmt_bind_param($stmt, 'ssii', $student_lin, $subject_code, $term, $class);
+
+        // Execute the statement
+        mysqli_stmt_execute($stmt);
+
+        // Get the result
+        $result = mysqli_stmt_get_result($stmt);
+        if (!$result) {
+            die("MySQL execute statement error: " . mysqli_error($sqlConnect));
+        }
+
+        // Fetch the data and calculate the total score for the term
+        while ($row = mysqli_fetch_assoc($result)) {
+            // Convert the score from out of 100 to out of 1.67
+            $convertedScore = ($row['score'] / 100) * 1.67;
+            $totalScore += $convertedScore;
+        }
+
+        // Close the statement
+        mysqli_stmt_close($stmt);
+    }
+
+    // Ensure the total score does not exceed 5
+    if ($totalScore > 5) {
+        $totalScore = 5;
+    }
+
+    return $totalScore;
+}
+
 function getSingleProjectScoreContribution($student_lin, $term, $class, $project_code) {
     global $sqlConnect;
     $sql = "

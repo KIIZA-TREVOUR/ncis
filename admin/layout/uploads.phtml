@@ -32,16 +32,16 @@
          <div class="col-12 col-md-6 col-lg-6">
             <div class="card">
                <div class="card-header">
-                  <h4 class="card-title">Upload Staff File (.Csv)</h4>
-                  <a href="<?=$wallet['config']['site_url']?>uploads/uploads/staff/staff.csv"><h5 class="card-title"><span class="badge badge-secondary">Download Template</span></h5></a>
+                  <h4 class="card-title">Upload Project Results File (.Csv)</h4>
+                  <a href="<?=$wallet['config']['site_url']?>uploads/uploads/projectresults/project_scores.csv"><h5 class="card-title"><span class="badge badge-secondary">Download Template</span></h5></a>
                </div>
                <div class="card-body">
-                  <form id="upload-staff">
+                  <form id="upload-project-results">
                      <div class="row">
                         <div class="col-md-6">
                            <div class="form-group">
-                              <label class="form-label">Upload file</label>
-                              <input type="file" required name="staff_data" class="form-control" >
+                              <label class="form-label">Upload Results</label>
+                              <input type="file" required name="project_results_data" class="form-control" >
                            </div>
                         </div>
                         <div class="col-md-6">
@@ -119,16 +119,16 @@
          <div class="col-12 col-md-6 col-lg-6">
             <div class="card">
                <div class="card-header">
-                  <h4 class="card-title">Upload Project Results File (.Csv)</h4>
-                  <a href="<?=$wallet['config']['site_url']?>uploads/uploads/projectresults/project_scores.csv"><h5 class="card-title"><span class="badge badge-secondary">Download Template</span></h5></a>
+                  <h4 class="card-title">Upload Staff File (.Csv)</h4>
+                  <a href="<?=$wallet['config']['site_url']?>uploads/uploads/staff/staff.csv"><h5 class="card-title"><span class="badge badge-secondary">Download Template</span></h5></a>
                </div>
                <div class="card-body">
-                  <form id="upload-project-results">
+                  <form id="upload-staff">
                      <div class="row">
                         <div class="col-md-6">
                            <div class="form-group">
-                              <label class="form-label">Upload Results</label>
-                              <input type="file" required name="project_results_data" class="form-control" >
+                              <label class="form-label">Upload file</label>
+                              <input type="file" required name="staff_data" class="form-control" >
                            </div>
                         </div>
                         <div class="col-md-6">
@@ -183,23 +183,23 @@
          </div>
          <div class="col-12 col-md-6 col-lg-6">
             <div class="card">
-               <?php if($_GET['id'] == 'staff'):?>
+               <?php if($_GET['id'] == 'project-results'):?>
                <div class="card-header">
-                  <h5 class="card-title"><span class="badge badge-success">Upload Staff File (.Csv)</span></h5>&nbsp;&nbsp;
-                  <a href="<?=$wallet['config']['site_url']?>uploads/uploads/staff/staff.csv"><h5 class="card-title"><span class="badge badge-secondary">Download Template</span></h5></a>
+                  <h5 class="card-title"><span class="badge badge-success">Upload Project Results File (.Csv)</span></h5>&nbsp;&nbsp;
+                  <a href="<?=$wallet['config']['site_url']?>uploads/uploads/projectresults/project_scores.csv"><h5 class="card-title"><span class="badge badge-secondary">Download Template</span></h5></a>
                </div>
                <?php else:?>
                <div class="card-header">
-                  <h4 class="card-title">Upload Staff File (.Csv)</h4>
+                  <h4 class="card-title">Upload Project Results File (.Csv)</h4>
                </div>
                <?php endif;?>
                <div class="card-body">
-                  <form id="upload-staff">
+                  <form id="upload-project-results">
                      <div class="row">
                         <div class="col-md-6">
                            <div class="form-group">
                               <label class="form-label">Upload file</label>
-                              <input type="file" required name="staff_data" class="form-control" >
+                              <input type="file" required name="project_results_data" class="form-control" >
                            </div>
                         </div>
                         <div class="col-md-6">
@@ -281,23 +281,23 @@
          </div>
          <div class="col-12 col-md-6 col-lg-6">
             <div class="card">
-               <?php if($_GET['id'] == 'projectresults'):?>
+               <?php if($_GET['id'] == 'staff'):?>
                <div class="card-header">
-                  <h5 class="card-title"><span class="badge badge-success">Upload Project Results File (.Csv)</span></h5>&nbsp;&nbsp;
-                  <a href="<?=$wallet['config']['site_url']?>uploads/uploads/projectresults/project_scores.csv"><h5 class="card-title"><span class="badge badge-secondary">Download Template</span></h5></a>
+                  <h5 class="card-title"><span class="badge badge-success">Upload Staff File (.Csv)</span></h5>&nbsp;&nbsp;
+                  <a href="<?=$wallet['config']['site_url']?>uploads/uploads/staff/staff.csv"><h5 class="card-title"><span class="badge badge-secondary">Download Template</span></h5></a>
                </div>
                <?php else:?>
                <div class="card-header">
-                  <h4 class="card-title">Upload Project Results File (.Csv)</h4>
+                  <h4 class="card-title">Upload Staff File (.Csv)</h4>
                </div>
                <?php endif;?>
                <div class="card-body">
-                  <form id="upload-project-results">
+                  <form id="upload-staff">
                      <div class="row">
                         <div class="col-md-6">
                            <div class="form-group">
                               <label class="form-label">Upload file</label>
-                              <input type="file" required name="project_results_data" class="form-control" >
+                              <input type="file" required name="staff_data" class="form-control" >
                            </div>
                         </div>
                         <div class="col-md-6">

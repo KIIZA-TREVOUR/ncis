@@ -3,29 +3,40 @@
       <div class="card-body">
          <form id="filter" class="needs-validation" novalidate="">
             <div class="row">
-               <div class="col-md-4">
+               <div class="col-md-3">
                   <div class="form-group">
                      <label class="form-label"></label>
                      <select class="form-control" name="class_id" >
-                        <option  value="">Select to Filter Results By Class</option>
+                        <option  value=""> Filter By Class</option>
                         <?php foreach($db->orderBy('id','ASC')->get('classes') as $key=>$value): ?>
                         <option value="<?=$value->id?>"><?=$value->name?></option>
                         <?php endforeach;?>
                      </select>
                   </div>
                </div>
-               <div class="col-md-4">
+               <div class="col-md-3">
+                  <div class="form-group">
+                     <label class="form-label"></label>
+                     <select class="form-control" name="term" >
+                        <option  value="">Filter By Term</option>
+                        <option value="1">Term One</option>
+                        <option value="2">Term Two</option>
+                        <option value="3">Term Three</option>
+                     </select>
+                  </div>
+               </div>
+               <div class="col-md-3">
                   <div class="form-group">
                      <label class="form-label"></label>
                      <select class="form-control" name="subject_code" >
-                        <option  value="">Select to Filter Results By Subject</option>
+                        <option  value="">Filter By Subject</option>
                         <?php foreach($db->orderBy('id','ASC')->get('subjects') as $key=>$value): ?>
                         <option value="<?=$value->code?>"><?=$value->name?></option>
                         <?php endforeach;?>
                      </select>
                   </div>
                </div>
-               <div class="col-md-4 mb-3">
+               <div class="col-md-3 mb-3">
                   <div class="form-group">
                      <label class="form-label"></label>
                      <button type="submit" required class="btn btn-primary btn-block submit">Filter</button>
@@ -42,7 +53,8 @@
       <?php $subject=$db->where('code',$_GET['subject'])->getOne('subjects'); ?>
       <h4>S.<?=$_GET['class'];?> Students' <?=$subject->name;?> Project Results</h4>
       <div class="card-header-action">
-         <a href="admin.php?page=new-student&class=<?=$_GET['class']?>" class="btn btn-info">Add New</a>
+         <a href="admin.php?page=uploads&id=project-results" class="btn btn-primary">Upload Results</a>
+         <a href="admin.php?page=assign-pmarks" class="btn btn-info">Add New</a>
       </div>
    </div>
    <div class="card-body">
@@ -51,20 +63,26 @@
             <thead>
                <tr>
                   <th>S/N</th>
-                  <th>Name</th>
                   <th>LIN</th>
+                  <th>Project Name</th>
+                  <th>Project Score</th>
                   <th>Action</th>
                </tr>
             </thead>
             <tbody>
-               <?php $n=1; $students = $db->where('class',$_GET['class'])->get('students');
-               foreach($students as $key=>$student):?>
+               <?php $n=1; $scores = getProjectScoresByClassSubjectTerm($_GET['class'], $_GET['subject'], $_GET['term']);
+               // var_dump($scores);exit;
+               foreach($scores as $value):
+                  $student = $db->where('lin',$value->student_lin)->getOne('students');
+                  $project = $db->where('project_code',$value->project_code)->getOne('projects');
+               ?>
                <tr>
                   <td><?= $n++; ?> </td>
-                  <td><?=$student->firstname?> <?=$student->lastname?></td>
                   <td><?=$student->lin ?></td>
+                  <td><?=$project->name ?></td>
+                  <td><?=$value->score ?></td>
                   <td>
-                     <a href="admin.php?page=individual-presults&lin=<?=$student->lin?>" class="badge badge-success">View  Results</a>
+                     <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a>
                   </td>
                </tr>
                <?php endforeach ?>
@@ -78,7 +96,8 @@
    <div class="card-header">
       <h4>All Students' Project Results</h4>
       <div class="card-header-action">
-         <a href="admin.php?page=new-student" class="btn btn-info">Add New</a>
+         <a href="admin.php?page=asign-pmarks" class="btn btn-info">Add New</a>
+         <a href="admin.php?page=uploads&id=project-results" class="btn btn-primary">Upload Results</a>
       </div>
    </div>
    <div class="card-body">

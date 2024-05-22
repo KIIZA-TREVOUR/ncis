@@ -50,7 +50,7 @@
 				$data = array(
 					'status'	=>	200,
 					'message'	=>	'Request Submitted for Approval',
-					'url'	=>	'admin.php?page=editprequests',
+					'url'	=>	'admin.php?page=projectresults',
 				);
 			}else{
 				$data = array(
@@ -93,8 +93,9 @@
 		}
 
 		if ($s == 'remove') {
-			$id = __secure($_POST['id']);
-			if ($db->where('id',$id)->delete('projects')) {
+			$project_code = __secure($_POST['project_code']);
+			if ($db->where('project_code',$project_code)->delete('projects')) {
+				$db->where('project_code',$project_code)->delete('project_scores');
 				$data = array(
 					'status'	=>	200,
 					'message'	=>	'Project Deleted Successfully'
@@ -156,11 +157,12 @@
 		if ($s == 'filter-results') {
 			$class_id = __secure($_POST['class_id']);
 			$subject_code = __secure($_POST['subject_code']);
+			$term = __secure($_POST['term']);
 			if (!empty($class_id)) {
 				$data = array(
 					'status'	=>	200,
 					'message'	=>	'Filtering S.'.$class_id. ' '.$subject_code.' Project Results',
-                    'url' => 'admin.php?page=projectresults&class='.$class_id.'&subject='.$subject_code,
+                    'url' => 'admin.php?page=projectresults&class='.$class_id.'&subject='.$subject_code.'&term='.$term,
 				);
 			}else{
 				$data = array(

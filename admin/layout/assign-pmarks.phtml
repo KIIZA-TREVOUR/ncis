@@ -17,17 +17,17 @@ $student = $db->where('lin', $lin)->getOne('students');
 						<input type="text" required name="class" value="<?= $student->class ?>" class="form-control" hidden>
 					</div>
 				</div>
-				<div class="col-md-4">
-					<div class="form-group">
-						<label class="form-label">Select Project</label>
-                        <select type="text"  name="project" class="form-control">
-							<option value="">--------Choose Project-------</option>
-							<?php $n=1; foreach($db->where('class_id',$student->class)->get('projects') as $key=>$value): ?>
-                            <option value="<?=$value->project_code?>"><?=$value->name?></option>
-                            <?php endforeach;?>
-                        </select>
-					</div>
-				</div>
+               <div class="col-md-4">
+                  <div class="form-group">
+                     <label class="form-label"></label>
+                     <select class="form-control select2" name="project" >
+                        <option value="">--------Choose Project-------</option>
+							<?php $n=1; foreach($db->get('projects') as $key=>$value): ?>
+                            <option value="<?=$value->project_code?>"><?=$value->project_code?>-<?=$value->name?></option>
+                        <?php endforeach;?>
+                     </select>
+                  </div>
+               </div>
                 <div class="col-md-4">
 					<div class="form-group">
 						<label class="form-label">Marks</label>
