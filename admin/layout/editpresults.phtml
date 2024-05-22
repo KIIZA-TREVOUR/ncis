@@ -46,7 +46,7 @@
 
             // Group projects by subject, term, and class
             foreach ($projectScores as $value) {
-                $project = $db->where('id', $value->project_id)->getOne('projects');
+                $project = $db->where('project_code', $value->project_code)->getOne('projects');
                 $subject = $db->where('code', $value->subject_code)->getOne('subjects');
 
                 // Initialize the subject entry if it doesn't exist
@@ -68,11 +68,11 @@
 
                 // Determine the term and add the project score to the respective term and class
                 if ($project->term == 1) {
-                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term1'] += round(getSingleProjectScoreContribution($_GET['lin'], 1, $project->class_id, $project->id), 2);
+                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term1'] += round(getSingleProjectScoreContribution($_GET['lin'], 1, $project->class_id, $project->project_code), 2);
                 } elseif ($project->term == 2) {
-                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term2'] += round(getSingleProjectScoreContribution($_GET['lin'], 2, $project->class_id, $project->id), 2);
+                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term2'] += round(getSingleProjectScoreContribution($_GET['lin'], 2, $project->class_id, $project->project_code), 2);
                 } elseif ($project->term == 3) {
-                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term3'] += round(getSingleProjectScoreContribution($_GET['lin'], 3, $project->class_id, $project->id), 2);
+                    $subjectClassProjects[$subject->name][$project->class_id]['terms']['term3'] += round(getSingleProjectScoreContribution($_GET['lin'], 3, $project->class_id, $project->project_code), 2);
                 }
 
                 // Calculate the annual contribution for this class and subject
@@ -148,7 +148,7 @@
             </thead>
             <tbody>
                <?php $n=1; $pscores = $db->groupBy('subject_code')->get('project_scores');  foreach($pscores as $key=> $value):
-               $project = $db->where('id',$value->project_id)->getOne('projects'); 
+               $project = $db->where('project_code',$value->project_code)->getOne('projects'); 
                $student = $db->where('lin', $value->student_lin)->getOne('students');
                $subject = $db->where('code', $value->subject_code)->getOne('subjects');
 				?>

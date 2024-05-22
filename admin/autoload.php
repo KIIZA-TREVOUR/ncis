@@ -632,6 +632,14 @@
                            <li><a class="nav-link" href="admin.php?page=student-subjects">All Student Subjects</a></li>
                         </ul>
                      </li>
+                     <li class="dropdown <?php if($page == 'uploads' || $page == 'upload-history'){echo 'active';}?>">
+                        <a href="#" class="menu-toggle nav-link has-dropdown"><i
+                           data-feather="command"></i><span>ManageUploads</span></a>
+                        <ul class="dropdown-menu">
+                           <li><a class="nav-link" href="admin.php?page=uploads">New Upload</a></li>
+                           <li><a class="nav-link" href="admin.php?page=upload-history">Upload History</a></li>
+                        </ul>
+                     </li>
                   </ul>
                </aside>
             </div>

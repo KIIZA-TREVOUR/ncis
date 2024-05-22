@@ -23,7 +23,7 @@ $student = $db->where('lin', $lin)->getOne('students');
                         <select type="text"  name="project" class="form-control">
 							<option value="">--------Choose Project-------</option>
 							<?php $n=1; foreach($db->where('class_id',$student->class)->get('projects') as $key=>$value): ?>
-                            <option value="<?=$value->id?>"><?=$value->name?></option>
+                            <option value="<?=$value->project_code?>"><?=$value->name?></option>
                             <?php endforeach;?>
                         </select>
 					</div>

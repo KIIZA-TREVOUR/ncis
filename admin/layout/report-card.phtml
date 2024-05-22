@@ -78,7 +78,7 @@
                       foreach($results as $key=>$value) : 
                       $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                       $project = $db->where('subject_code',$subject->code)->getOne('projects');
-                      $project_score = $db->where('project_id',$project->id)->where('student_lin',$student->lin)->getOne('project_scores'); 
+                      $project_score = $db->where('project_code',$project->project_code)->where('student_lin',$student->lin)->getOne('project_scores'); 
                         ?>
                         <tr>
                            <td><?=$subject->name?></td>

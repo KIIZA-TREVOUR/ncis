@@ -116,6 +116,32 @@
                </div>
             </div>
          </div>
+         <div class="col-12 col-md-6 col-lg-6">
+            <div class="card">
+               <div class="card-header">
+                  <h4 class="card-title">Upload Project Results File (.Csv)</h4>
+                  <a href="<?=$wallet['config']['site_url']?>uploads/uploads/projectresults/project_scores.csv"><h5 class="card-title"><span class="badge badge-secondary">Download Template</span></h5></a>
+               </div>
+               <div class="card-body">
+                  <form id="upload-project-results">
+                     <div class="row">
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label class="form-label">Upload Results</label>
+                              <input type="file" required name="project_results_data" class="form-control" >
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label class="form-label"></label>
+                              <button type="submit" required class="btn btn-primary btn-block submit">Upload</button>
+                           </div>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
       </div>
    </div>
 </section>
@@ -240,6 +266,38 @@
                            <div class="form-group">
                               <label class="form-label">Upload file</label>
                               <input type="file" required name="results_data" class="form-control" >
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label class="form-label"></label>
+                              <button type="submit" required class="btn btn-primary btn-block submit">Upload</button>
+                           </div>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+         <div class="col-12 col-md-6 col-lg-6">
+            <div class="card">
+               <?php if($_GET['id'] == 'projectresults'):?>
+               <div class="card-header">
+                  <h5 class="card-title"><span class="badge badge-success">Upload Project Results File (.Csv)</span></h5>&nbsp;&nbsp;
+                  <a href="<?=$wallet['config']['site_url']?>uploads/uploads/projectresults/project_scores.csv"><h5 class="card-title"><span class="badge badge-secondary">Download Template</span></h5></a>
+               </div>
+               <?php else:?>
+               <div class="card-header">
+                  <h4 class="card-title">Upload Project Results File (.Csv)</h4>
+               </div>
+               <?php endif;?>
+               <div class="card-body">
+                  <form id="upload-project-results">
+                     <div class="row">
+                        <div class="col-md-6">
+                           <div class="form-group">
+                              <label class="form-label">Upload file</label>
+                              <input type="file" required name="project_results_data" class="form-control" >
                            </div>
                         </div>
                         <div class="col-md-6">
@@ -402,6 +460,51 @@
 
     $.ajax({
         url: request() + '?f=uploads&s=upload-results',
+        method: 'POST',
+        contentType: false,
+        processData: false,
+        data: new FormData(this),
+        success: function(data) {
+            console.log(data);
+            if (data.status == 200) {
+                iziToast.success({
+                    title: 'Info',
+                    message: data.message,
+                    position: 'topRight'
+                });
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
+            } else {
+                iziToast.error({
+                    title: 'Alert',
+                    message: data.message,
+                    position: 'topRight'
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            // Revert button text back to "Upload"
+            $submitButton.html('Upload').removeClass('disabled');
+        },
+        complete: function() {
+            // Re-enable the button after request completion
+            $submitButton.html('Upload').removeClass('disabled');
+        }
+    });
+});
+
+</script>
+<script type="text/javascript">$('#upload-project-results').on('submit', function(e) {
+    e.preventDefault();
+    var $form = $(this); // Reference to the current form
+    var $submitButton = $form.find('.submit'); // Reference to the submit button
+
+    // Change button text to "Uploading..."
+    $submitButton.html('Uploading...').addClass('disabled');
+
+    $.ajax({
+        url: request() + '?f=uploads&s=upload-project-results',
         method: 'POST',
         contentType: false,
         processData: false,

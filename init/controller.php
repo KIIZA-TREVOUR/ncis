@@ -381,9 +381,7 @@ function getLatestId($columnName,$tableName)
 }
 
  
-function generateStudentNumber() {
-    // Get the last two digits of the current year
-    $year = date("y");
+function generateStudentNumber($year) {
     
     // Append "0100" to the year
     $studentNumber = $year . "0100";
@@ -391,23 +389,31 @@ function generateStudentNumber() {
     return $studentNumber;
 }
 
-function getStudentLinNumber()
-{
+function getStudentLinNumber($year) {
     global $sqlConnect;
-    $sql = "SELECT MAX(lin) AS max_id FROM students";
+    
+    // Prepare the SQL query to get the max LIN number for the given year
+    $sql = "SELECT MAX(lin) AS max_lin FROM students WHERE LEFT(lin, 2) = '{$year}'";
     $result = mysqli_query($sqlConnect, $sql);
     $row = mysqli_fetch_assoc($result);
     
-    // Check if the latest ID is empty, null, or 0
-    if ($row['max_id'] === null || $row['max_id'] === '' || $row['max_id'] == 0) {
-        return generateStudentNumber()+1;
+    // Check if the latest LIN number is empty, null, or 0
+    if ($row['max_lin'] === null || $row['max_lin'] === '' || $row['max_lin'] == 0) {
+        // If no LIN number exists for the given year, generate the first LIN number for that year
+        return generateStudentNumber($year) + 1;
     } else {
-        return $row['max_id']+1;
+        // Extract the numeric part from the latest LIN number
+        $numericPart = substr($row['max_lin'], -4);
+
+        // Increment the numeric part
+        $nextNumber = (int)$numericPart + 1;
+
+        // Combine the year and the incremented numeric part to form the new LIN number
+        $newLinNumber = $year . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+
+        return $newLinNumber;
     }
 }
-
-
-
 function record_visitor(){
     global $db, $sqlConnect;
     // Get the visitor's IP address
@@ -505,7 +511,7 @@ function getProjectScoresByTerm($student_lin, $term,$class)
     $sql = "
         SELECT ps.*, p.subject_code, p.name 
         FROM project_scores ps
-        JOIN projects p ON ps.project_id = p.id
+        JOIN projects p ON ps.project_code = p.project_code
     WHERE ps.student_lin = ? AND p.term = ? AND p.class_id =?
     ";
 
@@ -540,13 +546,13 @@ function getProjectScoresByTerm($student_lin, $term,$class)
 
     return $data;
 }
-function getSingleProjectScoreContribution($student_lin, $term, $class, $project_id) {
+function getSingleProjectScoreContribution($student_lin, $term, $class, $project_code) {
     global $sqlConnect;
     $sql = "
         SELECT ps.*, p.subject_code, p.name 
         FROM project_scores ps
-        JOIN projects p ON ps.project_id = p.id
-        WHERE ps.student_lin = ? AND p.term = ? AND p.class_id = ? AND ps.project_id = ?
+        JOIN projects p ON ps.project_code = p.project_code
+        WHERE ps.student_lin = ? AND p.term = ? AND p.class_id = ? AND ps.project_code = ?
     ";
 
     // Prepare the statement
@@ -556,7 +562,7 @@ function getSingleProjectScoreContribution($student_lin, $term, $class, $project
     }
 
     // Bind the parameters
-    mysqli_stmt_bind_param($stmt, 'siii', $student_lin, $term, $class, $project_id);
+    mysqli_stmt_bind_param($stmt, 'siii', $student_lin, $term, $class, $project_code);
 
     // Execute the statement
     mysqli_stmt_execute($stmt);
@@ -603,5 +609,69 @@ function getAnnualProjectContribution($student_lin, $class) {
     return $annualContribution;
 }
 
+function generateProjectCodes1($year, $subject) {
+    global $sqlConnect;
+    
+    // Ensure subject is in uppercase and trimmed to a suitable length (e.g., 4 characters)
+    $subjectCode = strtoupper(substr(trim($subject), 0, 4));
 
+    // Get the next sequential number
+    $nextNumber = getLatestId('project_code', 'projects', $year, $subject);
+
+    // Format the project code
+    $formattedNumber = str_pad($nextNumber, 2, '0', STR_PAD_LEFT);
+    $projectCode = $subjectCode . $year . $formattedNumber;
+
+    return $projectCode;
+}
+
+function getLastFourYears() {
+    $currentYear = date("Y");
+
+    $years = [];
+
+    // Generate the last four years as objects
+    for ($i = 0; $i < 4; $i++) {
+        $yearObject = new stdClass();
+        $yearObject->year = $currentYear - $i;
+        $years[] = $yearObject;
+    }
+
+    return $years;
+}
+function generateProjectCode($year, $subject) {
+    global $sqlConnect;
+    
+    // Ensure subject is in uppercase and trimmed to a suitable length (e.g., 4 characters)
+    $subjectCode = strtoupper(substr(trim($subject), 0, 4));
+
+    // Prepare the SQL query to get the max project code for the given subject and year
+    $sql = "SELECT MAX(project_code) AS max_code FROM projects WHERE project_code LIKE '{$subjectCode}{$year}%'";
+    $result = mysqli_query($sqlConnect, $sql);
+    $row = mysqli_fetch_assoc($result);
+
+    // Check if the latest code is empty or null
+    if ($row['max_code'] === null || $row['max_code'] === '') {
+        // Define an initial number if no codes exist for the given subject and year
+        $initialNumber = '01';
+    } else {
+        // Extract the latest code
+        $latestCode = $row['max_code'];
+
+        // Extract the numeric part from the latest code
+        $numericPart = substr($latestCode, -2);
+
+        // Increment the numeric part
+        $nextNumber = (int)$numericPart + 1;
+
+        // Format the incremented number with leading zeros
+        $initialNumber = str_pad($nextNumber, strlen($numericPart), '0', STR_PAD_LEFT);
+    }
+
+    // Combine the subject code, year, and the initial number to form the new code
+    $formattedNumber = str_pad($initialNumber, 2, '0', STR_PAD_LEFT);
+    $projectCode = $subjectCode . $year . $formattedNumber;
+
+    return $projectCode;
+}
 ?>

@@ -7,6 +7,8 @@
 				'subject_code'	=>	__secure($_POST['subject_code']),
 				'class_id'	=>	__secure($_POST['class_id']),
 				'term'	=>	__secure($_POST['term']),
+				'year'	=>	__secure($_POST['year']),
+				'project_code'	=>	generateProjectCode(__secure($_POST['year']), __secure($_POST['subject_code'])),
 				'project_type'	=>	__secure($_POST['project_type']),
 			);
 			if(exists('projects','WHERE name = "'.__secure($_POST['name']).'" AND subject_code ="'.__secure($_POST['subject_code']).'" AND class_id = "'.__secure($_POST['class_id']).'"')){
@@ -216,17 +218,17 @@
 
 		if ($s == 'assign') {
 			if (!empty($_POST['project']) && !empty($_POST['marks'])) {
-				$project = $db->where('id', __secure($_POST['project']))->getOne('projects');
+				$project = $db->where('project_code', __secure($_POST['project']))->getOne('projects');
 		
 				if ($project) { // Check if the project is found
 					$insert = array(
 						'student_lin'   => __secure($_POST['student_lin']),
-						'project_id'    => __secure($_POST['project']),
+						'project_code'    => __secure($_POST['project']),
 						'subject_code'  => $project->subject_code,
 						'score'         => __secure($_POST['marks']),
 					);
 		
-					$exists = exists('project_scores', 'WHERE project_id ="' . __secure($_POST['project']) . '" AND subject_code ="' . $project->subject_code . '" AND student_lin = "' . __secure($_POST['student_lin']) . '"');
+					$exists = exists('project_scores', 'WHERE project_code ="' . __secure($_POST['project']) . '" AND subject_code ="' . $project->subject_code . '" AND student_lin = "' . __secure($_POST['student_lin']) . '"');
 		
 					if ($exists) {
 						$data = array(

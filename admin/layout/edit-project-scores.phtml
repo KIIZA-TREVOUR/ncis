@@ -3,7 +3,7 @@ $id = $_GET['id'];
 $score = $db->where('id', $id)->getOne('project_scores'); 
 $student = $db->where('id', $score->student_id)->getOne('students'); 
 $class = $db->where('id', $student->class)->getOne('classes');
-$project = $db->where('id', $score->project_id)->getOne('projects');
+$project = $db->where('project_code', $score->project_code)->getOne('projects');
 $subject = $db->where('id', $project->subject_id)->getOne('subjects');
 $staff = $db->where('id', $_SESSION['user_id'])->getOne('staff');
 ?>

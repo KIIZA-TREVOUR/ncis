@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 21, 2024 at 01:59 PM
+-- Generation Time: May 22, 2024 at 10:09 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -138,7 +138,15 @@ CREATE TABLE `exam_results` (
 --
 
 INSERT INTO `exam_results` (`id`, `student_lin`, `subject_code`, `score`, `exam_type`, `class_id`, `upload_id`, `date_created`, `date_modified`, `sch_id`) VALUES
-(1, '240102\n', 'S101', 80, 'Mid', 1, 11, '2024-05-19 11:25:03', '2024-05-19 11:25:03', NULL);
+(1, '20230101', 'S101', 78, 'Mid', 1, 27, '2024-05-22 10:44:43', '2024-05-22 10:44:43', NULL),
+(2, '20210101', 'S101', 34, 'Mid', 1, 27, '2024-05-22 10:44:44', '2024-05-22 10:44:44', NULL),
+(3, '20220101', 'S101', 92, 'Mid', 1, 27, '2024-05-22 10:44:44', '2024-05-22 10:44:44', NULL),
+(4, '20220101', 'S102', 62, 'Mid', 1, 27, '2024-05-22 10:44:44', '2024-05-22 10:44:44', NULL),
+(5, '20210101', 'S103', 62, 'Mid', 1, 27, '2024-05-22 10:44:44', '2024-05-22 10:44:44', NULL),
+(6, '20230101', 'S104', 27, 'Mid', 1, 27, '2024-05-22 10:44:44', '2024-05-22 10:44:44', NULL),
+(7, '20210101', 'S102', 83, 'Mid', 1, 27, '2024-05-22 10:44:44', '2024-05-22 10:44:44', NULL),
+(8, '20220101', 'S103', 80, 'Mid', 1, 27, '2024-05-22 10:44:44', '2024-05-22 10:44:44', NULL),
+(9, '20210101', 'S104', 76, 'Mid', 1, 27, '2024-05-22 10:44:44', '2024-05-22 10:44:44', NULL);
 
 -- --------------------------------------------------------
 
@@ -191,11 +199,13 @@ INSERT INTO `front_cms_testimonial` (`id`, `name`, `location`, `image`, `descrip
 CREATE TABLE `projects` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
+  `project_code` varchar(20) NOT NULL,
   `description` text NOT NULL,
   `subject_code` varchar(20) NOT NULL,
   `class_id` int(11) NOT NULL,
   `project_type` int(11) NOT NULL DEFAULT 1,
   `term` int(11) NOT NULL,
+  `year` int(11) NOT NULL,
   `date_created` datetime DEFAULT NULL,
   `date_modified` datetime DEFAULT NULL,
   `sch_id` int(11) DEFAULT NULL
@@ -205,12 +215,21 @@ CREATE TABLE `projects` (
 -- Dumping data for table `projects`
 --
 
-INSERT INTO `projects` (`id`, `name`, `description`, `subject_code`, `class_id`, `project_type`, `term`, `date_created`, `date_modified`, `sch_id`) VALUES
-(1, 'Soap Making', 'Making liquid and Bar Soap', 'S107', 2, 1, 2, NULL, NULL, NULL),
-(2, 'Shoe Making', 'Making of shoes', 'S107', 2, 1, 1, NULL, NULL, NULL),
-(3, 'Mat Making', 'Making of MATS', 'S107', 2, 1, 3, NULL, NULL, NULL),
-(4, 'Car Repair', 'Repairing the vehichle', 'S106', 2, 1, 1, NULL, NULL, NULL),
-(5, 'Soap Making', 'Making liquid and Bar Soap', 'S107', 1, 1, 1, NULL, NULL, NULL);
+INSERT INTO `projects` (`id`, `name`, `project_code`, `description`, `subject_code`, `class_id`, `project_type`, `term`, `year`, `date_created`, `date_modified`, `sch_id`) VALUES
+(1, 'Soap Making', '', 'Making liquid and Bar Soap', 'S107', 2, 1, 2, 0, NULL, NULL, NULL),
+(2, 'Shoe Making', '', 'Making of shoes', 'S107', 2, 1, 1, 0, NULL, NULL, NULL),
+(3, 'Mat Making', '', 'Making of MATS', 'S107', 2, 1, 3, 0, NULL, NULL, NULL),
+(4, 'Car Repair', '', 'Repairing the vehichle', 'S106', 2, 1, 1, 0, NULL, NULL, NULL),
+(5, 'Brick Laying', '', 'Making liquid and Bar Soap', 'S107', 1, 1, 1, 0, NULL, NULL, NULL),
+(6, 'Bulb Making', '', 'Making of artificial Bulb\r\n', 'S105', 3, 1, 1, 0, NULL, NULL, NULL),
+(7, 'Bulb Making', '', 'Making of artificial Bulbs', 'S105', 2, 1, 1, 0, NULL, NULL, NULL),
+(8, 'Bread Baking', '', 'Making Bread', 'S107', 1, 1, 2, 0, NULL, NULL, NULL),
+(9, 'Chapati Making', '', 'Making Chapati', 'S107', 1, 1, 3, 0, NULL, NULL, NULL),
+(10, 'Making soyabeans', 'S104202101', 'Making soyas', 'S104', 1, 1, 1, 2021, NULL, NULL, NULL),
+(11, 'sxxxnmxc', 'S103202102', 'jxxkccjk', 'S103', 1, 2, 1, 2021, NULL, NULL, NULL),
+(12, 'Feature Phone', 'S101202301', 'skllxcm', 'S101', 3, 1, 1, 2023, NULL, NULL, NULL),
+(13, 'xcxaskskaj', 'S104202102', 'm,xzz', 'S104', 1, 1, 1, 2021, NULL, NULL, NULL),
+(14, 'Wensi Mujunante', 'S105202101', 'xmzzxnm', 'S105', 3, 1, 2, 2021, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -221,26 +240,31 @@ INSERT INTO `projects` (`id`, `name`, `description`, `subject_code`, `class_id`,
 CREATE TABLE `project_scores` (
   `id` int(11) NOT NULL,
   `student_lin` varchar(11) NOT NULL,
-  `project_id` int(11) NOT NULL,
+  `project_code` varchar(20) NOT NULL,
   `score` varchar(50) NOT NULL,
-  `status` int(11) NOT NULL DEFAULT 0,
+  `status` int(11) DEFAULT 0,
   `subject_code` varchar(20) NOT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp(),
   `date_modified` datetime DEFAULT NULL,
-  `sch_id` int(11) DEFAULT NULL
+  `sch_id` int(11) DEFAULT NULL,
+  `upload_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `project_scores`
 --
 
-INSERT INTO `project_scores` (`id`, `student_lin`, `project_id`, `score`, `status`, `subject_code`, `date_created`, `date_modified`, `sch_id`) VALUES
-(1, '240102', 3, '75', 0, 'S107', '2024-05-17 20:30:29', NULL, NULL),
-(3, '240102', 1, '67', 0, 'S107', '2024-05-17 20:56:02', NULL, NULL),
-(4, '240102', 2, '90', 0, 'S107', '2024-05-17 20:56:31', NULL, NULL),
-(5, '240102', 4, '73', 0, 'S106', '2024-05-17 20:30:29', NULL, NULL),
-(6, '240102', 5, '82', 0, 'S107', '2024-05-17 20:30:29', NULL, NULL),
-(7, '240101', 5, '89', 0, 'S107', '2024-05-21 14:25:54', NULL, NULL);
+INSERT INTO `project_scores` (`id`, `student_lin`, `project_code`, `score`, `status`, `subject_code`, `date_created`, `date_modified`, `sch_id`, `upload_id`) VALUES
+(1, '20220101', 'S105202101', '75', 0, 'S107', '2024-05-22 11:07:52', NULL, NULL, 28),
+(2, '20210101', 'S104202102', '67', 0, 'S107', '2024-05-22 11:07:52', NULL, NULL, 28),
+(3, '20230101', 'S101202301', '90', 0, 'S107', '2024-05-22 11:07:52', NULL, NULL, 28),
+(4, '20210101', 'S103202102', '73', 0, 'S106', '2024-05-22 11:07:52', NULL, NULL, 28),
+(5, '20220101', 'S104202101', '89', 0, 'S107', '2024-05-22 11:07:52', NULL, NULL, 28),
+(6, '20210101', 'S105202101', '75', 0, 'S107', '2024-05-22 11:07:52', NULL, NULL, 28),
+(7, '20220101', 'S104202102', '62', 0, 'S107', '2024-05-22 11:07:52', NULL, NULL, 28),
+(8, '20210101', 'S101202301', '78', 0, 'S107', '2024-05-22 11:07:52', NULL, NULL, 28),
+(9, '20230101', 'S103202102', '90', 0, 'S104', '2024-05-22 11:07:52', NULL, NULL, 28),
+(10, '20210101', 'S104202101', '90', 0, 'S103', '2024-05-22 11:07:52', NULL, NULL, 28);
 
 -- --------------------------------------------------------
 
@@ -262,6 +286,14 @@ CREATE TABLE `requests` (
   `modified_by` int(11) NOT NULL,
   `sch_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `requests`
+--
+
+INSERT INTO `requests` (`id`, `staff_email`, `lin`, `pid`, `cid`, `subject_code`, `request`, `date_created`, `created_by`, `date_modified`, `modified_by`, `sch_id`) VALUES
+(1, '', '240102', 5, 2, 'S106', 'There is need to Make Changes here', '2024-05-21 18:21:23', 0, '2024-05-21 18:21:23', 0, NULL),
+(2, '', '240102', 5, 2, 'S106', 'There is need to Make Changes here', '2024-05-21 18:22:25', 0, '2024-05-21 18:22:25', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -317,6 +349,15 @@ CREATE TABLE `staff` (
   `date_modified` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `staff`
+--
+
+INSERT INTO `staff` (`id`, `firstname`, `lastname`, `email`, `contact`, `image`, `role`, `description`, `sch_id`, `password`, `twitter`, `facebook`, `linkedin`, `instagram`, `upload_id`, `gender`, `date_created`, `date_modified`) VALUES
+(1, 'Nana', 'Shifah', 'shifah@gmail.com', '782921575', '', 'Lecturer', '', 0, 'a85ce12cd974d47b5f5150e69518f03c', NULL, NULL, NULL, NULL, 24, '', '2024-05-21 15:50:16', NULL),
+(2, 'Atim ', 'Eunice', 'eunice@gmail.com', '782922575', '', 'Lecturer', '', 0, 'e9eb5aee207c829057d39977bed150ea', NULL, NULL, NULL, NULL, 24, '', '2024-05-21 15:50:16', NULL),
+(3, 'Yeko', 'Shanurah', 'yekoshan@gmail.com', '782921375', '', 'Lecturer', '', 0, '5c201f53b1ebe6ae7695d19104f211b7', NULL, NULL, NULL, NULL, 24, '', '2024-05-21 15:50:16', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -351,6 +392,7 @@ CREATE TABLE `students` (
   `gender` varchar(50) NOT NULL,
   `password` varchar(50) DEFAULT NULL,
   `upload_id` int(11) DEFAULT NULL,
+  `year` int(11) NOT NULL,
   `date_created` datetime NOT NULL DEFAULT current_timestamp(),
   `created_by` int(11) DEFAULT NULL,
   `date_modified` datetime DEFAULT NULL,
@@ -361,11 +403,11 @@ CREATE TABLE `students` (
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`id`, `sch_id`, `firstname`, `lastname`, `email`, `lin`, `image`, `class`, `dob`, `gender`, `password`, `upload_id`, `date_created`, `created_by`, `date_modified`, `modified_by`) VALUES
-(5, 0, 'Anguyo', 'Benard', 'ben@gmail.com', '240101', 'uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png', 1, '0000-00-00', 'Male', '1a288eff17e4f46b65fe920f67f347f8', 21, '2024-05-20 17:35:43', NULL, NULL, NULL),
-(6, 0, 'Kiiza', 'Trevour', 'trev@gmail.com', '240102', 'uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png', 2, '0000-00-00', 'Male', '6f826db7290244d0c90c414f61f1e99d', 21, '2024-05-20 17:35:43', NULL, NULL, NULL),
-(7, 0, 'Alinda', 'Ronald', 'ronald@gmail.com', '240103', 'uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png', 3, '0000-00-00', 'Male', 'eba3217a012dc578bd10c18604bb2df9', 21, '2024-05-20 17:35:43', NULL, NULL, NULL),
-(8, 0, 'Opio', 'Deo', 'deo@gmail.com', '240104', 'uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png', 3, '0000-00-00', 'Male', 'fba47c87860f831ed5e19b213a0007f0', 21, '2024-05-20 17:35:43', NULL, NULL, NULL);
+INSERT INTO `students` (`id`, `sch_id`, `firstname`, `lastname`, `email`, `lin`, `image`, `class`, `dob`, `gender`, `password`, `upload_id`, `year`, `date_created`, `created_by`, `date_modified`, `modified_by`) VALUES
+(1, 0, 'Anguyo', 'Benard', 'ben@gmail.com', '20210101', 'uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png', 1, '0000-00-00', 'Male', '33c6aed5595821934180e44ab4fb106f', 26, 2021, '2024-05-22 10:39:28', NULL, NULL, NULL),
+(2, 0, 'Kiiza', 'Trevour', 'treur@gmail', '20220101', 'uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png', 2, '0000-00-00', 'Male', '50b967736f8b0df7b9ac7b4cde2d3a81', 26, 2022, '2024-05-22 10:39:28', NULL, NULL, NULL),
+(3, 0, 'Alinda', 'Ronald', 'ewew@gmail.com', '20210101', 'uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png', 3, '0000-00-00', 'Male', '33c6aed5595821934180e44ab4fb106f', 26, 2021, '2024-05-22 10:39:28', NULL, NULL, NULL),
+(4, 0, 'Opio', 'Deo', 'weejk@gmail.com', '20230101', 'uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png', 3, '0000-00-00', 'Male', '506ba42ec99eb6822ac83ed560da911d', 26, 2023, '2024-05-22 10:39:28', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -387,7 +429,10 @@ CREATE TABLE `student_subject` (
 --
 
 INSERT INTO `student_subject` (`id`, `student_lin`, `subject_code`, `date_created`, `date_modified`, `sch_id`) VALUES
-(1, '240102', 'S108,S107,S106,S105,S104,S103,S102,S101,S100', '2024-05-20 08:35:16', '2024-05-20 08:35:16', NULL);
+(1, '240102', 'S108,S107,S106,S105,S104,S103,S102,S101,S100', '2024-05-20 08:35:16', '2024-05-20 08:35:16', NULL),
+(2, '240101', 'S108,S107,S106,S105,S104,S103,S102,S101,S100', '2024-05-22 08:21:14', '2024-05-22 08:21:14', NULL),
+(3, '240106', 'S108,S107,S106,S105,S104,S103,S102,S101,S100', '2024-05-22 08:21:35', '2024-05-22 08:21:35', NULL),
+(4, '240105', 'S108,S107,S106,S105,S104,S103,S102,S101,S100', '2024-05-22 08:22:03', '2024-05-22 08:22:03', NULL);
 
 -- --------------------------------------------------------
 
@@ -458,7 +503,14 @@ INSERT INTO `upload_history` (`id`, `file_name`, `file`, `uploaded_by`, `categor
 (18, 'students (8)', 'uploads/uploads/students/students (8) on 05.19.48pm.csv', 3, 'students', '2024-05-20 17:19:48', '2024-05-20 17:19:48', NULL),
 (19, 'students (8)', 'uploads/uploads/students/students (8) on 05.24.10pm.csv', 14, 'students', '2024-05-20 17:24:10', '2024-05-20 17:24:10', NULL),
 (20, 'students (8)', 'uploads/uploads/students/students (8) on 05.29.45pm.csv', 1, 'students', '2024-05-20 17:29:45', '2024-05-20 17:29:45', NULL),
-(21, 'students (8)', 'uploads/uploads/students/students (8) on 05.35.43pm.csv', 1, 'students', '2024-05-20 17:35:43', '2024-05-20 17:35:43', NULL);
+(21, 'students (8)', 'uploads/uploads/students/students (8) on 05.35.43pm.csv', 1, 'students', '2024-05-20 17:35:43', '2024-05-20 17:35:43', NULL),
+(22, 'Exam Results (3)', 'uploads/uploads/results/Exam Results (3) on 03.26.30pm.csv', 1, 'results', '2024-05-21 15:26:30', '2024-05-21 15:26:30', NULL),
+(23, 'Exam Results (3)', 'uploads/uploads/results/Exam Results (3) on 03.37.52pm.csv', 1, 'results', '2024-05-21 15:37:52', '2024-05-21 15:37:52', NULL),
+(24, 'staff (5)', 'uploads/uploads/staff/staff (5) on 03.50.16pm.csv', 1, 'students', '2024-05-21 15:50:16', '2024-05-21 15:50:16', NULL),
+(25, 'students (10)', 'uploads/uploads/students/students (10) on 10.36.56am.csv', 14, 'students', '2024-05-22 10:36:56', '2024-05-22 10:36:56', NULL),
+(26, 'students (10)', 'uploads/uploads/students/students (10) on 10.39.28am.csv', 14, 'students', '2024-05-22 10:39:28', '2024-05-22 10:39:28', NULL),
+(27, 'Exam Results (5)', 'uploads/uploads/results/Exam Results (5) on 10.44.43am.csv', 14, 'results', '2024-05-22 10:44:44', '2024-05-22 10:44:44', NULL),
+(28, 'project_scores', 'uploads/uploads/projectresults/project_scores on 11.07.52am.csv', 14, 'projectresults', '2024-05-22 11:07:52', '2024-05-22 11:07:52', NULL);
 
 -- --------------------------------------------------------
 
@@ -484,11 +536,30 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `date_created`, `date_modified`, `user_type`, `photo`, `sch_id`, `lin`) VALUES
-(1, 'Kiiza Trevour', 'kiizatrevour33@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '2024-05-20 17:29:06', '2024-05-20 17:29:06', 'admin', '', NULL, ''),
+(1, 'Atim Eunice', 'kiizatrevour33@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '2024-05-20 17:29:06', '2024-05-20 17:29:06', 'admin', '', NULL, ''),
 (6, 'Anguyo Benard', 'ben@gmail.com', '1a288eff17e4f46b65fe920f67f347f8', '2024-05-20 17:35:43', '2024-05-20 17:35:43', 'student', '', NULL, '240101'),
 (7, 'Kiiza Trevour', 'trev@gmail.com', '6f826db7290244d0c90c414f61f1e99d', '2024-05-20 17:35:43', '2024-05-20 17:35:43', 'student', '', NULL, '240102'),
 (8, 'Alinda Ronald', 'ronald@gmail.com', 'eba3217a012dc578bd10c18604bb2df9', '2024-05-20 17:35:43', '2024-05-20 17:35:43', 'student', '', NULL, '240103'),
-(9, 'Opio Deo', 'deo@gmail.com', 'fba47c87860f831ed5e19b213a0007f0', '2024-05-20 17:35:43', '2024-05-20 17:35:43', 'student', '', NULL, '240104');
+(9, 'Opio Deo', 'deo@gmail.com', 'fba47c87860f831ed5e19b213a0007f0', '2024-05-20 17:35:43', '2024-05-20 17:35:43', 'student', '', NULL, '240104'),
+(10, 'Atim Eunice', 'kiizatrevour33@gmail.com', '1f46d7a93eb974822b68e193ed9945c1', '2024-05-21 15:01:58', '2024-05-21 15:01:58', 'student', '', NULL, '240105'),
+(11, 'Atim Eunice', 'kiizatrevour33@gmail.com', '94c2332e220ba5b32620b3ab816604e3', '2024-05-21 15:04:04', '2024-05-21 15:04:04', 'student', '', NULL, '240106'),
+(12, 'Kiiza Trevour', 'kiizatrevor33@gmail.com', 'b1b1d4641c5c1f687b76d8cb86e2f1e4', '2024-05-21 15:06:22', '2024-05-21 15:06:22', 'student', '', NULL, '240107'),
+(13, 'Nana Shifah', 'shifah@gmail.com', 'a85ce12cd974d47b5f5150e69518f03c', '2024-05-21 15:50:16', '2024-05-21 15:50:16', 'staff', '', NULL, ''),
+(14, 'Atim  Eunice', 'eunice@gmail.com', 'e9eb5aee207c829057d39977bed150ea', '2024-05-21 15:50:16', '2024-05-21 15:50:16', 'staff', '', NULL, ''),
+(15, 'Yeko Shanurah', 'yekoshan@gmail.com', '5c201f53b1ebe6ae7695d19104f211b7', '2024-05-21 15:50:16', '2024-05-21 15:50:16', 'staff', '', NULL, ''),
+(16, 'Kiiza Allen', 'maaj@djhsdjh', '8bbb684399be955dc8942a91d4c9f71f', '2024-05-22 10:19:10', '2024-05-22 10:19:10', 'student', '', NULL, '240108'),
+(17, 'Kiiza Trevour', 'sjk@gmail.com', 'e7203c7f56a5aff3b26b77d96ccb883e', '2024-05-22 10:20:14', '2024-05-22 10:20:14', 'student', '', NULL, '240109'),
+(18, 'Kiiza Trevour', 'sdjk@jsk', '42fa4a23a85ec5e0f4d6c7bf73e0ce46', '2024-05-22 10:20:58', '2024-05-22 10:20:58', 'student', '', NULL, '240110'),
+(19, 'Kiiza Trevour', 'fmdm@djk', '50b967736f8b0df7b9ac7b4cde2d3a81', '2024-05-22 10:28:04', '2024-05-22 10:28:04', 'student', '', NULL, '20220101'),
+(20, 'Kiiza Trevour', 'sjkjas@djk', '33c6aed5595821934180e44ab4fb106f', '2024-05-22 10:29:35', '2024-05-22 10:29:35', 'student', '', NULL, '20210101'),
+(21, 'Kiiza Trevour', '289338@djk', '33c6aed5595821934180e44ab4fb106f', '2024-05-22 10:30:23', '2024-05-22 10:30:23', 'student', '', NULL, '20210101'),
+(22, 'Kiiza Trevour', 'treur@gmail', '50b967736f8b0df7b9ac7b4cde2d3a81', '2024-05-22 10:36:56', '2024-05-22 10:36:56', 'student', '', NULL, '20220101'),
+(23, 'Alinda Ronald', 'ewew@gmail.com', '33c6aed5595821934180e44ab4fb106f', '2024-05-22 10:36:56', '2024-05-22 10:36:56', 'student', '', NULL, '20210101'),
+(24, 'Opio Deo', 'weejk@gmail.com', '506ba42ec99eb6822ac83ed560da911d', '2024-05-22 10:36:56', '2024-05-22 10:36:56', 'student', '', NULL, '20230101'),
+(25, 'Anguyo Benard', 'ben@gmail.com', '33c6aed5595821934180e44ab4fb106f', '2024-05-22 10:39:28', '2024-05-22 10:39:28', 'student', '', NULL, '20210101'),
+(26, 'Kiiza Trevour', 'treur@gmail', '50b967736f8b0df7b9ac7b4cde2d3a81', '2024-05-22 10:39:28', '2024-05-22 10:39:28', 'student', '', NULL, '20220101'),
+(27, 'Alinda Ronald', 'ewew@gmail.com', '33c6aed5595821934180e44ab4fb106f', '2024-05-22 10:39:28', '2024-05-22 10:39:28', 'student', '', NULL, '20210101'),
+(28, 'Opio Deo', 'weejk@gmail.com', '506ba42ec99eb6822ac83ed560da911d', '2024-05-22 10:39:28', '2024-05-22 10:39:28', 'student', '', NULL, '20230101');
 
 -- --------------------------------------------------------
 
@@ -625,7 +696,7 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `classes`
 --
 ALTER TABLE `classes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `config`
@@ -637,25 +708,25 @@ ALTER TABLE `config`
 -- AUTO_INCREMENT for table `exam_results`
 --
 ALTER TABLE `exam_results`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `project_scores`
 --
 ALTER TABLE `project_scores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `requests`
 --
 ALTER TABLE `requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `schools`
@@ -667,7 +738,7 @@ ALTER TABLE `schools`
 -- AUTO_INCREMENT for table `staff`
 --
 ALTER TABLE `staff`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `staff_subject`
@@ -679,31 +750,31 @@ ALTER TABLE `staff_subject`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `student_subject`
 --
 ALTER TABLE `student_subject`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `subjects`
 --
 ALTER TABLE `subjects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `upload_history`
 --
 ALTER TABLE `upload_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `visitors`

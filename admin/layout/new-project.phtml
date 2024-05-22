@@ -17,6 +17,33 @@
 				</div>
 				<div class="col-md-4">
 					<div class="form-group">
+						<label class="form-label">Project Name</label>
+						<input type="text" required name="name" class="form-control" placeholder="Enter Project Name eg Group">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Project Type </label>
+                        <select type="text"  name="project_type" class="form-control">
+                            <option>-----Select Project Type-----</option>
+                            <option value="1">Individual</option>
+                            <option value="2">Group</option>
+                        </select>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label"> Year of Entry</label>
+                        <select type="text"  name="year" class="form-control">
+                            <option>-----Select  Year -----</option>
+							<?php foreach(getLastFourYears() as $key=>$value):?>
+                            <option value="<?=$value->year?>"><?=$value->year?></option>
+							<?php endforeach;?>
+                        </select>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
 						<label class="form-label">Class</label>
                         <select type="text"  name="class_id" class="form-control">
                             <?php  foreach($db->orderBy('id','DESC')->get('classes') as $key=>$value): ?>
@@ -34,22 +61,6 @@
                             <option value="2">Term Two</option>
                             <option value="3">Term Three</option>
                         </select>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="form-group">
-						<label class="form-label">Project Type </label>
-                        <select type="text"  name="project_type" class="form-control">
-                            <option>-----Select Project Type-----</option>
-                            <option value="1">Individual</option>
-                            <option value="2">Group</option>
-                        </select>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<div class="form-group">
-						<label class="form-label">Project Name</label>
-						<input type="text" required name="name" class="form-control" placeholder="Enter Project Name eg Group">
 					</div>
 				</div>
 				<div class="col-md-12">

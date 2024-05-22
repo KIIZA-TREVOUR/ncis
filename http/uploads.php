@@ -104,11 +104,12 @@
 				$firstname = $row[1];
 				$lastname = $row[2];
 				$email = $row[3];
-				$lin = getStudentLinNumber();
-				$image = $row[4];
-				$class = $row[5];
-				$dob = $row[6];
-				$gender = $row[7];
+				$year = $row[4];
+				$lin = getStudentLinNumber($year);
+				$image = $row[5];
+				$class = $row[6];
+				$dob = $row[7];
+				$gender = $row[8];
 				$password = md5('@'.$lin);
 				$upload_id = getLatestId('id','upload_history');
 		
@@ -116,13 +117,13 @@
 				$exists = exists('students', 'WHERE email = "'.$email.'"');
 				if (!$exists) {
 					// Use prepared statements to prevent SQL injection
-					$query = "INSERT INTO students (sch_id, firstname, lastname, email, lin, image, class, dob, gender, password, upload_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+					$query = "INSERT INTO students (sch_id, firstname, lastname, email, lin, image, class, dob, gender, password, upload_id,year) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 		
 					// Prepare the statement
 					$stmt = mysqli_prepare($sqlConnect, $query);
 		
 					if ($stmt) {
-						mysqli_stmt_bind_param($stmt, "isssssssssi", $sch_id, $firstname, $lastname, $email, $lin, $image, $class, $dob, $gender, $password, $upload_id);
+						mysqli_stmt_bind_param($stmt, "isssssssssii", $sch_id, $firstname, $lastname, $email, $lin, $image, $class, $dob, $gender, $password, $upload_id,$year);
 		
 						if (mysqli_stmt_execute($stmt)) {
 							$dataImported = true;
@@ -355,9 +356,6 @@
 				);
 			}
 		
-			// Close the statements
-			mysqli_stmt_close($stmt);
-			mysqli_stmt_close($history_stmt);
 		}
 		
 		if ($s == 'upload-results') {
@@ -438,10 +436,88 @@
 				);
 			}
 		
-			// Close the statements
-			mysqli_stmt_close($stmt);
-			mysqli_stmt_close($history_stmt);
 		}
+		
+		if ($s == 'upload-project-results') {
+			global $sqlConnect; // Assuming $sqlConnect is defined globally
+		
+			$fileName = $_FILES["project_results_data"]["name"];
+			// Remove the file extension from the filename
+			$fileNameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
+			$fileExtension = explode('.', $fileName);
+			$fileExtension = strtolower(end($fileExtension));
+			$newFileName = $fileNameWithoutExtension . " on " . date("h.i.sa") . "." . $fileExtension;
+			$targetDirectory = "uploads/uploads/projectresults/" . $newFileName;
+			move_uploaded_file($_FILES['project_results_data']['tmp_name'], $targetDirectory);
+			require 'init/excel/excel_reader2.php';
+			require 'init/excel/SpreadsheetReader.php';
+            
+			$reader = new SpreadsheetReader($targetDirectory);
+			
+			$dataImported = false; // A flag to check if data was imported
+            foreach ($reader as $key => $row) {
+				if($key==0){
+					continue;
+				}
+				$student_lin = $row[0];
+				$project_code = $row[1];
+				$score = $row[2];
+				$subject_code = $row[3];
+				$upload_id = getLatestId('id','upload_history');
+				// Check if the record already exists
+				$exists = exists('project_scores', 'WHERE student_lin = "'.$student_lin.'"  AND project_code = "'.$project_code.'"');
+				if (!$exists) {
+					// Use prepared statements to prevent SQL injection
+					$query = "INSERT INTO project_scores (student_lin,project_code,score,subject_code,upload_id) VALUES (?,?,?,?,?)";
+			
+					// Prepare the statement
+					$stmt = mysqli_prepare($sqlConnect, $query);
+			
+					if ($stmt) {
+						mysqli_stmt_bind_param($stmt, "ssssi", $student_lin,$project_code,$score,$subject_code,$upload_id);
+			
+						if (mysqli_stmt_execute($stmt)) {
+							$dataImported = true;
+						}
+					}
+				} else {
+					// If the record already exists, skip insertion
+					continue;
+				}
+			}
+			$history = array(
+				'file_name' => $fileNameWithoutExtension, // Use the filename without extension
+				'file' => $targetDirectory,
+				'uploaded_by' => $wallet['user']['id'],
+				'category' => 'projectresults',
+			);
+		
+			// Save the upload history only once, after processing all rows
+			if ($dataImported) {
+				$history_query = "INSERT INTO upload_history (file_name, file, uploaded_by,category) VALUES (?, ?, ?,?)";
+				$history_stmt = mysqli_prepare($sqlConnect, $history_query);
+		
+				if ($history_stmt) {
+					mysqli_stmt_bind_param($history_stmt, "ssss", $history['file_name'], $history['file'], $history['uploaded_by'],$history['category']);
+		
+					if (mysqli_stmt_execute($history_stmt)) {
+						$data = array(
+							'status' => 200,
+							'message' => 'Project Results Data Imported Successfully',
+							'url' => 'index.php?page=upload',
+						);
+					}
+				}
+			} else {
+				$data = array(
+					'status' => 201,
+					'message' => 'Data Importation Failed',
+					'url' => 'index.php?page=uploads',
+				);
+			}
+		
+		}
+		
 		if ($s == 'remove') {
 			$id = __secure($_POST['id']);
 			$filepath = $db->where('id',$id)->getOne('upload_history');

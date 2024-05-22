@@ -69,7 +69,7 @@
                      echo $class->name; 
                      ?></td>
                   <td><?php
-                     $project = $db->where('id', $value->project_id)->getOne('projects');
+                     $project = $db->where('project_code', $value->project_code)->getOne('projects');
                      echo $project->name; 
                      ?></td>
                   <td><?php
@@ -140,7 +140,7 @@
                      echo $class->name; 
                      ?></td>
                   <td><?php
-                     $project = $db->where('id', $value->project_id)->getOne('projects');
+                     $project = $db->where('project_code', $value->project_code)->getOne('projects');
                      echo $project->subject_code; 
                      ?></td>
                   <td><?php

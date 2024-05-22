@@ -1,5 +1,0 @@
-sch_id,firstname,lastname,email,image,class,dob,gender,date_created,created_by,date_modified,modified_by
-0,Anguyo,Benard,ben@gmail.com,uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png,1,4/29/2024,Male,5/6/2024 15:58,NULL,NULL,NULL
-0,Kiiza,Trevour,trev@gmail.com,uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png,2,4/29/2024,Male,5/6/2024 15:58,NULL,NULL,NULL
-0,Alinda,Ronald,ronald@gmail.com,uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png,3,4/29/2024,Male,5/6/2024 15:58,NULL,NULL,NULL
-0,Opio,Deo,deo@gmail.com,uploads/students/7bbfbd9a7d216cc7f2c9a157be58d860.png,3,4/29/2024,Male,5/6/2024 15:58,NULL,NULL,NULL

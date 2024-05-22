@@ -9,12 +9,14 @@
 				}
 			}
 			
-			$password =__secure(md5('@'.getStudentLinNumber()));
-			$lin = getStudentLinNumber();
+			$year = __secure($_POST['year']);
+			$password =__secure(md5('@'.getStudentLinNumber($year)));
+			$lin = getStudentLinNumber($year);
 			$insert = array(
 				'firstname'	=>	__secure($_POST['firstname']),
 				'lastname'	=>	__secure($_POST['lastname']),
 				'email'	=>	__secure($_POST['email']),
+				'year'	=>	$year,
 				'lin'	=>	$lin,
 				'class'	=>	__secure($_POST['class']),
 				'dob'	=>	__secure($_POST['dob']),
@@ -32,14 +34,15 @@
 			if(exists('students','WHERE email = "'.__secure($_POST['email']).'" OR lin = "'.__secure($_POST['email']).'"')){
 				$data = array(
 					'status'	=>	201,
-					'message'	=>	'Student Already Exists'
+					'message'	=>	'Student Already Exists',
 				);
 			}else{
 				if (save_data('students',$insert)) {
 					save_data('users',$uinsert);
 					$data = array(
 						'status'	=>	200,
-						'message'	=>	'Student Member added successfully'
+						'message'	=>	'Student Member added successfully',
+						'url'	=>	'admin.php?page=students',
 					);
 				}else{
 					$data = array(
