@@ -417,8 +417,6 @@
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i data-feather="copy"></i><span>General Settings</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=settings">Website Setup</a></li>
-                           <li><a class="nav-link" href="#">Home Sliders</a></li>
-                           <li><a href="#">Testimonials</a></li>
                         </ul>
                      </li>
                   </ul>
