@@ -8,21 +8,18 @@ if ($s == 'login') {
     $hashed_password = md5($password);
     
     $isLoggedIn = false;
-
-    if (isEmail($username)) {
+    if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
         $isLoggedIn = login($username, $hashed_password);
     } elseif (isNumber($username)) {
         $isLoggedIn = studentLogin($username, $hashed_password);
     }
-
     if ($isLoggedIn) {
         // Fetch user from database
-        if (isEmail($username)) {
+        if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
             $user = $db->where('email', $username)->getOne('users');
         } else {
-            $user = $db->where('lin', $username)->getOne('students');
+            $user = $db->where('lin', $username)->getOne('users');
         }
-
         if ($user) {
             $_SESSION['user_id'] = $user->id;
             $_COOKIE['user_id'] = $user->id;
@@ -45,7 +42,7 @@ if ($s == 'login') {
                     'message' => 'Student Login Successful',
                     'url' => 'admin.php?page=index'
                 );
-            } else {
+            }else{
                 $data = array(
                     'status' => 201,
                     'message' => 'Not Registered, Contact Admin'

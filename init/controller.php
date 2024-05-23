@@ -89,15 +89,37 @@ function save_data($table,$_data){
 }
 
 
-function login($email,$password){
-    global $sqlConnect,$db;
-    $d = mysqli_query($sqlConnect,"SELECT * FROM users WHERE email = '$email' AND password = '$password'");
-
-    if (mysqli_num_rows($d) > 0) {
-        return true;
+function login($email_or_username, $password) {
+    global $sqlConnect; // Assuming $sqlConnect is your database connection
+    
+    // Check if the input is an email or username
+    if (filter_var($email_or_username, FILTER_VALIDATE_EMAIL)) {
+        // If it's an email, prepare the statement to query by email
+        $stmt = mysqli_prepare($sqlConnect, "SELECT * FROM users WHERE email = ? AND password = ?");
+    } else {
+        // If it's a username, prepare the statement to query by username
+        $stmt = mysqli_prepare($sqlConnect, "SELECT * FROM users WHERE lin = ? AND password = ?");
     }
-    return false;
+    
+    // Bind parameters
+    mysqli_stmt_bind_param($stmt, "ss", $email_or_username, $password);
+    
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+    
+    // Store the result
+    mysqli_stmt_store_result($stmt);
+    
+    // Check if user exists
+    if (mysqli_stmt_num_rows($stmt) > 0) {
+        mysqli_stmt_close($stmt);
+        return true;
+    } else {
+        mysqli_stmt_close($stmt);
+        return false;
+    }
 }
+
 function studentLogin($lin,$password){
     global $sqlConnect,$db;
     $d = mysqli_query($sqlConnect,"SELECT * FROM users WHERE lin = '$lin' AND password = '$password'");

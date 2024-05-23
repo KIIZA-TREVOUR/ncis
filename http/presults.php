@@ -43,7 +43,7 @@
 			}
 			
 		}
-
+ 
 		if ($s == 'remove') {
 			$id = __secure($_POST['id']);
 			if ($db->where('id',$id)->delete('projects')) {

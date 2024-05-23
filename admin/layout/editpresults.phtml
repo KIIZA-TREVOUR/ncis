@@ -26,7 +26,151 @@
    </div>
 </center>
 <?php if(isset($_GET['lin'])): 
-    $student = $db->where('lin',$_GET['lin'])->getOne('students');?>
+    
+$student = $db->where('lin',$_GET['lin'])->getOne('students');?>
+
+<?php if($student->class ==1):?>
+<div class="card card-info">
+   <div class="card-header">
+      <h4><?=$student->firstname?> <?=$student->lastname?>'s Project Results</h4>
+      <div class="card-header-action">
+         <a href="admin.php?page=new-student&class=<?=$_GET['class']?>" class="btn btn-info">Add New</a>
+      </div>
+   </div>
+   <div class="card-body">
+      <div class="table-responsive">
+         <table class="table table-striped table-hover table-bordered" id="tableExport"  style="width: 100%">
+            <thead>
+            <tr>
+                <th>S/N</th>
+                <th>Subject</th>
+                <th>Senior One(5%)</th>
+                <th>Total Project Mark (20%)</th>
+                <th>View Ledger</th>
+            </tr>
+            </thead>
+            <tbody>
+                <?php $num=0;
+                $results = $db->groupBy('subject_code')->get('project_scores');
+                foreach($results as $value):
+                    $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                    $subject = $db->where('code',$project->subject_code)->getOne('subjects');
+                ?>
+                <tr>
+                    <td><?=$num+=1?></td>
+                    <td><?=$subject->name?></td>
+                    <td><?= $year1 =round(getTotalScoresForSubject($_GET['lin'], $project->subject_code, 1),2)?></td>
+                    <td><?= $total =($year1) ?></td>
+                    <td>
+                        <div class="d-flex">
+                            <a href="admin.php?page=result-ledger&lin=<?=$_GET['lin']?>&subject_code=<?=$project->subject_code?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
+                        </div>
+                    </td>
+                </tr>
+                <?php endforeach;?>
+            </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<?php elseif($student->class ==2):?>
+<div class="card card-info">
+   <div class="card-header">
+      <h4><?=$student->firstname?> <?=$student->lastname?>'s Project Results</h4>
+      <div class="card-header-action">
+         <a href="admin.php?page=new-student&class=<?=$_GET['class']?>" class="btn btn-info">Add New</a>
+      </div>
+   </div>
+   <div class="card-body">
+      <div class="table-responsive">
+         <table class="table table-striped table-hover table-bordered" id="tableExport"  style="width: 100%">
+            <thead>
+            <tr>
+                <th>S/N</th>
+                <th>Subject</th>
+                <th>Senior One(5%)</th>
+                <th>Senior Two(5%)</th>
+                <th>Total Project Mark (20%)</th>
+                <th>View Ledger</th>
+            </tr>
+            </thead>
+            <tbody>
+                <?php $num=0;
+                $results = $db->groupBy('subject_code')->get('project_scores');
+                foreach($results as $value):
+                    $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                    $subject = $db->where('code',$project->subject_code)->getOne('subjects');
+                ?>
+                <tr>
+                    <td><?=$num+=1?></td>
+                    <td><?=$subject->name?></td>
+                    <td><?= $year1 =round(getTotalScoresForSubject($_GET['lin'], $project->subject_code, 1),2)?></td>
+                    <td><?= $year2 =round(getTotalScoresForSubject($_GET['lin'], $project->subject_code, 2),2)?></td>
+                    <td><?= $total =($year1+$year2) ?></td>
+                    <td>
+                        <div class="d-flex">
+                            <a href="admin.php?page=result-ledger&lin=<?=$_GET['lin']?>&subject_code=<?=$project->subject_code?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
+                        </div>
+                    </td>
+                </tr>
+                <?php endforeach;?>
+            </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<?php elseif($student->class ==3):?>
+<div class="card card-info">
+   <div class="card-header">
+      <h4><?=$student->firstname?> <?=$student->lastname?>'s Project Results</h4>
+      <div class="card-header-action">
+         <a href="admin.php?page=new-student&class=<?=$_GET['class']?>" class="btn btn-info">Add New</a>
+      </div>
+   </div>
+   <div class="card-body">
+      <div class="table-responsive">
+         <table class="table table-striped table-hover table-bordered" id="tableExport"  style="width: 100%">
+            <thead>
+            <tr>
+                <th>S/N</th>
+                <th>Subject</th>
+                <th>Senior One(5%)</th>
+                <th>Senior Two(5%)</th>
+                <th>Senior Three(5%)</th>
+                <th>Total Project Mark (20%)</th>
+                <th>View Ledger</th>
+            </tr>
+            </thead>
+            <tbody>
+                <?php $num=0;
+                $results = $db->groupBy('subject_code')->get('project_scores');
+                foreach($results as $value):
+                    $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                    $subject = $db->where('code',$project->subject_code)->getOne('subjects');
+                ?>
+                <tr>
+                    <td><?=$num+=1?></td>
+                    <td><?=$subject->name?></td>
+                    <td><?= $year1 =round(getTotalScoresForSubject($_GET['lin'], $project->subject_code, 1),2)?></td>
+                    <td><?= $year2 =round(getTotalScoresForSubject($_GET['lin'], $project->subject_code, 2),2)?></td>
+                    <td><?= $year3 =round(getTotalScoresForSubject($_GET['lin'], $project->subject_code, 3),2)?></td>
+                    <td><?= $total =($year1+$year2+$year3) ?></td>
+                    <td>
+                        <div class="d-flex">
+                            <a href="admin.php?page=result-ledger&lin=<?=$_GET['lin']?>&subject_code=<?=$project->subject_code?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
+                        </div>
+                    </td>
+                </tr>
+                <?php endforeach;?>
+            </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<?php elseif($student->class ==4):?>
 <div class="card card-info">
    <div class="card-header">
       <h4><?=$student->firstname?> <?=$student->lastname?>'s Project Results</h4>
@@ -77,6 +221,7 @@
       </div>
    </div>
 </div>
+<?php endif;?>
 <?php else:?>
 <div class="card card-info">
    <div class="card-header">

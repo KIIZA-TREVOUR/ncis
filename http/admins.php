@@ -78,5 +78,38 @@
 				);
 			}
 		}
+
+		
+		if ($s == 'editadmin') {
+			$id = __secure($_POST['id']);
+			$users = $db->where('id',$id)->getOne('users');
+			$url = __secure($_POST['uimage']);
+			$allowTypes = array('image/bmp', 'image/jpeg', 'image/x-png', 'image/png', 'image/gif');
+			if (!empty($_FILES['image'])) {
+				if (in_array($_FILES['image']['type'], $allowTypes)) {
+					$url = share_file('image','uploads/admins/',true,364,364);
+				}
+			}
+			$insert = array(
+				'name'	=>	__secure($_POST['name']),
+				'email'	=>	__secure($_POST['email']),
+				'photo'	=>	__secure($url),
+			);
+			if (update_data('users',$insert,'WHERE id = "'.$id.'"')) {
+				$data = array(
+					'status' => 200,
+					'message'	=>	'Profile Updated Successfully',
+					'url' => 'admin.php?page=profile'
+				);
+			}else{
+				$data = array(
+					'status' => 201,
+					'message'	=>	'Something went wrong'
+				);
+			}
+			
+		}
+
+
 	}
 ?>

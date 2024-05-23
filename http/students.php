@@ -19,7 +19,6 @@
 				'year'	=>	$year,
 				'lin'	=>	$lin,
 				'class'	=>	__secure($_POST['class']),
-				'dob'	=>	__secure($_POST['dob']),
 				'gender'	=>	__secure($_POST['gender']),
 				'image'	=>	__secure($url),
 				'password'	=>	$password
@@ -71,7 +70,6 @@
 				'firstname'	=>	__secure($_POST['firstname']),
 				'lastname'	=>	__secure($_POST['lastname']),
 				'email'	=>	__secure($_POST['email']),
-				'dob'	=>	__secure($_POST['dob']),
 				'gender'	=>	__secure($_POST['gender']),
 				'class'	=>	__secure($_POST['class']),
 				'image'	=>	__secure($url),

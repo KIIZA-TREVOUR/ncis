@@ -36,7 +36,6 @@ if(logged_in() && $wallet['user']['user_type']=='admin'):?>
                   <th>Email</th>
                   <th>LIN</th>
                   <th>Class</th>
-                  <th>Date of Birth</th>
                   <th>Date Added</th>
                   <th>Action</th>
                </tr>
@@ -52,7 +51,6 @@ if(logged_in() && $wallet['user']['user_type']=='admin'):?>
                   <td><?= $value->email ?></td>
                   <td><?=$value->lin ?></td>
                   <td><?=$class->name ?></td>
-                  <td><?=$value->dob ?></td>
                   <td><?= date('d/m/Y', strtotime($value->date_created)) ?></td>
                   <td>
                      <div class="d-flex">

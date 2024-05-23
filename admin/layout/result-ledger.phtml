@@ -39,7 +39,7 @@ if(logged_in() && $wallet['user']['user_type']=='admin'):
 					</tr>
 				</thead>
 				<tbody>
-				<?php $n=1; foreach($db->orderBy('id','DESC')->get('project_scores') as $key=>$value): 
+				<?php $n=1; foreach($db->orderBy('id','DESC')->where('subject_code',$_GET['subject_code'])->get('project_scores') as $key=>$value): 
 					$project = $db->where('project_code',$value->project_code)->getOne('projects');
 					?>
 					<tr>

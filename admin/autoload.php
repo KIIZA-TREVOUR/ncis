@@ -391,7 +391,6 @@
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="command"></i><span>Manage Results</span></a>
                         <ul class="dropdown-menu">
-                           <li><a class="nav-link" href="admin.php?page=school-results">All Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=assign-results">Assign Project Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=projectresults">All Project Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=editpresults">Track Project Results</a></li>
@@ -617,7 +616,6 @@
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="command"></i><span>Project Results</span></a>
                         <ul class="dropdown-menu">
-                           <li><a class="nav-link" href="admin.php?page=school-results">All Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=assign-results">Assign Project Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=projectresults">All Project Results</a></li>
                            <li><a class="nav-link" href="admin.php?page=editpresults">Track Project Results</a></li>
@@ -760,15 +758,13 @@
                      <a href="#" data-toggle="dropdown"
                         class="nav-link dropdown-toggle nav-link-lg nav-link-user"> 
                      <img alt="image"  src="<?= $wallet['config']['site_url'] .
-                        $wallet['student'][
-                            'image'
+                        $wallet['user'][
+                            'photo'
                         ] ?>" class="user-img-radious-style" onerror="this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/avatar.png'"> <span
                         class="d-sm-none d-lg-inline-block"></span></a>
                      <div class="dropdown-menu dropdown-menu-right pullDown">
-                        <div class="dropdown-title">Hello <?= $wallet[
-                           'student'
-                           ]['lastname'] ?></div>
-                        <a href="#" class="dropdown-item has-icon"> 
+                        <div class="dropdown-title">Hello <?= $wallet['user']['name'] ?></div>
+                        <a href="admin.php?page=profile" class="dropdown-item has-icon"> 
                         <i class="far fa-user"></i> Profile
                         </a> 
                         <!-- <div class="dropdown-divider"></div> -->
@@ -795,19 +791,12 @@
                         <a href="admin.php?page=dashboard" class="nav-link"><i
                            data-feather="monitor"></i><span>Dashboard</span></a>
                      </li>
-                     <li class="dropdown <?php if($page == 'projects' || $page == 'new-project'|| $page == 'edit-project'){echo 'active';}?>">
-                        <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="command"></i><span>Projects</span></a>
-                        <ul class="dropdown-menu">
-                           <li><a class="nav-link" href="admin.php?page=projects">All Projects</a></li>
-                        </ul>
-                     </li>
-                     <li class="dropdown">
+                     <li class="dropdown <?php if($page == 'my-project-results' || $page == 'report-card'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
                            data-feather="briefcase"></i><span>My Results</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=my-project-results">Project Results</a></li>
-                           <li><a class="nav-link" href="admin.php?page=report-card">Report Card</a></li>
+                           <li><a class="nav-link" href="admin.php?page=my-result-ledger">My Project Ledger</a></li>
                         </ul>
                      </li>
                   </ul>
