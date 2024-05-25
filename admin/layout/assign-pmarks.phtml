@@ -22,7 +22,7 @@ $student = $db->where('lin', $lin)->getOne('students');
                      <label class="form-label"></label>
                      <select class="form-control select2" name="project" >
                         <option value="">--------Choose Project-------</option>
-							<?php $n=1; foreach($db->get('projects') as $key=>$value): ?>
+							<?php $n=1; foreach($db->where('year',$student->year)->get('projects') as $key=>$value): ?>
                             <option value="<?=$value->project_code?>"><?=$value->project_code?>-<?=$value->name?></option>
                         <?php endforeach;?>
                      </select>

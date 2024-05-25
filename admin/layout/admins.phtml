@@ -14,7 +14,6 @@
 						<th>Image</th>
 						<th>Name</th>
 						<th>Email</th>
-						<th>School</th>
 						<th>Date Added</th>
 						<th>Action</th>
 					</tr>
@@ -28,7 +27,6 @@
 						<td> <img src="<?=$wallet['config']['site_url'].$value->image?>" height="40" onerror="this.onerror=null;this.src='<?=$wallet['config']['site_url'] ?>layout/assets/img/avatar.png';"> </td>
 						<td><?= $value->firstname ?> <?= $value->lastname ?></td>
 						<td><?= $value->email ?></td>
-						<td><?=$school->name ?></td>
 						<td><?=  filterDate($value->date_created) ?></td>
 						<td>
 							<div class="d-flex">

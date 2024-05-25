@@ -402,33 +402,29 @@ function getLatestId($columnName,$tableName)
     }
 }
 
- 
-function generateStudentNumber($year) {
-    
-    // Append "0100" to the year
-    $studentNumber = $year . "0100";
-    
-    return $studentNumber;
+function generateInitialLinNumber($year) {
+    // Start the sequence from 0101 for the given year
+    return $year . "0101";
 }
 
 function getStudentLinNumber($year) {
     global $sqlConnect;
-    
+
     // Prepare the SQL query to get the max LIN number for the given year
-    $sql = "SELECT MAX(lin) AS max_lin FROM students WHERE LEFT(lin, 2) = '{$year}'";
+    $sql = "SELECT MAX(lin) AS max_lin FROM students WHERE LEFT(lin, 4) = '{$year}'";
     $result = mysqli_query($sqlConnect, $sql);
     $row = mysqli_fetch_assoc($result);
-    
+
     // Check if the latest LIN number is empty, null, or 0
     if ($row['max_lin'] === null || $row['max_lin'] === '' || $row['max_lin'] == 0) {
         // If no LIN number exists for the given year, generate the first LIN number for that year
-        return generateStudentNumber($year) + 1;
+        return generateInitialLinNumber($year);
     } else {
         // Extract the numeric part from the latest LIN number
-        $numericPart = substr($row['max_lin'], -4);
+        $numericPart = (int)substr($row['max_lin'], 4);
 
         // Increment the numeric part
-        $nextNumber = (int)$numericPart + 1;
+        $nextNumber = $numericPart + 1;
 
         // Combine the year and the incremented numeric part to form the new LIN number
         $newLinNumber = $year . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
@@ -436,6 +432,7 @@ function getStudentLinNumber($year) {
         return $newLinNumber;
     }
 }
+
 function record_visitor(){
     global $db, $sqlConnect;
     // Get the visitor's IP address

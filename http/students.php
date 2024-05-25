@@ -30,10 +30,10 @@
 				'lin'	=>	$lin,
 				'user_type'	=>	'student',
 			);
-			if(exists('students','WHERE email = "'.__secure($_POST['email']).'" OR lin = "'.__secure($_POST['email']).'"')){
+			if(exists('students','WHERE email = "'.__secure($_POST['email']).'" OR lin = "'.$lin.'"')){
 				$data = array(
 					'status'	=>	201,
-					'message'	=>	'Student Already Exists',
+					'message'	=>	'Student Already Exists'.$lin,
 				);
 			}else{
 				if (save_data('students',$insert)) {
@@ -127,6 +127,8 @@
 		if ($s == 'remove') {
 			$id = __secure($_POST['id']);
 			if ($db->where('id',$id)->delete('students')) {
+				$user = $db->where('id',$id)->getOne('studentw');
+				$db->where('lin',$user->lin)->delete('users');
 				$data = array(
 					'status'	=>	200,
 					'message'	=>	'Student Deleted Successfully'

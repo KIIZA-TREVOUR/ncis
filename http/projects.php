@@ -217,33 +217,47 @@
 				);
 			}
 		}
-
 		if ($s == 'assign') {
 			if (!empty($_POST['project']) && !empty($_POST['marks'])) {
 				$project = $db->where('project_code', __secure($_POST['project']))->getOne('projects');
 		
 				if ($project) { // Check if the project is found
-					$insert = array(
-						'student_lin'   => __secure($_POST['student_lin']),
-						'project_code'    => __secure($_POST['project']),
-						'subject_code'  => $project->subject_code,
-						'score'         => __secure($_POST['marks']),
-					);
+					$studentLin = __secure($_POST['student_lin']);
+					$subjectCode = $project->subject_code;
 		
-					$exists = exists('project_scores', 'WHERE project_code ="' . __secure($_POST['project']) . '" AND subject_code ="' . $project->subject_code . '" AND student_lin = "' . __secure($_POST['student_lin']) . '"');
+					// Check if the student is assigned to the subject
+					$studentSubjects = $db->where('student_lin', $studentLin)->getOne('student_subject');
+					$subjectCodes = explode(',', $studentSubjects->subject_code);
 		
-					if ($exists) {
-						$data = array(
-							'status'    => 201,
-							'message'   => 'Student Already Assigned Project Marks',
-							'url'       => 'admin.php?page=projectresults&class=' . __secure($_POST['class']),
+					if (in_array($subjectCode, $subjectCodes)) {
+						$insert = array(
+							'student_lin'   => $studentLin,
+							'project_code'  => __secure($_POST['project']),
+							'subject_code'  => $subjectCode,
+							'score'         => __secure($_POST['marks']),
 						);
+		
+						$exists = exists('project_scores', 'WHERE project_code ="' . __secure($_POST['project']) . '" AND subject_code ="' . $subjectCode . '" AND student_lin = "' . $studentLin . '"');
+		
+						if ($exists) {
+							$data = array(
+								'status'    => 201,
+								'message'   => 'Student Already Assigned Project Marks',
+								'url'       => 'admin.php?page=projectresults&class=' . __secure($_POST['class']),
+							);
+						} else {
+							save_data('project_scores', $insert);
+							$data = array(
+								'status'    => 200,
+								'message'   => 'Student Assigned Project Marks',
+								'url'       => 'admin.php?page=assign-pmarks&lin=' . $studentLin,
+							);
+						}
 					} else {
-						save_data('project_scores', $insert);
 						$data = array(
-							'status'    => 200,
-							'message'   => 'Student Assigned Project Marks',
-							'url'       => 'admin.php?page=assign-pmarks&lin=' . __secure($_POST['student_lin']),
+							'status'    => 403,
+							'message'   => 'Student is not assigned to the subject of the selected project',
+							'url'       => 'admin.php?page=assign-results',
 						);
 					}
 				} else {
@@ -261,6 +275,7 @@
 				);
 			}
 		}
+		
 		
 		
         

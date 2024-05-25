@@ -12,11 +12,17 @@
 				'firstname'	=>	__secure($_POST['firstname']),
 				'lastname'	=>	__secure($_POST['lastname']),
 				'email'	=>	__secure($_POST['email']),
-				'school_id'	=>	__secure($_POST['school_id']),
 				'image'	=>	__secure($url),
 				'password'	=>	__secure(md5($_POST['password'])),
 			);
+			$uinsert = array(
+				'name'	=>	__secure($_POST['firstname']) ." " .__secure($_POST['lastname']),
+				'email'	=>	__secure($_POST['email']),
+				'password'	=>	__secure(md5($_POST['password'])),
+				'user_type'	=>	'admin',
+			);
 			if (save_data('admins',$insert)) {
+				save_data('users',$uinsert);
 				$data = array(
 					'status'	=>	200,
 					'message'	=>	'School Admin Added successfully'
@@ -46,10 +52,14 @@
 				'firstname'	=>	__secure($_POST['firstname']),
 				'lastname'	=>	__secure($_POST['lastname']),
 				'email'	=>	__secure($_POST['email']),
-				'sch_id'	=>	__secure($_POST['school_id']),
 				'image'	=>	__secure($url),
 			);
+			$uinsert = array(
+				'name'	=>	__secure($_POST['firstname']) ." " .__secure($_POST['lastname']),
+				'email'	=>	__secure($_POST['email']),
+			);
 			if (update_data('admins',$insert,'WHERE id = "'.$id.'"')) {
+				update_data('users',$uinsert,'WHERE email = "'.$_POST['email'].'"');
 				$data = array(
 					'status' => 200,
 					'message'	=>	'Admin Updated Successfully',

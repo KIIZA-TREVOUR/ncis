@@ -114,7 +114,7 @@
 				$upload_id = getLatestId('id','upload_history');
 		
 				// Check if the record already exists
-				$exists = exists('students', 'WHERE email = "'.$email.'"');
+				$exists = exists('students', 'WHERE email = "'.$email.'" OR lin = "'.$lin.'"');
 				if (!$exists) {
 					// Use prepared statements to prevent SQL injection
 					$query = "INSERT INTO students (sch_id, firstname, lastname, email, lin, image, class, dob, gender, password, upload_id,year) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -437,54 +437,67 @@
 			}
 		
 		}
-		
 		if ($s == 'upload-project-results') {
 			global $sqlConnect; // Assuming $sqlConnect is defined globally
 		
 			$fileName = $_FILES["project_results_data"]["name"];
 			// Remove the file extension from the filename
 			$fileNameWithoutExtension = pathinfo($fileName, PATHINFO_FILENAME);
-			$fileExtension = explode('.', $fileName);
-			$fileExtension = strtolower(end($fileExtension));
+			$fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 			$newFileName = $fileNameWithoutExtension . " on " . date("h.i.sa") . "." . $fileExtension;
 			$targetDirectory = "uploads/uploads/projectresults/" . $newFileName;
 			move_uploaded_file($_FILES['project_results_data']['tmp_name'], $targetDirectory);
 			require 'init/excel/excel_reader2.php';
 			require 'init/excel/SpreadsheetReader.php';
-            
+		
 			$reader = new SpreadsheetReader($targetDirectory);
 			
 			$dataImported = false; // A flag to check if data was imported
-            foreach ($reader as $key => $row) {
-				if($key==0){
-					continue;
+			$errorMessages = []; // Array to hold error messages
+			foreach ($reader as $key => $row) {
+				if ($key == 0) {
+					continue; // Skip the header row
 				}
 				$student_lin = $row[0];
 				$project_code = $row[1];
 				$score = $row[2];
 				$subject_code = $row[3];
-				$upload_id = getLatestId('id','upload_history');
-				// Check if the record already exists
-				$exists = exists('project_scores', 'WHERE student_lin = "'.$student_lin.'"  AND project_code = "'.$project_code.'"');
-				if (!$exists) {
-					// Use prepared statements to prevent SQL injection
-					$query = "INSERT INTO project_scores (student_lin,project_code,score,subject_code,upload_id) VALUES (?,?,?,?,?)";
-			
-					// Prepare the statement
-					$stmt = mysqli_prepare($sqlConnect, $query);
-			
-					if ($stmt) {
-						mysqli_stmt_bind_param($stmt, "ssssi", $student_lin,$project_code,$score,$subject_code,$upload_id);
-			
-						if (mysqli_stmt_execute($stmt)) {
-							$dataImported = true;
+				$upload_id = getLatestId('id', 'upload_history');
+		
+				// Check if the student is assigned to the subject
+				$studentSubjects = $db->where('student_lin', $student_lin)->getOne('student_subject');
+		
+				if ($studentSubjects) {
+					$subjectCodes = explode(',', $studentSubjects->subject_code);
+		
+					if (in_array($subject_code, $subjectCodes)) {
+						// Check if the record already exists
+						$exists = exists('project_scores', 'WHERE student_lin = "'.$student_lin.'"  AND project_code = "'.$project_code.'"');
+						if (!$exists) {
+							// Use prepared statements to prevent SQL injection
+							$query = "INSERT INTO project_scores (student_lin, project_code, score, subject_code, upload_id) VALUES (?, ?, ?, ?, ?)";
+					
+							// Prepare the statement
+							$stmt = mysqli_prepare($sqlConnect, $query);
+					
+							if ($stmt) {
+								mysqli_stmt_bind_param($stmt, "ssssi", $student_lin, $project_code, $score, $subject_code, $upload_id);
+					
+								if (mysqli_stmt_execute($stmt)) {
+									$dataImported = true;
+								}
+							}
 						}
+					} else {
+						// Add error message if student is not enrolled in the subject
+						$errorMessages[] = "Student LIN {$student_lin} is not enrolled in subject code {$subject_code}.";
 					}
 				} else {
-					// If the record already exists, skip insertion
-					continue;
+					// Add error message if student is not found in student_subject table
+					$errorMessages[] = "Student LIN {$student_lin} is not found in the student_subject table.";
 				}
 			}
+		
 			$history = array(
 				'file_name' => $fileNameWithoutExtension, // Use the filename without extension
 				'file' => $targetDirectory,
@@ -494,28 +507,35 @@
 		
 			// Save the upload history only once, after processing all rows
 			if ($dataImported) {
-				$history_query = "INSERT INTO upload_history (file_name, file, uploaded_by,category) VALUES (?, ?, ?,?)";
+				$history_query = "INSERT INTO upload_history (file_name, file, uploaded_by, category) VALUES (?, ?, ?, ?)";
 				$history_stmt = mysqli_prepare($sqlConnect, $history_query);
 		
 				if ($history_stmt) {
-					mysqli_stmt_bind_param($history_stmt, "ssss", $history['file_name'], $history['file'], $history['uploaded_by'],$history['category']);
+					mysqli_stmt_bind_param($history_stmt, "ssss", $history['file_name'], $history['file'], $history['uploaded_by'], $history['category']);
 		
 					if (mysqli_stmt_execute($history_stmt)) {
-						$data = array(
-							'status' => 200,
-							'message' => 'Project Results Data Imported Successfully',
-							'url' => 'index.php?page=upload',
-						);
+						if (!empty($errorMessages)) {
+							$data = array(
+								'status' => 200,
+								'message' => 'Project Results Data Imported Successfully, with some errors: ' . implode(' ', $errorMessages),
+								'url' => 'index.php?page=upload',
+							);
+						} else {
+							$data = array(
+								'status' => 200,
+								'message' => 'Project Results Data Imported Successfully',
+								'url' => 'index.php?page=upload',
+							);
+						}
 					}
 				}
 			} else {
 				$data = array(
 					'status' => 201,
-					'message' => 'Data Importation Failed',
+					'message' => 'Data Importation Failed. ' . implode(' ', $errorMessages),
 					'url' => 'index.php?page=uploads',
 				);
 			}
-		
 		}
 		
 		if ($s == 'remove') {

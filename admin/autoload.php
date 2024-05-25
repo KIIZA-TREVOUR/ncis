@@ -342,10 +342,10 @@
                      </li>
                      <li class="dropdown <?php if($page == 'staff' || $page == 'new-staff'|| $page == 'edit-staff'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Staff</span></a>
+                           data-feather="users"></i><span>Teachers</span></a>
                         <ul class="dropdown-menu">
-                           <li><a class="nav-link" href="admin.php?page=new-staff">New Staff</a></li>
-                           <li><a class="nav-link" href="admin.php?page=staff">Staff List</a></li>
+                           <li><a class="nav-link" href="admin.php?page=new-staff">New Teacher</a></li>
+                           <li><a class="nav-link" href="admin.php?page=staff">Teacher List</a></li>
                         </ul>
                      </li>
                      <li class="dropdown <?php if($page == 'students' || $page == 'new-student'|| $page == 'edit-student'){echo 'active';}?>">
@@ -577,7 +577,7 @@
                      </li>
                      <li class="dropdown <?php if($page == 'staff' || $page == 'new-staff'|| $page == 'edit-staff'){echo 'active';}?>">
                         <a href="#" class="menu-toggle nav-link has-dropdown"><i
-                           data-feather="users"></i><span>Staff</span></a>
+                           data-feather="users"></i><span>Teachers</span></a>
                         <ul class="dropdown-menu">
                            <li><a class="nav-link" href="admin.php?page=staff">Staff List</a></li>
                         </ul>

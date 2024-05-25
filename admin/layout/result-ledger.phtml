@@ -38,35 +38,58 @@ if(logged_in() && $wallet['user']['user_type']=='admin'):
 						<th>Action</th>
 					</tr>
 				</thead>
-				<tbody>
-				<?php $n=1; foreach($db->orderBy('id','DESC')->where('subject_code',$_GET['subject_code'])->get('project_scores') as $key=>$value): 
-					$project = $db->where('project_code',$value->project_code)->getOne('projects');
+					<tbody>
+					<?php 
+					$n = 1;
+					$studentLin = $_GET['lin'];
+					$subjectCode = $_GET['subject_code'];
+					
+					// Fetch all projects for the given subject
+					$projects = $db->where('subject_code', $subjectCode)->where('year',$student->year)->orderBy('id', 'DESC')->get('projects');
+
+					foreach ($projects as $project) {
+						// Fetch project score for the student and the current project
+						$projectScore = $db->where('student_lin', $studentLin)->where('project_code', $project->project_code)->getOne('project_scores');
+										
+						
+
+						$score = $projectScore ? $projectScore->score : 'No Score';
+						$status = $projectScore ? $projectScore->status : 0;
+						?>
+						<tr>
+							<td><?= $n++; ?> </td>
+							<td><?= $project->name; ?> </td>
+							<td><?= $project->project_code ?> </td>
+							<td>
+								<?php 
+								if ($project->term == 1) {
+									echo 'Term One';
+								} elseif ($project->term == 2) {
+									echo 'Term Two';
+								} else {
+									echo 'Term Three';
+								}
+								?>
+							</td>
+							<td><?= $score; ?></td>
+							<td>
+								<?php 
+								if ($status == 1) { ?>
+									<a href="javascript:void()" class="badge badge-warning">Pending Approval</a>
+								<?php } elseif ($status == 2) { ?>
+									<a href="admin.php?page=edit-project-scores&id=<?= $projectScore->id; ?>" class="badge badge-warning">Edit</a>
+								<?php } elseif ($status == 3) { ?>
+									<a href="javascript:void(0)" disabled class="badge badge-primary">Already Updated</a>
+								<?php } else { ?>
+									<a href="admin.php?page=request-edit&id=<?= $projectScore->id; ?>" class="badge badge-info">Request Edit</a>
+								<?php } ?>
+							</td>
+						</tr>
+						<?php 
+					}
 					?>
-					<tr>
-						<td><?= $n++; ?> </td>
-						<td><?= $project->name ?> </td>
-						<td><?= $value->project_code ?> </td>
-						<td><?php if($value->term == 1){echo 'Term One';}elseif($value->term==2){echo 'Term Two';}else{ echo 'Term Three';} ?></td>
-						<td><?= $value->score ?></td>
-                        <td>
-                            <?php if($value->status ==1):?>
-                            <a href="javascript:void()" class="badge badge-warning">Pending Approval</a>
-                        </td>
-                        <td>
-                            <?php elseif($value->status ==2):?>
-                            <a href="admin.php?page=edit-project-scores&id=<?=$value->id?>" class="badge badge-warning">Edit</a>
-                        </td> 
-                        <td>
-                            <?php elseif($value->status ==3):?>
-                            <a href="javascript:void(0)" disabled class="badge badge-primary">Already Updated</a></td> 
-                        <td>
-                            <?php else:?>
-                            <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a>
-                        </td> 
-                        <?php endif;?>
-                            </tr>
-                        <?php endforeach ?>
-				</tbody>
+					</tbody>
+
 			</table>
 		</div>
     </div>
@@ -87,49 +110,75 @@ if(logged_in() && $wallet['user']['user_type']=='admin'):
 						<th>S/N</th>
 						<th>Name</th>
 						<th>Project Code</th>
-						<th>Description</th>
-						<th>Subject</th>
-						<th>Subject Code</th>
-						<th>Class</th>
 						<th>Term</th>
-						<th>Project Type</th>
+						<th>Score</th>
 						<th>Action</th>
 					</tr>
 				</thead>
-				<tbody>
-				<?php $n=1; foreach($db->orderBy('id','DESC')->get('projects') as $key=>$value): 
-					$class = $db->where('id',$value->class_id)->getOne('classes');
-					$subject = $db->where('code',$value->subject_code)->getOne('subjects');
+					<tbody>
+					<?php 
+					$n = 1;
+					$studentLin = $_GET['lin'];
+					$subjectCode = $_GET['subject_code'];
+					
+					// Fetch all projects for the given subject
+					$projects = $db->where('subject_code', $subjectCode)->where('year',$student->year)->orderBy('id', 'DESC')->get('projects');
+
+					foreach ($projects as $project) {
+						// Fetch project score for the student and the current project
+						$projectScore = $db->where('student_lin', $studentLin)->where('project_code', $project->project_code)->getOne('project_scores');
+										
+						
+
+						$score = $projectScore ? $projectScore->score : 'No Score';
+						$status = $projectScore ? $projectScore->status : 0;
+						?>
+						<tr>
+							<td><?= $n++; ?> </td>
+							<td><?= $project->name; ?> </td>
+							<td><?= $project->project_code ?> </td>
+							<td>
+								<?php 
+								if ($project->term == 1) {
+									echo 'Term One';
+								} elseif ($project->term == 2) {
+									echo 'Term Two';
+								} else {
+									echo 'Term Three';
+								}
+								?>
+							</td>
+							<td><?= $score; ?></td>
+							<td>
+								<?php 
+								if ($status == 1) { ?>
+									<a href="javascript:void()" class="badge badge-warning">Pending Approval</a>
+								<?php } elseif ($status == 2) { ?>
+									<a href="admin.php?page=edit-project-scores&id=<?= $projectScore->id; ?>" class="badge badge-warning">Edit</a>
+								<?php } elseif ($status == 3) { ?>
+									<a href="javascript:void(0)" disabled class="badge badge-primary">Already Updated</a>
+								<?php } else { ?>
+									<a href="admin.php?page=request-edit&id=<?= $projectScore->id; ?>" class="badge badge-info">Request Edit</a>
+								<?php } ?>
+							</td>
+						</tr>
+						<?php 
+					}
 					?>
-					<tr>
-						<td><?= $n++; ?> </td>
-						<td><?= $value->name ?> </td>
-						<td><?= $value->project_code ?> </td>
-						<td><?= $value->description ?></td>
-						<td><?= $subject->name ?></td>
-						<td><?= $subject->code ?></td>
-						<td><?= $class->name ?></td>
-						<td><?php if($value->term == 1){echo 'Term One';}elseif($value->term==2){echo 'Term Two';}else{ echo 'Term Three';} ?></td>
-						<td><?php if($value->project_type == 1){echo 'Individual';}else{ echo 'Group';} ?></td>
-						<td>
-							<div class="d-flex">
-								<a href="admin.php?page=edit-project&id=<?=$value->id?>" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a>&nbsp;
-								<!-- <a href="javascript:void(0)" onclick="remProject('<?=$value->id?>')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a> -->
-							</div>
-						</td>
-					</tr>
-				<?php endforeach ?>
-				</tbody>
+					</tbody>
+
 			</table>
 		</div>
     </div>
 </div>
-<?php elseif(logged_in() && $wallet['user']['user_type']=='student'):?>
+<?php elseif(logged_in() && $wallet['user']['user_type']=='student'):
+    $subject = $db->where('code',$_GET['subject_code'])->getOne('subjects');
+    $student = $db->where('lin',$_GET['lin'])->getOne('students');?>
 <div class="card card-info">
     <div class="card-header">
-    	<h4>All My Projects</h4>
+    	<h4><?=$student->firstname?> <?=$student->lastname?>'s <?=$subject->name?> Project Results</h4>
     	<div class="card-header-action">
-      		<!-- <a href="admin.php?page=new-project" class="btn btn-info">Add New</a> -->
+      		<a href="admin.php?page=new-project" class="btn btn-info">Add New</a>
     	</div>
     </div>
     <div class="card-body">
@@ -140,36 +189,63 @@ if(logged_in() && $wallet['user']['user_type']=='admin'):
 						<th>S/N</th>
 						<th>Name</th>
 						<th>Project Code</th>
-						<th>Description</th>
-						<th>Subject</th>
-						<th>Class</th>
 						<th>Term</th>
-						<th>Project Type</th>
+						<th>Score</th>
+						<th>Action</th>
 					</tr>
 				</thead>
-				<tbody>
-				<?php $n=1; foreach($db->where('class_id',$wallet['student']['class'])->orderBy('id','DESC')->get('projects') as $key=>$value): 
-					$class = $db->where('id',$value->class_id)->getOne('classes');
-					$subject = $db->where('code',$value->subject_code)->getOne('subjects');
+					<tbody>
+					<?php 
+					$n = 1;
+					$studentLin = $_GET['lin'];
+					$subjectCode = $_GET['subject_code'];
+					
+					// Fetch all projects for the given subject
+					$projects = $db->where('subject_code', $subjectCode)->where('year',$student->year)->orderBy('id', 'DESC')->get('projects');
+
+					foreach ($projects as $project) {
+						// Fetch project score for the student and the current project
+						$projectScore = $db->where('student_lin', $studentLin)->where('project_code', $project->project_code)->getOne('project_scores');
+										
+						
+
+						$score = $projectScore ? $projectScore->score : 'No Score';
+						$status = $projectScore ? $projectScore->status : 0;
+						?>
+						<tr>
+							<td><?= $n++; ?> </td>
+							<td><?= $project->name; ?> </td>
+							<td><?= $project->project_code ?> </td>
+							<td>
+								<?php 
+								if ($project->term == 1) {
+									echo 'Term One';
+								} elseif ($project->term == 2) {
+									echo 'Term Two';
+								} else {
+									echo 'Term Three';
+								}
+								?>
+							</td>
+							<td><?= $score; ?></td>
+							<td>
+								<?php 
+								if ($status == 1) { ?>
+									<a href="javascript:void()" class="badge badge-warning">Pending Approval</a>
+								<?php } elseif ($status == 2) { ?>
+									<a href="admin.php?page=edit-project-scores&id=<?= $projectScore->id; ?>" class="badge badge-warning">Edit</a>
+								<?php } elseif ($status == 3) { ?>
+									<a href="javascript:void(0)" disabled class="badge badge-primary">Already Updated</a>
+								<?php } else { ?>
+									<a href="admin.php?page=request-edit&id=<?= $projectScore->id; ?>" class="badge badge-info">Request Edit</a>
+								<?php } ?>
+							</td>
+						</tr>
+						<?php 
+					}
 					?>
-					<tr>
-						<td><?= $n++; ?> </td>
-						<td><?= $value->name ?> </td>
-						<td><?= $value->project_code ?> </td>
-						<td><?= $value->description ?></td>
-						<td><?= $subject->name ?></td>
-						<td><?= $class->name ?></td>
-						<td><?php if($value->term == 1){echo 'Term One';}elseif($value->term==2){echo 'Term Two';}else{ echo 'Term Three';} ?></td>
-						<td><?php if($value->project_type == 1){echo 'Individual';}else{ echo 'Group';} ?></td>
-						<!-- <td>
-							<div class="d-flex">
-								<a href="admin.php?page=edit-project&id=<?=$value->id?>" class="btn btn-sm btn-success"><i class="fas fa-edit"></i></a>&nbsp;
-								<a href="javascript:void(0)" onclick="remProject('<?=$value->id?>')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
-							</div>
-						</td> -->
-					</tr>
-				<?php endforeach ?>
-				</tbody>
+					</tbody>
+
 			</table>
 		</div>
     </div>

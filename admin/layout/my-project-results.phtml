@@ -22,25 +22,51 @@ $student = $db->where('lin',$wallet['user']['lin'])->getOne('students');?>
             </tr>
             </thead>
             <tbody>
-                <?php $num=0;
-                $results = $db->groupBy('subject_code')->get('project_scores');
-                foreach($results as $value):
-                    $project = $db->where('project_code',$value->project_code)->getOne('projects');
-                    $subject = $db->where('code',$project->subject_code)->getOne('subjects');
-                ?>
-                <tr>
-                    <td><?=$num+=1?></td>
-                    <td><?=$subject->name?></td>
-                    <td><?= $year1 =round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 1),2)?></td>
-                    <td><?= $total =($year1) ?></td>
-                    <td>
-                        <div class="d-flex">
-                            <a href="admin.php?page=result-ledger&lin=<?=$wallet['user']['lin']?>&subject_code=<?=$project->subject_code?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach;?>
-            </tr>
+               <?php
+               $num = 0;
+               $studentLin = $wallet['user']['lin'];
+
+               // Fetch subjects for the given student LIN
+               $subjects = $db->where('student_lin', $studentLin)->get('student_subject');
+               if ($subjects) {
+                  // Assuming only one record as per your description
+                  $subjectCodes = explode(',', $subjects[0]->subject_code);
+
+                  foreach ($subjectCodes as $subjectCode) {
+                     $subjectDetails = $db->where('code', $subjectCode)->getOne('subjects');
+                     // Fetch subject details
+                          $subjectName = $subjectDetails->name;
+
+                           // Fetch project scores for the subject code
+                           $projectScores = $db->get('project_scores');
+                           $subjectCode = trim($subjectCode);
+
+                           // Initialize year scores
+                           $year1 = $year2 = $year3 = 0;
+
+                           if ($projectScores) {
+                              foreach ($projectScores as $projectScore) {
+                                 $year1 = round(getTotalScoresForSubject($studentLin, $subjectCode, 1), 2);
+                              }
+                           }
+
+                           $total = $year1 ;
+                           ?>
+                           <tr>
+                              <td><?= ++$num ?></td>
+                              <td><?= $subjectName ?></td>
+                              <td><?= $year1 ?></td>
+                              <td><?= $total ?></td>
+                              <td>
+                                 <div class="d-flex">
+                                       <a href="admin.php?page=result-ledger&lin=<?= $studentLin ?>&subject_code=<?= $subjectCode ?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
+                                 </div>
+                              </td>
+                           </tr>
+                           <?php
+                  }
+               }
+               ?>
             </tbody>
          </table>
       </div>
@@ -68,26 +94,53 @@ $student = $db->where('lin',$wallet['user']['lin'])->getOne('students');?>
             </tr>
             </thead>
             <tbody>
-                <?php $num=0;
-                $results = $db->groupBy('subject_code')->get('project_scores');
-                foreach($results as $value):
-                    $project = $db->where('project_code',$value->project_code)->getOne('projects');
-                    $subject = $db->where('code',$project->subject_code)->getOne('subjects');
-                ?>
-                <tr>
-                    <td><?=$num+=1?></td>
-                    <td><?=$subject->name?></td>
-                    <td><?= $year1 =round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 1),2)?></td>
-                    <td><?= $year2 =round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 2),2)?></td>
-                    <td><?= $total =($year1+$year2) ?></td>
-                    <td>
-                        <div class="d-flex">
-                            <a href="admin.php?page=result-ledger&lin=<?=$wallet['user']['lin']?>&subject_code=<?=$project->subject_code?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach;?>
-            </tr>
+               <?php
+               $num = 0;
+               $studentLin = $wallet['user']['lin'];
+
+               // Fetch subjects for the given student LIN
+               $subjects = $db->where('student_lin', $studentLin)->get('student_subject');
+               if ($subjects) {
+                  // Assuming only one record as per your description
+                  $subjectCodes = explode(',', $subjects[0]->subject_code);
+
+                  foreach ($subjectCodes as $subjectCode) {
+                     $subjectDetails = $db->where('code', $subjectCode)->getOne('subjects');
+                     // Fetch subject details
+                          $subjectName = $subjectDetails->name;
+
+                           // Fetch project scores for the subject code
+                           $projectScores = $db->get('project_scores');
+                           $subjectCode = trim($subjectCode);
+
+                           // Initialize year scores
+                           $year1 = $year2 = $year3 = 0;
+
+                           if ($projectScores) {
+                              foreach ($projectScores as $projectScore) {
+                                 $year1 = round(getTotalScoresForSubject($studentLin, $subjectCode, 1), 2);
+                                 $year2 = round(getTotalScoresForSubject($studentLin, $subjectCode, 2), 2);
+                              }
+                           }
+
+                           $total = $year1 + $year2 ;
+                           ?>
+                           <tr>
+                              <td><?= ++$num ?></td>
+                              <td><?= $subjectName ?></td>
+                              <td><?= $year1 ?></td>
+                              <td><?= $year2 ?></td>
+                              <td><?= $total ?></td>
+                              <td>
+                                 <div class="d-flex">
+                                       <a href="admin.php?page=result-ledger&lin=<?= $studentLin ?>&subject_code=<?= $subjectCode ?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
+                                 </div>
+                              </td>
+                           </tr>
+                           <?php
+                  }
+               }
+               ?>
             </tbody>
          </table>
       </div>
@@ -116,27 +169,55 @@ $student = $db->where('lin',$wallet['user']['lin'])->getOne('students');?>
             </tr>
             </thead>
             <tbody>
-                <?php $num=0;
-                $results = $db->groupBy('subject_code')->get('project_scores');
-                foreach($results as $value):
-                    $project = $db->where('project_code',$value->project_code)->getOne('projects');
-                    $subject = $db->where('code',$project->subject_code)->getOne('subjects');
-                ?>
-                <tr>
-                    <td><?=$num+=1?></td>
-                    <td><?=$subject->name?></td>
-                    <td><?= $year1 =round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 1),2)?></td>
-                    <td><?= $year2 =round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 2),2)?></td>
-                    <td><?= $year3 =round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 3),2)?></td>
-                    <td><?= $total =($year1+$year2+$year3) ?></td>
-                    <td>
-                        <div class="d-flex">
-                            <a href="admin.php?page=result-ledger&lin=<?=$wallet['user']['lin']?>&subject_code=<?=$project->subject_code?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach;?>
-            </tr>
+               <?php
+               $num = 0;
+               $studentLin = $wallet['user']['lin'];
+
+               // Fetch subjects for the given student LIN
+               $subjects = $db->where('student_lin', $studentLin)->get('student_subject');
+               if ($subjects) {
+                  // Assuming only one record as per your description
+                  $subjectCodes = explode(',', $subjects[0]->subject_code);
+
+                  foreach ($subjectCodes as $subjectCode) {
+                     $subjectDetails = $db->where('code', $subjectCode)->getOne('subjects');
+                     // Fetch subject details
+                          $subjectName = $subjectDetails->name;
+
+                           // Fetch project scores for the subject code
+                           $projectScores = $db->get('project_scores');
+                           $subjectCode = trim($subjectCode);
+
+                           // Initialize year scores
+                           $year1 = $year2 = $year3 = 0;
+
+                           if ($projectScores) {
+                              foreach ($projectScores as $projectScore) {
+                                 $year1 = round(getTotalScoresForSubject($studentLin, $subjectCode, 1), 2);
+                                 $year2 = round(getTotalScoresForSubject($studentLin, $subjectCode, 2), 2);
+                                 $year3 = round(getTotalScoresForSubject($studentLin, $subjectCode, 3), 2);
+                              }
+                           }
+
+                           $total = $year1 + $year2 + $year3+$year4;
+                           ?>
+                           <tr>
+                              <td><?= ++$num ?></td>
+                              <td><?= $subjectName ?></td>
+                              <td><?= $year1 ?></td>
+                              <td><?= $year2 ?></td>
+                              <td><?= $year3 ?></td>
+                              <td><?= $total ?></td>
+                              <td>
+                                 <div class="d-flex">
+                                       <a href="admin.php?page=result-ledger&lin=<?= $studentLin ?>&subject_code=<?= $subjectCode ?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
+                                 </div>
+                              </td>
+                           </tr>
+                           <?php
+                  }
+               }
+               ?>
             </tbody>
          </table>
       </div>
@@ -166,28 +247,57 @@ $student = $db->where('lin',$wallet['user']['lin'])->getOne('students');?>
             </tr>
             </thead>
             <tbody>
-                <?php $num=0;
-                $results = $db->groupBy('subject_code')->get('project_scores');
-                foreach($results as $value):
-                    $project = $db->where('project_code',$value->project_code)->getOne('projects');
-                    $subject = $db->where('code',$project->subject_code)->getOne('subjects');
-                ?>
-                <tr>
-                    <td><?=$num+=1?></td>
-                    <td><?=$subject->name?></td>
-                    <td><?= $year1 =round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 1),2)?></td>
-                    <td><?= $year2 =round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 2),2)?></td>
-                    <td><?= $year3 =round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 3),2)?></td>
-                    <td><?= $year4 =round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 4),2)?></td>
-                    <td><?= $total =($year1+$year2+$year3+$year4) ?></td>
-                    <td>
-                        <div class="d-flex">
-                            <a href="admin.php?page=result-ledger&lin=<?=$wallet['user']['lin']?>&subject_code=<?=$project->subject_code?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
-                        </div>
-                    </td>
-                </tr>
-                <?php endforeach;?>
-            </tr>
+               <?php
+               $num = 0;
+               $studentLin = $wallet['user']['lin'];
+
+               // Fetch subjects for the given student LIN
+               $subjects = $db->where('student_lin', $studentLin)->get('student_subject');
+               if ($subjects) {
+                  // Assuming only one record as per your description
+                  $subjectCodes = explode(',', $subjects[0]->subject_code);
+
+                  foreach ($subjectCodes as $subjectCode) {
+                     $subjectDetails = $db->where('code', $subjectCode)->getOne('subjects');
+                     // Fetch subject details
+                          $subjectName = $subjectDetails->name;
+
+                           // Fetch project scores for the subject code
+                           $projectScores = $db->get('project_scores');
+                           $subjectCode = trim($subjectCode);
+
+                           // Initialize year scores
+                           $year1 = $year2 = $year3 = 0;
+
+                           if ($projectScores) {
+                              foreach ($projectScores as $projectScore) {
+                                 $year1 = round(getTotalScoresForSubject($studentLin, $subjectCode, 1), 2);
+                                 $year2 = round(getTotalScoresForSubject($studentLin, $subjectCode, 2), 2);
+                                 $year3 = round(getTotalScoresForSubject($studentLin, $subjectCode, 3), 2);
+                                 $year4 = round(getTotalScoresForSubject($studentLin, $subjectCode, 4), 2);
+                              }
+                           }
+
+                           $total = $year1 + $year2 + $year3+$year4;
+                           ?>
+                           <tr>
+                              <td><?= ++$num ?></td>
+                              <td><?= $subjectName ?></td>
+                              <td><?= $year1 ?></td>
+                              <td><?= $year2 ?></td>
+                              <td><?= $year3 ?></td>
+                              <td><?= $year4 ?></td>
+                              <td><?= $total ?></td>
+                              <td>
+                                 <div class="d-flex">
+                                       <a href="admin.php?page=result-ledger&lin=<?= $studentLin ?>&subject_code=<?= $subjectCode ?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
+                                 </div>
+                              </td>
+                           </tr>
+                           <?php
+                  }
+               }
+               ?>
             </tbody>
          </table>
       </div>
