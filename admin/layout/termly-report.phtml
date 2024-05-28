@@ -1,7 +1,8 @@
 <div class="card card-info">
    <div class="card-header">
-      <?php $subject=$db->where('code',$_GET['subject'])->getOne('subjects'); ?>
-      <h4>Student's Termly Project Results</h4>
+      <?php $subject=$db->where('code',$_GET['subject'])->getOne('subjects');  
+      $student=$db->where('lin',$_GET['lin'])->getOne('students'); ?>
+      <h4><?=$student->firstname?> <?=$student->lastname?>'s Term <?php if($_GET['term']==1){echo "One";}elseif($_GET['term']==2){echo 'Two';}else{echo 'Three';}?> Project Results</h4>
       <div class="card-header-action">
          <a href="admin.php?page=uploads&id=project-results" class="btn btn-primary">Upload Results</a>
          <a href="admin.php?page=assign-pmarks" class="btn btn-info">Add New</a>
@@ -13,8 +14,6 @@
             <thead>
                <tr>
                   <th>S/N</th>
-                  <th>LIN</th>
-                  <th>Term</th>
                   <th>Subject</th>
                   <th>Project Name</th>
                   <th>Project Score</th>
@@ -22,7 +21,7 @@
                </tr>
             </thead>
             <tbody>
-               <?php $n=1; $scores = getProjectScoresByClassAllSubjectsTerm($_GET['class'], $_GET['term']);
+               <?php $n=1; $scores = getProjectScoresByClassAllSubjectsTermByStudent($_GET['class'], $_GET['term'],$_GET['lin']);
                // var_dump($scores);exit;
                foreach($scores as $value):
                   $student = $db->where('lin',$value->student_lin)->getOne('students');
@@ -31,8 +30,6 @@
                ?>
                <tr>
                   <td><?= $n++; ?> </td>
-                  <td><?=$student->lin ?></td>
-                  <td><?=$value->term ?></td>
                   <td><?=$subject->name ?></td>
                   <td><?=$project->name ?></td>
                   <td><?=$value->score ?></td>

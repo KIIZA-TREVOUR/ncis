@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 24, 2024 at 07:41 AM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: May 28, 2024 at 10:58 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -223,7 +223,9 @@ INSERT INTO `projects` (`id`, `name`, `project_code`, `description`, `subject_co
 (24, 'Product or Service Innovation', 'S107202109', 'Identify a problem or need in their community/school and develop a product or service to address it. This project would involve brainstorming, prototyping, and testing their ideas.', 'S107', 4, 1, 3, 2021, NULL, NULL, NULL),
 (25, 'Phone Repair', 'S107202110', 'Identify faulty phone and repair', 'S107', 3, 1, 1, 2021, NULL, NULL, NULL),
 (26, 'Book Printing', 'S107202111', 'Printing of textboook covers', 'S107', 3, 1, 2, 2021, NULL, NULL, NULL),
-(27, 'Sticker Design', 'S107202112', 'Design School Stickers with school badge', 'S107', 3, 1, 3, 2021, NULL, NULL, NULL);
+(27, 'Sticker Design', 'S107202112', 'Design School Stickers with school badge', 'S107', 3, 1, 3, 2021, NULL, NULL, NULL),
+(28, 'Laptop Repairing', 'S107202113', 'Repairing of Laptops\r\n', 'S107', 1, 1, 1, 2021, NULL, NULL, NULL),
+(29, 'TV Repair', 'S107202114', 'Repairing of TVs', 'S107', 1, 1, 1, 2021, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -275,7 +277,9 @@ INSERT INTO `project_scores` (`id`, `student_lin`, `project_code`, `score`, `sta
 (27, '20210101', 'S107202110', '80', 1, 'S107', '2024-05-22 13:12:02', NULL, NULL, NULL),
 (28, '20220101', 'S105202102', '90', 0, 'S105', '2024-05-23 15:29:57', NULL, NULL, NULL),
 (29, '20220101', 'S107202111', '89', 0, 'S107', '2024-05-23 15:30:15', NULL, NULL, NULL),
-(30, '20220101', 'S107202102', '80', 0, 'S107', '2024-05-24 00:15:15', NULL, NULL, NULL);
+(30, '20220101', 'S107202102', '80', 0, 'S107', '2024-05-24 00:15:15', NULL, NULL, NULL),
+(31, '20210101', 'S107202113', '67', 0, 'S107', '2024-05-28 22:23:56', NULL, NULL, NULL),
+(32, '20210101', 'S107202114', '78', 0, 'S107', '2024-05-28 22:24:18', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -716,13 +720,13 @@ ALTER TABLE `exam_results`
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `project_scores`
 --
 ALTER TABLE `project_scores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `requests`

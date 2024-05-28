@@ -578,11 +578,9 @@ function getTotalScoresByTerm($term) {
 
     return $totalScore;
 }
-
 function getProjectScoresByTerm($student_lin, $term, $class)
 {
     global $sqlConnect;
-
     $sql = "
         SELECT ps.*, p.subject_code, p.name 
         FROM project_scores ps
@@ -608,49 +606,31 @@ function getProjectScoresByTerm($student_lin, $term, $class)
         die("MySQL execute statement error: " . mysqli_error($sqlConnect));
     }
 
-    // Fetch the data and group by subject_code
-    $scores_by_subject = array();
+    // Fetch the data
+    $data = array();
     while ($row = mysqli_fetch_object($result)) {
-        $subject_code = $row->subject_code;
-        if (!isset($scores_by_subject[$subject_code])) {
-            $scores_by_subject[$subject_code] = array();
-        }
-        $scores_by_subject[$subject_code][] = $row->score;
+        // Keep the original score
+        $original_score = $row->score;
+
+        // Convert the score from out of 100 to out of 5
+        $converted_score = ($original_score / 100) * 1.67;
+
+        // Calculate the percentage score
+        $percentage = $original_score; // Since the score is already out of 100
+
+        // Add new fields to the row object
+        $row->original_score = $original_score;
+        $row->converted_score = $converted_score;
+        $row->percentage = $percentage;
+
+        array_push($data, $row);
     }
 
     // Close the statement
     mysqli_stmt_close($stmt);
 
-    // Compute the average scores
-    $average_scores = array();
-    foreach ($scores_by_subject as $subject_code => $scores) {
-        $num_projects = count($scores);
-        if ($num_projects == 1) {
-            $average_score = $scores[0];
-        } elseif ($num_projects == 2) {
-            $average_score = array_sum($scores) / 2;
-        } else {
-            // Sort scores in descending order and take the top 3 scores
-            rsort($scores);
-            $top_scores = array_slice($scores, 0, 3);
-            $average_score = array_sum($top_scores) / count($top_scores);
-        }
-
-        // Convert the score from out of 100 to out of 5
-        $converted_score = ($average_score / 100) * 1.67;
-
-        // Prepare the result object
-        $subject_result = new stdClass();
-        $subject_result->subject_code = $subject_code;
-        $subject_result->average_score = $average_score;
-        $subject_result->converted_score = $converted_score;
-
-        $average_scores[] = $subject_result;
-    }
-
-    return $average_scores;
+    return $data;
 }
-
 
 function getProjectScoresByClassSubjectTerm($class_id, $subject_code, $term)
 {
@@ -712,46 +692,6 @@ function getProjectScoresByClassAllSubjectsTerm($class_id, $term)
 
     // Bind the parameters
     mysqli_stmt_bind_param($stmt, 'ii', $class_id, $term);
-
-    // Execute the statement
-    mysqli_stmt_execute($stmt);
-
-    // Get the result
-    $result = mysqli_stmt_get_result($stmt);
-    if (!$result) {
-        die("MySQL execute statement error: " . mysqli_error($sqlConnect));
-    }
-
-    // Fetch the data
-    $data = array();
-    while ($row = mysqli_fetch_object($result)) {
-        array_push($data, $row);
-    }
-
-    // Close the statement
-    mysqli_stmt_close($stmt);
-
-    return $data;
-}
-function getProjectScoresByClassAllSubjectsTermByStudent($class_id, $term,$lin)
-{
-    global $sqlConnect;
-
-    $sql = "
-        SELECT ps.*, p.name, p.description, p.class_id, p.project_type, p.term, p.year 
-        FROM project_scores ps
-        JOIN projects p ON ps.project_code = p.project_code
-        WHERE p.class_id = ?  AND p.term = ? AND ps.student_lin =?
-    ";
-
-    // Prepare the statement
-    $stmt = mysqli_prepare($sqlConnect, $sql);
-    if (!$stmt) {
-        die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
-    }
-
-    // Bind the parameters
-    mysqli_stmt_bind_param($stmt, 'iis', $class_id, $term,$lin);
 
     // Execute the statement
     mysqli_stmt_execute($stmt);
@@ -857,76 +797,58 @@ function getProjectScoresByClassSubjectAllTerms($class_id, $subject_code)
 
     return $data;
 }
+
 function getTotalScoresForSubject($student_lin, $subject_code, $class)
 {
     global $sqlConnect;
+    
+    // Initialize total score
+    $totalScore = 0;
 
-    $sql = "
-        SELECT ps.score, p.term
-        FROM project_scores ps
-        JOIN projects p ON ps.project_code = p.project_code
-        WHERE ps.student_lin = ? AND p.subject_code = ? AND p.class_id = ?
-    ";
+    // Loop through each term (assuming 3 terms: 1, 2, and 3)
+    for ($term = 1; $term <= 3; $term++) {
+        $sql = "
+            SELECT ps.score 
+            FROM project_scores ps
+            JOIN projects p ON ps.project_code = p.project_code
+            WHERE ps.student_lin = ? AND p.subject_code = ? AND p.term = ? AND p.class_id = ?
+        ";
 
-    // Prepare the statement
-    $stmt = mysqli_prepare($sqlConnect, $sql);
-    if (!$stmt) {
-        die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
-    }
-
-    // Bind the parameters
-    mysqli_stmt_bind_param($stmt, 'ssi', $student_lin, $subject_code, $class);
-
-    // Execute the statement
-    mysqli_stmt_execute($stmt);
-
-    // Get the result
-    $result = mysqli_stmt_get_result($stmt);
-    if (!$result) {
-        die("MySQL execute statement error: " . mysqli_error($sqlConnect));
-    }
-
-    // Fetch the data and group by term
-    $scores_by_term = array();
-    while ($row = mysqli_fetch_object($result)) {
-        $term = $row->term;
-        if (!isset($scores_by_term[$term])) {
-            $scores_by_term[$term] = array();
+        // Prepare the statement
+        $stmt = mysqli_prepare($sqlConnect, $sql);
+        if (!$stmt) {
+            die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
         }
-        $scores_by_term[$term][] = $row->score;
-    }
 
-    // Close the statement
-    mysqli_stmt_close($stmt);
+        // Bind the parameters
+        mysqli_stmt_bind_param($stmt, 'ssii', $student_lin, $subject_code, $term, $class);
 
-    // Compute the annual project mark
-    $annual_project_mark = 0;
-    foreach ($scores_by_term as $term => $scores) {
-        $num_projects = count($scores);
-        if ($num_projects == 1) {
-            $average_score = $scores[0];
-        } elseif ($num_projects == 2) {
-            $average_score = array_sum($scores) / 2;
-        } else {
-            // Sort scores in descending order and take the top 3 scores
-            rsort($scores);
-            $top_scores = array_slice($scores, 0, 3);
-            $average_score = array_sum($top_scores) / count($top_scores);
+        // Execute the statement
+        mysqli_stmt_execute($stmt);
+
+        // Get the result
+        $result = mysqli_stmt_get_result($stmt);
+        if (!$result) {
+            die("MySQL execute statement error: " . mysqli_error($sqlConnect));
         }
-        
-        // Convert the average score from out of 100 to out of 1.67
-        $converted_score = ($average_score / 100) * 1.67;
-        
-        // Add the converted score to the annual project mark
-        $annual_project_mark += $converted_score;
+
+        // Fetch the data and calculate the total score for the term
+        while ($row = mysqli_fetch_assoc($result)) {
+            // Convert the score from out of 100 to out of 1.67
+            $convertedScore = ($row['score'] / 100) * 1.67;
+            $totalScore += $convertedScore;
+        }
+
+        // Close the statement
+        mysqli_stmt_close($stmt);
     }
 
-    // Ensure the total annual project mark does not exceed 5
-    if ($annual_project_mark > 5) {
-        $annual_project_mark = 5;
+    // Ensure the total score does not exceed 5
+    if ($totalScore > 5) {
+        $totalScore = 5;
     }
 
-    return $annual_project_mark;
+    return $totalScore;
 }
 
 function getSingleProjectScoreContribution($student_lin, $term, $class, $project_code) {
