@@ -19,6 +19,7 @@
                      <label class="form-label"></label>
                      <select class="form-control" name="term" >
                         <option  value="">Filter By Term</option>
+                        <option value="all">All</option>
                         <option value="1">Term One</option>
                         <option value="2">Term Two</option>
                         <option value="3">Term Three</option>
@@ -30,6 +31,7 @@
                      <label class="form-label"></label>
                      <select class="form-control" name="subject_code" >
                         <option  value="">Filter By Subject</option>
+                        <option value="all">All</option>
                         <?php foreach($db->orderBy('id','ASC')->get('subjects') as $key=>$value): ?>
                         <option value="<?=$value->code?>"><?=$value->name?></option>
                         <?php endforeach;?>
@@ -47,6 +49,151 @@
       </div>
    </div>
 </center>
+<?php if(isset($_GET['term']) && $_GET['term'] == 'all' && $_GET['subject'] != 'all'): ?>
+<div class="card card-info">
+   <div class="card-header">
+      <?php $subject=$db->where('code',$_GET['subject'])->getOne('subjects'); ?>
+      <h4>S.<?=$_GET['class'];?> All Terms Students' <?=$subject->name;?> Project Results</h4>
+      <div class="card-header-action">
+         <a href="admin.php?page=uploads&id=project-results" class="btn btn-primary">Upload Results</a>
+         <a href="admin.php?page=assign-pmarks" class="btn btn-info">Add New</a>
+      </div>
+   </div>
+   <div class="card-body">
+      <div class="table-responsive">
+         <table id="tableExport"  class="table table-striped table-hover table-bordered" style="width: 100%">
+            <thead>
+               <tr>
+                  <th>S/N</th>
+                  <th>LIN</th>
+                  <th>Term</th>
+                  <th>Project Name</th>
+                  <th>Project Score</th>
+                  <th>Action</th>
+               </tr>
+            </thead>
+            <tbody>
+               <?php $n=1; $scores = getProjectScoresByClassSubjectAllTerms($_GET['class'], $_GET['subject']);
+               // var_dump($scores);exit;
+               foreach($scores as $value):
+                  $student = $db->where('lin',$value->student_lin)->getOne('students');
+                  $project = $db->where('project_code',$value->project_code)->getOne('projects');
+               ?>
+               <tr>
+                  <td><?= $n++; ?> </td>
+                  <td><?=$student->lin ?></td>
+                  <td><?=$value->term ?></td>
+                  <td><?=$project->name ?></td>
+                  <td><?=$value->score ?></td>
+                  <td>
+                     <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a>
+                  </td>
+               </tr>
+               <?php endforeach ?>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<?php elseif(isset($_GET['subject']) && $_GET['subject'] == 'all'&& $_GET['term'] != 'all'): ?>
+<div class="card card-info">
+   <div class="card-header">
+      <?php $subject=$db->where('code',$_GET['subject'])->getOne('subjects'); ?>
+      <h4>S.<?=$_GET['class'];?> Students' All Subjects Project Results</h4>
+      <div class="card-header-action">
+         <a href="admin.php?page=uploads&id=project-results" class="btn btn-primary">Upload Results</a>
+         <a href="admin.php?page=assign-pmarks" class="btn btn-info">Add New</a>
+      </div>
+   </div>
+   <div class="card-body">
+      <div class="table-responsive">
+         <table id="tableExport"  class="table table-striped table-hover table-bordered" style="width: 100%">
+            <thead>
+               <tr>
+                  <th>S/N</th>
+                  <th>LIN</th>
+                  <th>Term</th>
+                  <th>Subject</th>
+                  <th>Project Name</th>
+                  <th>Project Score</th>
+                  <th>Action</th>
+               </tr>
+            </thead>
+            <tbody>
+               <?php $n=1; $scores = getProjectScoresByClassAllSubjectsTerm($_GET['class'], $_GET['term']);
+               // var_dump($scores);exit;
+               foreach($scores as $value):
+                  $student = $db->where('lin',$value->student_lin)->getOne('students');
+                  $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                  $subject = $db->where('code',$value->subject_code)->getOne('subjects');
+               ?>
+               <tr>
+                  <td><?= $n++; ?> </td>
+                  <td><?=$student->lin ?></td>
+                  <td><?=$value->term ?></td>
+                  <td><?=$subject->name ?></td>
+                  <td><?=$project->name ?></td>
+                  <td><?=$value->score ?></td>
+                  <td>
+                     <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a>
+                  </td>
+               </tr>
+               <?php endforeach ?>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<?php elseif($_GET['subject'] == 'all' && $_GET['term'] == 'all'): ?>
+<div class="card card-info">
+   <div class="card-header">
+      <?php $subject=$db->where('code',$_GET['subject'])->getOne('subjects'); ?>
+      <h4>S.<?=$_GET['class'];?> Project Results for All Terms and All Subjects</h4>
+      <div class="card-header-action">
+         <a href="admin.php?page=uploads&id=project-results" class="btn btn-primary">Upload Results</a>
+         <a href="admin.php?page=assign-pmarks" class="btn btn-info">Add New</a>
+      </div>
+   </div>
+   <div class="card-body">
+      <div class="table-responsive">
+         <table id="tableExport" class="table table-striped table-hover table-bordered" style="width: 100%">
+            <thead>
+               <tr>
+                  <th>S/N</th>
+                  <th>LIN</th>
+                  <th>Subject</th>
+                  <th>Term</th>
+                  <th>Project Name</th>
+                  <th>Project Score</th>
+                  <th>Action</th>
+               </tr>
+            </thead>
+            <tbody>
+               <?php $n=1; $scores = getProjectScoresByClassAllSubjectsAllTerms($_GET['class']);
+               // var_dump($scores);exit;
+               foreach($scores as $value):
+                  $student = $db->where('lin',$value->student_lin)->getOne('students');
+                  $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                  $subject = $db->where('code',$value->subject_code)->getOne('subjects');
+               ?>
+               <tr>
+                  <td><?= $n++; ?> </td>
+                  <td><?=$student->lin ?></td>
+                  <td><?=$subject->name ?></td>
+                  <td><?=$value->term ?></td>
+                  <td><?=$project->name ?></td>
+                  <td><?=$value->score ?></td>
+                  <td>
+                     <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a>
+                  </td>
+               </tr>
+               <?php endforeach ?>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<?php else:?>
 <?php if(isset($_GET['class'])):?>
 <div class="card card-info">
    <div class="card-header">
@@ -129,6 +276,7 @@
       </div>
    </div>
 </div>
+<?php endif;?>
 <?php endif;?>
 <script type="text/javascript">
    function remStudent(id){

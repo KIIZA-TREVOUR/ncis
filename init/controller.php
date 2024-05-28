@@ -578,15 +578,14 @@ function getTotalScoresByTerm($term) {
 
     return $totalScore;
 }
-
-function getProjectScoresByTerm($student_lin, $term,$class)
+function getProjectScoresByTerm($student_lin, $term, $class)
 {
     global $sqlConnect;
     $sql = "
         SELECT ps.*, p.subject_code, p.name 
         FROM project_scores ps
         JOIN projects p ON ps.project_code = p.project_code
-    WHERE ps.student_lin = ? AND p.term = ? AND p.class_id =?
+        WHERE ps.student_lin = ? AND p.term = ? AND p.class_id = ?
     ";
 
     // Prepare the statement
@@ -596,7 +595,7 @@ function getProjectScoresByTerm($student_lin, $term,$class)
     }
 
     // Bind the parameters
-    mysqli_stmt_bind_param($stmt, 'sii', $student_lin, $term,$class);
+    mysqli_stmt_bind_param($stmt, 'sii', $student_lin, $term, $class);
 
     // Execute the statement
     mysqli_stmt_execute($stmt);
@@ -610,8 +609,20 @@ function getProjectScoresByTerm($student_lin, $term,$class)
     // Fetch the data
     $data = array();
     while ($row = mysqli_fetch_object($result)) {
+        // Keep the original score
+        $original_score = $row->score;
+
         // Convert the score from out of 100 to out of 5
-        $row->score = ($row->score / 100) * 1.67;
+        $converted_score = ($original_score / 100) * 1.67;
+
+        // Calculate the percentage score
+        $percentage = $original_score; // Since the score is already out of 100
+
+        // Add new fields to the row object
+        $row->original_score = $original_score;
+        $row->converted_score = $converted_score;
+        $row->percentage = $percentage;
+
         array_push($data, $row);
     }
 
@@ -640,6 +651,131 @@ function getProjectScoresByClassSubjectTerm($class_id, $subject_code, $term)
 
     // Bind the parameters
     mysqli_stmt_bind_param($stmt, 'isi', $class_id, $subject_code, $term);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        die("MySQL execute statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Fetch the data
+    $data = array();
+    while ($row = mysqli_fetch_object($result)) {
+        array_push($data, $row);
+    }
+
+    // Close the statement
+    mysqli_stmt_close($stmt);
+
+    return $data;
+}
+
+function getProjectScoresByClassAllSubjectsTerm($class_id, $term)
+{
+    global $sqlConnect;
+
+    $sql = "
+        SELECT ps.*, p.name, p.description, p.class_id, p.project_type, p.term, p.year 
+        FROM project_scores ps
+        JOIN projects p ON ps.project_code = p.project_code
+        WHERE p.class_id = ?  AND p.term = ?
+    ";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($sqlConnect, $sql);
+    if (!$stmt) {
+        die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, 'ii', $class_id, $term);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        die("MySQL execute statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Fetch the data
+    $data = array();
+    while ($row = mysqli_fetch_object($result)) {
+        array_push($data, $row);
+    }
+
+    // Close the statement
+    mysqli_stmt_close($stmt);
+
+    return $data;
+}
+function getProjectScoresByClassAllSubjectsAllTerms($class_id)
+{
+    global $sqlConnect;
+
+    $sql = "
+        SELECT ps.*, p.name, p.description, p.class_id, p.project_type, p.term, p.year 
+        FROM project_scores ps
+        JOIN projects p ON ps.project_code = p.project_code
+        WHERE p.class_id = ?
+        ORDER BY p.term
+    ";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($sqlConnect, $sql);
+    if (!$stmt) {
+        die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, 'i', $class_id);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        die("MySQL execute statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Fetch the data
+    $data = array();
+    while ($row = mysqli_fetch_object($result)) {
+        array_push($data, $row);
+    }
+
+    // Close the statement
+    mysqli_stmt_close($stmt);
+
+    return $data;
+}
+
+
+function getProjectScoresByClassSubjectAllTerms($class_id, $subject_code)
+{
+    global $sqlConnect;
+
+    $sql = "
+    SELECT ps.*, p.subject_code, p.name, p.description, p.class_id, p.project_type, p.term, p.year 
+    FROM project_scores ps
+    JOIN projects p ON ps.project_code = p.project_code 
+    WHERE p.class_id = ? AND p.subject_code = ?
+    ORDER BY p.term
+    ";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($sqlConnect, $sql);
+    if (!$stmt) {
+        die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, 'is', $class_id, $subject_code);
 
     // Execute the statement
     mysqli_stmt_execute($stmt);
