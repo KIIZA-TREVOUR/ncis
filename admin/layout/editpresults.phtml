@@ -44,8 +44,8 @@ $student = $db->where('lin',$_GET['lin'])->getOne('students');?>
             <tr>
                 <th>S/N</th>
                 <th>Subject</th>
-                <th>Senior One(5%)</th>
-                <th>Total Project Mark (20%)</th>
+                <th>Senior One</th>
+                <th>Total Project Mark</th>
                 <th>View Ledger</th>
             </tr>
             </thead>
@@ -115,9 +115,9 @@ $student = $db->where('lin',$_GET['lin'])->getOne('students');?>
             <tr>
                 <th>S/N</th>
                 <th>Subject</th>
-                <th>Senior One(5%)</th>
-                <th>Senior Two(5%)</th>
-                <th>Total Project Mark (20%)</th>
+                <th>Senior One</th>
+                <th>Senior Two</th>
+                <th>Total Project Mark</th>
                 <th>View Ledger</th>
             </tr>
             </thead>
@@ -189,10 +189,10 @@ $student = $db->where('lin',$_GET['lin'])->getOne('students');?>
             <tr>
                 <th>S/N</th>
                 <th>Subject</th>
-                <th>Senior One(5%)</th>
-                <th>Senior Two(5%)</th>
-                <th>Senior Three(5%)</th>
-                <th>Total Project Mark (20%)</th>
+                <th>Senior One</th>
+                <th>Senior Two</th>
+                <th>Senior Three</th>
+                <th>Total Project Mark</th>
                 <th>View Ledger</th>
             </tr>
             </thead>
@@ -266,11 +266,11 @@ $student = $db->where('lin',$_GET['lin'])->getOne('students');?>
             <tr>
                 <th>S/N</th>
                 <th>Subject</th>
-                <th>Senior One(5%)</th>
-                <th>Senior Two(5%)</th>
-                <th>Senior Three(5%)</th>
-                <th>Senior Four(5%)</th>
-                <th>Total Project Mark (20%)</th>
+                <th>Senior One</th>
+                <th>Senior Two</th>
+                <th>Senior Three</th>
+                <th>Senior Four</th>
+                <th>Total Project Mark</th>
                 <th>View Ledger</th>
             </tr>
             </thead>
@@ -306,7 +306,7 @@ $student = $db->where('lin',$_GET['lin'])->getOne('students');?>
                               }
                            }
 
-                           $total = $year1 +$year2 +$year3+$year4;
+                           $total = ($year1 +$year2 +$year3+$year4)/4;
                            ?>
                            <tr>
                               <td><?= ++$num ?></td>
@@ -315,7 +315,7 @@ $student = $db->where('lin',$_GET['lin'])->getOne('students');?>
                               <td><?= $year2 ?></td>
                               <td><?= $year3 ?></td>
                               <td><?= $year4 ?></td>
-                              <td><?= $total ?></td>
+                              <td><?= round($total,2) ?></td>
                               <td>
                                  <div class="d-flex">
                                        <a href="admin.php?page=result-ledger&lin=<?= $studentLin ?>&subject_code=<?= $subjectCode ?>" class="badge badge-sm btn-info">Ledger</a>&nbsp;
@@ -347,11 +347,11 @@ $student = $db->where('lin',$_GET['lin'])->getOne('students');?>
                <tr>
                     <th>S/N</th>
                     <th>Subject</th>
-                    <th>Senior One(5%)</th>
-                    <th>Senior Two(5%)</th>
-                    <th>Senior Three(5%)</th>
-                    <th>Senior Four(5%)</th>
-                    <th>Total Project Mark (20%)</th>
+                    <th>Senior One</th>
+                    <th>Senior Two</th>
+                    <th>Senior Three</th>
+                    <th>Senior Four</th>
+                    <th>Total Project Mark</th>
                     <th>View Ledger</th>
                </tr>
             </thead>

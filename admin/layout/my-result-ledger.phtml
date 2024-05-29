@@ -1,5 +1,6 @@
 <?php 
-   $student = $db->where('lin',$wallet['user']['lin'])->getOne('students');
+$studentLin = $wallet['user']['lin'];
+   $student = $db->where('lin',$studentLin)->getOne('students');
    if($student->class == 1):
      $class= 'SENIOR ONE';
    elseif($student->class == 2):
@@ -65,7 +66,7 @@
                         </address>
                      </div>
                      <div class="col-md-2 text-md-right">
-                        <address><img height="110" width="120" src="<?= $wallet['config']['site_url'].$wallet['user']['photo'] ?>" class="header-logo bordered" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/avatar.png'" />
+                        <address><img height="110" width="120" src="<?= $wallet['config']['site_url'].$wallet['config']['logo'] ?>" class="header-logo bordered" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/avatar.png'" />
                         </address>
                      </div>
                   </div>
@@ -76,21 +77,21 @@
                   <div class="row table-container">
                      <table class="table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM ONE</h6>
+                           <h6>S.1 TERM ONE <a href="admin.php?page=termly-report&class=1&term=1&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th>PName</th>
-                              <th>Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],1,1);
+                            $results = getProjectScoresByTerm($studentLin,1,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
+                                <td><?=$subject->name?></td>
+                              <td><?=round($value->average_score,2)?>%</td>
+                              <td><?=round($value->converted_score,2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -101,22 +102,22 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM TWO </h6>
+                           <h6>S.1 TERM TWO <a href="admin.php?page=termly-report&class=1&term=2&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],2,1);
+                            $results = getProjectScoresByTerm($studentLin,2,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -126,22 +127,23 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM THREE </h6>
+                           <h6>S.1 TERM THREE <a href="admin.php?page=termly-report&class=1&term=3&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                               <th class="text-center">Annual</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],3,1);
+                            $results = getProjectScoresByTerm($studentLin,3,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                              <td><?=round(getTotalScoresForSubject($studentLin, $value->subject_code, 1),2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -222,7 +224,7 @@
                         </address>
                      </div>
                      <div class="col-md-2 text-md-right">
-                        <address><img height="110" width="120" src="<?= $wallet['config']['site_url'].$wallet['user']['photo'] ?>" class="header-logo bordered" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/avatar.png'" />
+                        <address><img height="110" width="120" src="<?= $wallet['config']['site_url'].$wallet['config']['logo'] ?>" class="header-logo bordered" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/avatar.png'" />
                         </address>
                      </div>
                   </div>
@@ -233,23 +235,22 @@
                   <div class="table-responsive row">
                      <table class="table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM ONE</h6>
+                           <h6>S.1 TERM ONE <a href="admin.php?page=termly-report&class=1&term=1&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],1,1);
+                            $results = getProjectScoresByTerm($studentLin,1,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -259,22 +260,22 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM TWO </h6>
+                           <h6>S.1 TERM TWO <a href="admin.php?page=termly-report&class=1&term=2&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],2,1);
+                            $results = getProjectScoresByTerm($studentLin,2,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -284,23 +285,23 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM THREE </h6>
+                           <h6>S.1 TERM THREE <a href="admin.php?page=termly-report&class=1&term=3&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                               <th class="text-center">Annual</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],3,1);
+                            $results = getProjectScoresByTerm($studentLin,3,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                              <td><?=round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 1),2)?></td>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                              <td><?=round(getTotalScoresForSubject($studentLin, $value->subject_code, 1),2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -313,22 +314,22 @@
                   <div class="table-responsive row">
                      <table class="table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.2 TERM ONE</h6>
+                           <h6>S.2 TERM ONE <a href="admin.php?page=termly-report&class=2&term=1&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],1,2);
+                            $results = getProjectScoresByTerm($studentLin,1,2);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -338,22 +339,22 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.2 TERM TWO </h6>
+                           <h6>S.2 TERM TWO <a href="admin.php?page=termly-report&class=2&term=2&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],2,2);
+                            $results = getProjectScoresByTerm($studentLin,2,2);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -363,23 +364,23 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.2 TERM THREE </h6>
+                           <h6>S.2 TERM THREE <a href="admin.php?page=termly-report&class=2&term=3&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                               <th class="text-center">Annual</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],3,2);
+                            $results = getProjectScoresByTerm($studentLin,3,2);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                              <td><?=round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 2),2)?></td>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                              <td><?=round(getTotalScoresForSubject($studentLin,  $value->subject_code, 2),2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -459,7 +460,7 @@
                         </address>
                      </div>
                      <div class="col-md-2 text-md-right">
-                        <address><img height="110" width="120" src="<?= $wallet['config']['site_url'].$wallet['user']['photo'] ?>" class="header-logo bordered" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/avatar.png'" />
+                        <address><img height="110" width="120" src="<?= $wallet['config']['site_url'].$wallet['config']['logo'] ?>" class="header-logo bordered" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/avatar.png'" />
                         </address>
                      </div>
                   </div>
@@ -470,22 +471,22 @@
                   <div class="table-responsive row">
                      <table class="table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM ONE</h6>
+                           <h6>S.1 TERM ONE <a href="admin.php?page=termly-report&class=1&term=1&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],1,1);
+                            $results = getProjectScoresByTerm($studentLin,1,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -495,22 +496,22 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM TWO </h6>
+                           <h6>S.1 TERM TWO <a href="admin.php?page=termly-report&class=1&term=2&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],2,1);
+                            $results = getProjectScoresByTerm($studentLin,2,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -520,23 +521,23 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM THREE </h6>
+                           <h6>S.1 TERM THREE <a href="admin.php?page=termly-report&class=1&term=3&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                               <th class="text-center">Annual</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],3,1);
+                            $results = getProjectScoresByTerm($studentLin,3,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                              <td><?=round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 1),2)?></td>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                              <td><?=round(getTotalScoresForSubject($studentLin, $value->subject_code, 1),2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -549,22 +550,22 @@
                   <div class="table-responsive row">
                      <table class="table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.2 TERM ONE</h6>
+                           <h6>S.2 TERM ONE <a href="admin.php?page=termly-report&class=2&term=1&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],1,2);
+                            $results = getProjectScoresByTerm($studentLin,1,2);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -574,22 +575,22 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.2 TERM TWO </h6>
+                           <h6>S.2 TERM TWO <a href="admin.php?page=termly-report&class=2&term=2&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],2,2);
+                            $results = getProjectScoresByTerm($studentLin,2,2);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -599,23 +600,23 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.2 TERM THREE </h6>
+                           <h6>S.2 TERM THREE <a href="admin.php?page=termly-report&class=2&term=3&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                               <th class="text-center">Annual</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],3,2);
+                            $results = getProjectScoresByTerm($studentLin,3,2);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                              <td><?=round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 2),2)?></td>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                              <td><?=round(getTotalScoresForSubject($studentLin,  $value->subject_code, 2),2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -628,22 +629,22 @@
                   <div class="table-responsive row">
                      <table class="table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.3 TERM ONE</h6>
+                           <h6>S.3 TERM ONE <a href="admin.php?page=termly-report&class=3&term=1&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],1,3);
+                            $results = getProjectScoresByTerm($studentLin,1,3);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -653,22 +654,22 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.3 TERM TWO </h6>
+                           <h6>S.3 TERM TWO <a href="admin.php?page=termly-report&class=3&term=2&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],2,3);
+                            $results = getProjectScoresByTerm($studentLin,2,3);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -678,23 +679,23 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.3 TERM THREE </h6>
+                           <h6>S.3 TERM THREE <a href="admin.php?page=termly-report&class=3&term=3&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                               <th class="text-center">Annual</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],3,3);
+                            $results = getProjectScoresByTerm($studentLin,3,3);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                              <td><?=round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 3),2)?></td>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                              <td><?=round(getTotalScoresForSubject($studentLin,  $value->subject_code, 3),2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -774,7 +775,7 @@
                         </address>
                      </div>
                      <div class="col-md-2 text-md-right">
-                        <address><img height="110" width="120" src="<?= $wallet['config']['site_url'].$wallet['user']['photo'] ?>" class="header-logo bordered" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/avatar.png'" />
+                        <address><img height="110" width="120" src="<?= $wallet['config']['site_url'].$wallet['config']['logo'] ?>" class="header-logo bordered" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/avatar.png'" />
                         </address>
                      </div>
                   </div>
@@ -785,21 +786,21 @@
                   <div class="table-responsive row">
                      <table class="table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM ONE</h6>
+                              <h6>S.1 TERM ONE <a href="admin.php?page=termly-report&class=1&term=1&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],1,1);
+                            $results = getProjectScoresByTerm($studentLin,1,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
+                                <td><?=$subject->name?></td>
+                              <td><?=round($value->average_score,2)?>%</td>
+                              <td><?=round($value->converted_score,2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -810,22 +811,22 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM TWO </h6>
+                           <h6>S.1 TERM TWO <a href="admin.php?page=termly-report&class=1&term=2&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],2,1);
+                            $results = getProjectScoresByTerm($studentLin,2,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -835,23 +836,23 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.1 TERM THREE </h6>
+                           <h6>S.1 TERM THREE <a href="admin.php?page=termly-report&class=1&term=3&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                               <th class="text-center">Annual</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],3,1);
+                            $results = getProjectScoresByTerm($studentLin,3,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                              <td><?=round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 1),2)?></td>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                              <td><?=round(getTotalScoresForSubject($studentLin, $value->subject_code, 1),2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -864,22 +865,22 @@
                   <div class="table-responsive row">
                      <table class="table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.2 TERM ONE</h6>
+                           <h6>S.2 TERM ONE <a href="admin.php?page=termly-report&class=2&term=1&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],2,1);
+                            $results = getProjectScoresByTerm($studentLin,2,1);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -889,22 +890,22 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.2 TERM TWO </h6>
+                           <h6>S.2 TERM TWO <a href="admin.php?page=termly-report&class=2&term=2&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],2,2);
+                            $results = getProjectScoresByTerm($studentLin,2,2);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -914,23 +915,23 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.2 TERM THREE </h6>
+                           <h6>S.2 TERM THREE <a href="admin.php?page=termly-report&class=2&term=3&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                               <th class="text-center">Annual</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],3,2);
+                            $results = getProjectScoresByTerm($studentLin,3,2);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                              <td><?=round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 2),2)?></td>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                              <td><?=round(getTotalScoresForSubject($studentLin,  $value->subject_code, 2),2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -943,22 +944,22 @@
                   <div class="table-responsive row">
                      <table class="table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.3 TERM ONE</h6>
+                           <h6>S.3 TERM ONE <a href="admin.php?page=termly-report&class=3&term=1&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],1,3);
+                            $results = getProjectScoresByTerm($studentLin,1,3);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -968,22 +969,22 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.3 TERM TWO </h6>
+                           <h6>S.3 TERM TWO <a href="admin.php?page=termly-report&class=3&term=2&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],2,3);
+                            $results = getProjectScoresByTerm($studentLin,2,3);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -993,23 +994,23 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.3 TERM THREE </h6>
+                           <h6>S.3 TERM THREE <a href="admin.php?page=termly-report&class=3&term=3&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                               <th class="text-center">Annual</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],3,3);
+                            $results = getProjectScoresByTerm($studentLin,3,3);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                              <td><?=round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 3),2)?></td>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                              <td><?=round(getTotalScoresForSubject($studentLin,  $value->subject_code, 3),2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -1022,22 +1023,22 @@
                   <div class="table-responsive row">
                      <table class="table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.4 TERM ONE</h6>
+                           <h6>S.4 TERM ONE <a href="admin.php?page=termly-report&class=4&term=1&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],1,4);
+                            $results = getProjectScoresByTerm($studentLin,1,4);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -1047,22 +1048,22 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.4 TERM TWO </h6>
+                           <h6>S.4 TERM TWO <a href="admin.php?page=termly-report&class=4&term=2&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],2,4);
+                            $results = getProjectScoresByTerm($studentLin,2,4);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
-                           <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                           </tr>
+                            <tr>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                            </tr>
                            <?php endforeach;?>
                         </div>
                      </table>
@@ -1072,23 +1073,23 @@
                   <div class="table-responsive row">
                      <table class="  table table-striped table-hover table-md row">
                         <div class="col-md-12 mt-4">
-                           <h6>S.4 TERM THREE </h6>
+                           <h6>S.4 TERM THREE <a href="admin.php?page=termly-report&class=4&term=3&lin=<?=$studentLin?>"><span class="badge badge-primary"> Report</span></a></h6>
                            <tr>
-                              <th>CODE</th>
-                              <th class="text-center">PName</th>
-                              <th class="text-center">Score</th>
+                              <th>Subject Name</th>
+                              <th class="text-center">% Score</th>
+                              <th class="text-center">Score(/20)</th>
                               <th class="text-center">Annual</th>
                            </tr>
                             <?php
-                            $results = getProjectScoresByTerm($wallet['user']['lin'],3,4);
+                            $results = getProjectScoresByTerm($studentLin,3,4);
                             foreach($results as $value):
-                            $project = $db->where('project_code',$value->project_code)->getOne('projects');
+                              $subject = $db->where('code',$value->subject_code)->getOne('subjects');
                             ?>
                            <tr>
-                                <td><?=$project->subject_code?></td>
-                                <td><?=$project->name?></td>
-                              <td><?=round($value->score,2)?></td>
-                              <td><?=round(getTotalScoresForSubject($wallet['user']['lin'], $project->subject_code, 4),2)?></td>
+                                 <td><?=$subject->name?></td>
+                               <td><?=round($value->average_score,2)?>%</td>
+                               <td><?=round($value->converted_score,2)?></td>
+                              <td><?=round(getTotalScoresForSubject($studentLin,  $value->subject_code, 4),2)?></td>
                            </tr>
                            <?php endforeach;?>
                         </div>
@@ -1108,12 +1109,6 @@
                </address>
             </div>
             <div class="col-md-5 text-md-center mt-0" style="padding-left:10px;">
-               <address>
-                  <div class="gap-line-container">
-                     <span class="lin-label">Next Term Begins:</span>
-                     <div class="gap-line"><span><?=filterDate(getCurrentDate());?></span></div>
-                  </div>
-               </address>
             </div>
             <div class="col-md-2 text-md-right">
                <address><img height="110" width="120" src="<?= $wallet['config']['site_url'].$wallet['config']['stamp'] ?>" class="header-logo" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/sms.png'" />

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 28, 2024 at 10:58 PM
+-- Generation Time: May 29, 2024 at 11:30 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -275,9 +275,6 @@ INSERT INTO `project_scores` (`id`, `student_lin`, `project_code`, `score`, `sta
 (25, '20210101', 'S107202112', '90', 0, 'S107', '2024-05-22 13:10:27', NULL, NULL, NULL),
 (26, '20210101', 'S107202111', '89', 1, 'S107', '2024-05-22 13:10:45', NULL, NULL, NULL),
 (27, '20210101', 'S107202110', '80', 1, 'S107', '2024-05-22 13:12:02', NULL, NULL, NULL),
-(28, '20220101', 'S105202102', '90', 0, 'S105', '2024-05-23 15:29:57', NULL, NULL, NULL),
-(29, '20220101', 'S107202111', '89', 0, 'S107', '2024-05-23 15:30:15', NULL, NULL, NULL),
-(30, '20220101', 'S107202102', '80', 0, 'S107', '2024-05-24 00:15:15', NULL, NULL, NULL),
 (31, '20210101', 'S107202113', '67', 0, 'S107', '2024-05-28 22:23:56', NULL, NULL, NULL),
 (32, '20210101', 'S107202114', '78', 0, 'S107', '2024-05-28 22:24:18', NULL, NULL, NULL);
 
@@ -393,9 +390,10 @@ CREATE TABLE `staff_subject` (
 
 INSERT INTO `staff_subject` (`id`, `staff_email`, `subject_code`, `date_created`, `date_modified`, `sch_id`) VALUES
 (1, 'yekoshan@gmail.com', 'S107,S106,S105,S104', '2024-05-22 18:23:38', NULL, NULL),
-(2, 'eunice@gmail.com', '', '2024-05-24 00:11:42', NULL, NULL),
-(3, 'shifah@gmail.com', '', '2024-05-24 00:14:42', NULL, NULL),
-(4, 'yekoshan@gmail.com', 'S108,S107,S106,S105,S104,S103', '2024-05-24 00:40:56', NULL, NULL);
+(4, 'yekoshan@gmail.com', 'S108,S107,S106,S105,S104,S103', '2024-05-24 00:40:56', NULL, NULL),
+(5, 'eunice@gmail.com', 'S102,S101,S100', '2024-05-29 23:37:57', NULL, NULL),
+(6, 'eunice@gmail.com', 'S108,S107,S106,S105,S104,S103,S102,S101,S100', '2024-05-29 23:42:26', NULL, NULL),
+(7, 'shifah@gmail.com', 'S104,S103,S102', '2024-05-29 23:43:23', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -561,7 +559,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `date_created`, `date_modified`, `user_type`, `photo`, `sch_id`, `lin`) VALUES
-(1, 'Atim Eunice', 'atime@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '2024-05-20 17:29:06', '2024-05-20 17:29:06', 'admin', '', NULL, ''),
+(1, 'Atime Eunice', 'atime@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '2024-05-20 17:29:06', '2024-05-20 17:29:06', 'admin', '', NULL, ''),
 (6, 'Anguyo Benard', 'ben@gmail.com', '1a288eff17e4f46b65fe920f67f347f8', '2024-05-20 17:35:43', '2024-05-20 17:35:43', 'student', '', NULL, '240101'),
 (24, 'Opio Deo', 'weejk@gmail.com', '506ba42ec99eb6822ac83ed560da911d', '2024-05-22 10:36:56', '2024-05-22 10:36:56', 'student', '', NULL, '20230101'),
 (29, 'Nana Shifah', 'nanashifah@gmail.com', '33c6aed5595821934180e44ab4fb106f', '2024-05-22 12:33:45', '2024-05-22 12:33:45', 'student', '', NULL, '20210101'),
@@ -750,7 +748,7 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `staff_subject`
 --
 ALTER TABLE `staff_subject`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `students`

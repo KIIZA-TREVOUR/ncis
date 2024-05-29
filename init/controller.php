@@ -636,8 +636,8 @@ function getProjectScoresByTerm($student_lin, $term, $class)
             $average_score = array_sum($top_scores) / count($top_scores);
         }
 
-        // Convert the score from out of 100 to out of 5
-        $converted_score = ($average_score / 100) * 1.67;
+        // Convert the score from out of 100 to out of 20
+        $converted_score = ($average_score / 100) * 20;
 
         // Prepare the result object
         $subject_result = new stdClass();
@@ -773,6 +773,93 @@ function getProjectScoresByClassAllSubjectsTermByStudent($class_id, $term,$lin)
 
     return $data;
 }
+function getSubjectsByStudent($student_lin) {
+    global $sqlConnect;
+
+    $sql = "
+        SELECT subject_code
+        FROM student_subject
+        WHERE student_lin = ?
+    ";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($sqlConnect, $sql);
+    if (!$stmt) {
+        die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Bind the parameters
+    mysqli_stmt_bind_param($stmt, 's', $student_lin);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        die("MySQL execute statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Fetch the data
+    $subjects = array();
+    while ($row = mysqli_fetch_object($result)) {
+        // Explode the subject codes if they are in comma-separated format
+        $subject_codes = explode(",", $row->subject_code);
+        // Merge with existing subjects
+        $subjects = array_merge($subjects, $subject_codes);
+    }
+
+    // Close the statement
+    mysqli_stmt_close($stmt);
+
+    // Remove duplicate subject codes
+    $subjects = array_unique($subjects);
+
+    return $subjects;
+}
+
+function getStaffEmailBySubject($subject_code) {
+    global $sqlConnect;
+
+    // SQL query to get the staff email who teaches the given subject
+    $sql = "
+        SELECT s.email 
+        FROM staff_subject ss
+        JOIN staff s ON ss.staff_email = s.email
+        WHERE FIND_IN_SET(?, ss.subject_code)
+        LIMIT 1
+    ";
+
+    // Prepare the statement
+    $stmt = mysqli_prepare($sqlConnect, $sql);
+    if (!$stmt) {
+        die("MySQL prepare statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Bind the parameter
+    mysqli_stmt_bind_param($stmt, 's', $subject_code);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        die("MySQL execute statement error: " . mysqli_error($sqlConnect));
+    }
+
+    // Fetch the data
+    $email = null;
+    if ($row = mysqli_fetch_object($result)) {
+        $email = $row->email;
+    }
+
+    // Close the statement
+    mysqli_stmt_close($stmt);
+
+    return $email;
+}
+
 function getProjectScoresByClassAllSubjectsAllTerms($class_id)
 {
     global $sqlConnect;
@@ -857,12 +944,13 @@ function getProjectScoresByClassSubjectAllTerms($class_id, $subject_code)
 
     return $data;
 }
+
 function getTotalScoresForSubject($student_lin, $subject_code, $class)
 {
     global $sqlConnect;
 
     $sql = "
-        SELECT ps.score, p.term
+        SELECT ps.score
         FROM project_scores ps
         JOIN projects p ON ps.project_code = p.project_code
         WHERE ps.student_lin = ? AND p.subject_code = ? AND p.class_id = ?
@@ -886,47 +974,41 @@ function getTotalScoresForSubject($student_lin, $subject_code, $class)
         die("MySQL execute statement error: " . mysqli_error($sqlConnect));
     }
 
-    // Fetch the data and group by term
-    $scores_by_term = array();
+    // Fetch the data
+    $scores = array();
     while ($row = mysqli_fetch_object($result)) {
-        $term = $row->term;
-        if (!isset($scores_by_term[$term])) {
-            $scores_by_term[$term] = array();
-        }
-        $scores_by_term[$term][] = $row->score;
+        $scores[] = $row->score;
     }
 
     // Close the statement
     mysqli_stmt_close($stmt);
 
-    // Compute the annual project mark
-    $annual_project_mark = 0;
-    foreach ($scores_by_term as $term => $scores) {
-        $num_projects = count($scores);
-        if ($num_projects == 1) {
-            $average_score = $scores[0];
-        } elseif ($num_projects == 2) {
-            $average_score = array_sum($scores) / 2;
-        } else {
-            // Sort scores in descending order and take the top 3 scores
-            rsort($scores);
-            $top_scores = array_slice($scores, 0, 3);
-            $average_score = array_sum($top_scores) / count($top_scores);
-        }
-        
-        // Convert the average score from out of 100 to out of 1.67
-        $converted_score = ($average_score / 100) * 1.67;
-        
-        // Add the converted score to the annual project mark
-        $annual_project_mark += $converted_score;
+    if (empty($scores)) {
+        return 0; // No scores found
     }
 
-    // Ensure the total annual project mark does not exceed 5
-    if ($annual_project_mark > 5) {
-        $annual_project_mark = 5;
+    // Sort scores in descending order to easily pick the top scores if needed
+    rsort($scores);
+
+    // Determine the scores to use based on the number of projects
+    if (count($scores) == 1) {
+        $selected_scores = $scores;
+    } elseif (count($scores) == 2) {
+        $selected_scores = $scores;
+    } else {
+        // Pick the top 3 scores if there are more than 3 projects
+        $selected_scores = array_slice($scores, 0, 3);
     }
 
-    return $annual_project_mark;
+    // Convert each selected score from out of 100 to out of 20
+    $converted_scores = array_map(function($score) {
+        return ($score / 100) * 20;
+    }, $selected_scores);
+
+    // Calculate the average of the converted scores
+    $average_score = array_sum($converted_scores) / count($converted_scores);
+
+    return $average_score;
 }
 
 function getSingleProjectScoreContribution($student_lin, $term, $class, $project_code) {

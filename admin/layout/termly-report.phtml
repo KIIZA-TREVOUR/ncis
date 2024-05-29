@@ -1,45 +1,173 @@
-<div class="card card-info">
-   <div class="card-header">
-      <?php $subject=$db->where('code',$_GET['subject'])->getOne('subjects');  
-      $student=$db->where('lin',$_GET['lin'])->getOne('students'); ?>
-      <h4><?=$student->firstname?> <?=$student->lastname?>'s Term <?php if($_GET['term']==1){echo "One";}elseif($_GET['term']==2){echo 'Two';}else{echo 'Three';}?> Project Results</h4>
-      <div class="card-header-action">
-         <a href="admin.php?page=uploads&id=project-results" class="btn btn-primary">Upload Results</a>
-         <a href="admin.php?page=assign-pmarks" class="btn btn-info">Add New</a>
+<?php  $student = $db->where('lin',$_GET['lin'])->getOne('students');?>
+<section class="section" style="width: 75vw;font-size:12px;background-color: #f8f9fa;margin: 0 auto;">
+   <div class="section-body">
+      <div class="invoice">
+         <div class="invoice-print" id="printContent">
+            <div class="row">
+               <div class="col-lg-12">
+                     <center>
+                  <div style="flex:auto"><img width="120" height="120" src="<?= $wallet['config']['site_url'].$wallet['config']['logo'] ?>" class="header-logo" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/sms.png'" />
+                        <h2>LAROO SEED SECONDARY SCHOOL</h2>
+                  </div>
+                  <h6 >P.O BOX, 213 Gulu | www.larooss.ac.ug | info@laroo.ac.ug</h6>
+                  <hr style="margin:0px;padding:2px;color:green">
+                  <hr style="margin:0px;padding: 2px;color:red;">
+                     <h5>END OF TERM <?php if($_GET['term']==1){echo "ONE";}elseif($_GET['term']==2){echo "TWO";}else{echo "THREE";}?> PROJECT RESULTS</h5>
+                  </center>
+                  <div class="row">
+                     <div class="col-md-5 mt-4">
+                        <address>
+                           <div class="gap-line-container">
+                              <span class="lin-label">LIN:</span>
+                              <div class="gap-line"><span><?=$student->lin?></span></div>
+                           </div>
+                           <div class="gap-line-container">
+                              <span class="lin-label">NAME:</span>
+                              <div class="gap-line"><span><?=$student->firstname?> <?=$student->lastname?></span></div>
+                           </div>
+                        </address>
+                     </div>
+                     <div class="col-md-5 text-md-center mt-4" style="padding-left:10px;">
+                        <address>
+                           <div class="gap-line-container">
+                              <span class="lin-label">CLASS:</span>
+                              <div class="gap-line"><span>SENIOR <?=$_GET['class']?></span></div>
+                           </div>
+                           <div class="gap-line-container">
+                              <span class="lin-label">TERM:</span>
+                              <div class="gap-line"><span>TERM <?=$_GET['term']?> </span></div>
+                           </div>
+                        </address>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="row col-md-12 mt-0">
+               <div class="col-md-12 col-lg-12 mt-4 border">
+                     <style>
+                         /* Custom CSS for visible and colored borders */
+                        .table-bordered th,
+                        .table-bordered td {
+                              border: 2px solid #007bff; /* Blue color for the borders, can be customized */
+                        }
+                        .table thead th {
+                              background-color: #007bff; /* Background color for header */
+                              color: white; /* Text color for header */
+                        }
+                     </style>
+
+                     <table class="table table-striped table-hover table-md table-bordered">
+                        <thead>
+                           <tr>
+                                 <th>Subjects</th>
+                                 <th>Projects(Competency)</th>
+                                 <th>Score (20)</th>
+                                 <th>General Remarks</th>
+                                 <th>Subject Teacher</th>
+                           </tr>
+                        </thead><tbody>
+    <?php 
+    $subjects = getSubjectsByStudent($_GET['lin']);
+    foreach($subjects as $subject_code) {
+        $teacher = $db->where('email', getStaffEmailBySubject($subject_code))->getOne('staff');
+        $scores = getProjectScoresByClassAllSubjectsTermByStudent($_GET['class'], $_GET['term'], $_GET['lin']);
+        $subject = $db->where('code', $subject_code)->getOne('subjects');
+        
+        // Filter scores for the current subject
+        $filteredScores = array_filter($scores, function($score) use ($subject_code) {
+            return $score->subject_code === $subject_code;
+        });
+
+        $rowCount = count($filteredScores);
+
+        if ($rowCount == 0) {
+            // No scores for this subject, show empty row
+            echo '<tr>';
+            echo '<td>' . $subject->name . '</td>';
+            echo '<td><span style="color:red">No Project Done</span></td>';
+            echo '<td><span style="color:red">0</td>';
+            echo '<td><span style="color:red">Advised to do at least a project</span></td>';
+            echo '<td><div style="width: 100px; overflow: hidden; text-overflow: ellipsis;">'.$teacher->firstname.' '.$teacher->lastname.'</div></td>';
+            echo '</tr>';
+        } else {
+            // Display scores
+            $index = 0;
+            $totalScore = 0;
+            $numProjects = min(count($filteredScores), 3); // Get the number of projects (max 3)
+            foreach ($filteredScores as $row) {
+                echo '<tr>';
+                if ($index == 0) {
+                    echo '<td rowspan="' . ($rowCount + 1) . '">' . $subject->name . '</td>';
+                }
+                echo '<td><span style="color:blue">' . ($row->name ?? 'N/A') .'</span><br>'. $row->description . '</td>';
+                echo '<td>' . (($cscore= $row->score/100)*20 ?? 'N/A') . '</td>';
+                echo '<td>';
+                if ($cscore < 8) {
+                    echo 'Basic: Poor Performance, More Efforts needed';
+                } elseif ($cscore >= 8 && $cscore < 16) {
+                    echo 'Moderate: Good Performance Aim Higher';
+                } else {
+                    echo 'Outstanding: Keep it Up';
+                }
+                echo '</td>';
+                echo '<td><div style="width: 100px; overflow: hidden; text-overflow: ellipsis;">'.$teacher->firstname.' '.$teacher->lastname.'</div></td>';
+                echo '</tr>';
+                $index++;
+                if ($index <= $numProjects) {
+                    $totalScore += $cscore;
+                }
+            }
+            // Calculate and display the average score for the subject
+            $averageScore = round(($totalScore / $numProjects) * 20, 2);
+            echo '<tr>';
+            echo '<td><span style="color:green"><b>Average Score</b></span></td>';
+            echo '<td colspan="2"><span style="color:green"><b>' . $averageScore . '</b></span></td>';
+            echo '</tr>';
+        }
+    }
+    ?>
+</tbody>
+
+
+
+                     </table>
+               </div>
+            </div>
+         </div>
+         <hr>
+         <div class="row">
+            <div class="col-md-5 mt-0">
+               <address>
+                  <div class="gap-line-container">
+                     <span class="lin-label">Date of Issue:</span>
+                     <div class="gap-line"><span><?=filterDate(getCurrentDate());?></span></div>
+                  </div>
+               </address>
+            </div>
+            <div class="col-md-5 text-md-center mt-0" style="padding-left:10px;">
+            </div>
+            <div class="col-md-2 text-md-right">
+               <address><img height="110" width="120" src="<?= $wallet['config']['site_url'].$wallet['config']['stamp'] ?>" class="header-logo" onerror = "this.onerror=null;this.src='<?= $wallet['config']['site_url'] ?>layout/assets/img/sms.png'" />
+               </address>
+            </div>
+         </div>
+         <div class="text-md-right">
+            <button  onclick="printDiv('printContent')" class="btn btn-warning btn-icon icon-left"><i class="fas fa-print"></i> Print</button>
+         </div>
       </div>
    </div>
-   <div class="card-body">
-      <div class="table-responsive">
-         <table id="tableExport"  class="table table-striped table-hover table-bordered" style="width: 100%">
-            <thead>
-               <tr>
-                  <th>S/N</th>
-                  <th>Subject</th>
-                  <th>Project Name</th>
-                  <th>Project Score</th>
-                  <th>Action</th>
-               </tr>
-            </thead>
-            <tbody>
-               <?php $n=1; $scores = getProjectScoresByClassAllSubjectsTermByStudent($_GET['class'], $_GET['term'],$_GET['lin']);
-               // var_dump($scores);exit;
-               foreach($scores as $value):
-                  $student = $db->where('lin',$value->student_lin)->getOne('students');
-                  $project = $db->where('project_code',$value->project_code)->getOne('projects');
-                  $subject = $db->where('code',$value->subject_code)->getOne('subjects');
-               ?>
-               <tr>
-                  <td><?= $n++; ?> </td>
-                  <td><?=$subject->name ?></td>
-                  <td><?=$project->name ?></td>
-                  <td><?=$value->score ?></td>
-                  <td>
-                     <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="badge badge-info">Request Edit</a>
-                  </td>
-               </tr>
-               <?php endforeach ?>
-            </tbody>
-         </table>
-      </div>
-   </div>
-</div>
+</section>
+
+<!-- JavaScript -->
+<script>
+   function printDiv(divName) {
+       var printContents = document.getElementById(divName).innerHTML;
+       var originalContents = document.body.innerHTML;
+   
+       document.body.innerHTML = printContents;
+   
+       window.print();
+   
+       document.body.innerHTML = originalContents;
+   }
+</script>

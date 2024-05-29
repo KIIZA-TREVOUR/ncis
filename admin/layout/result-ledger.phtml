@@ -46,6 +46,7 @@ if(logged_in() && $wallet['user']['user_type']=='admin'):
 					
 					// Fetch all projects for the given subject
 					$projects = $db->where('subject_code', $subjectCode)->where('year',$student->year)->orderBy('id', 'DESC')->get('projects');
+					// var_dump($projects);
 
 					foreach ($projects as $project) {
 						// Fetch project score for the student and the current project

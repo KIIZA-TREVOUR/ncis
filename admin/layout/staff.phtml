@@ -47,25 +47,30 @@ if(logged_in() && $wallet['user']['user_type']=='admin'):?>
 						<td><?= $value->firstname ?> <?= $value->lastname ?></td>
 						<td><?= $value->email ?></td>
 						<td><?=$value->contact ?></td>
-						<td><?=$value->role ?></td>
-						<td><?php
-							$subjects = $db->where('staff_email', $value->id)->getOne('staff_subject');
-							if(!empty($subjects)){
-							 $sub = $subjects->subject_code;
-								$one = explode(","," $sub");
-							   
-								foreach($one as $key=> $s) {?>
-								   <?php
-									   $subname = $db->where('id', $s)->getOne('subjects');
-									   echo $subname->name;
-									   if ($key < count($one) - 1) {
-										   echo ', '; 
-									   }
-								   ?>
-   
-								<?php } ?></td>
+						<td><?=$value->role ?></td><td>
+    <?php
+    $subjects = $db->where('staff_email', $value->email)->getOne('staff_subject');
+    if(!empty($subjects)) {
+        $sub = $subjects->subject_code;
+        $subject_codes = explode(",", $sub);
+        $subject_names = [];
+        foreach($subject_codes as $s) {
+            $subject = $db->where('code', trim($s))->getOne('subjects');
+            if ($subject) {
+                $subject_names[] = $subject->name;
+            }
+        }
+        if (!empty($subject_names)) {
+            echo implode(', ', $subject_names);
+        } else {
+            echo "No Subject assigned yet";
+        }
+    } else {
+        echo "No Subject assigned yet";
+    }
+    ?>
+</td>
 
-							 <?php }else{ echo"No Subject assigned yet";}?>
 						<td><?= date('d/m/Y', strtotime($value->date_created)) ?></td>
 						<td>
 							<div class="d-flex">
