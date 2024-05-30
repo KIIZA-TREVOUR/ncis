@@ -46,9 +46,11 @@
                                 <a href="javascript:void(0)"><button type="button" class="btn btn-icon btn-sm btn-success" title="Approve"><i class="fa fa-check">Approved</i></button></a>
                                 <?php elseif($score->status ==3):?>
                                 <a href="javascript:void(0)"><button type="button" class="btn btn-icon btn-sm btn-success" title="Approve"><i class="fa fa-check">Updated</i></button></a>
+                                <?php elseif($score->status ==0):?>
+                                <a href="javascript:void(0)"><button type="button" class="btn btn-icon btn-sm btn-primary" title="Normal"><i class="fa fa-check">Normal</i></button></a>
                                 <?php else:?>
-                                <a href="javascript:void(0)" onclick="approve('<?=$value->id?>')"><button type="button" class="btn btn-icon btn-sm btn-info" title="Approve"><i class="fa fa-check">Approve</i></button></a>
-                                <a href="admin.php?page=request-edit&id=<?=$value->id?>" class="btn-sm btn btn-danger">Reject</a>
+                                <a href="javascript:void(0)" onclick="approve('<?=$value->pid?>')"><button type="button" class="btn btn-icon btn-sm btn-info" title="Approve"><i class="fa fa-check">Approve</i></button></a>
+                                <a href="javascript:void(0)" onclick="reject('<?=$value->pid?>','<?=$value->id?>')"><button type="button" class="btn btn-icon btn-sm btn-danger" title="Reject"><i class="fa fa-check">Reject</i></button></a>
                                 <?php endif;?>
                             </div>
                         </td>
@@ -95,6 +97,37 @@
          method: 'POST',
          data: {
             id: $id
+         },
+         success: function (data) {
+            console.log(data);
+            if (data.status == 200) {
+               iziToast.success({
+                  title: 'Info',
+                  message: data.message,
+                  position: 'topRight'
+               });
+                    setTimeout(function() {
+                        window.location.href = data.url;
+                    }, 2e3);
+            } else {
+               iziToast.error({
+                  title: 'Alert',
+                  message: data.message,
+                  position: 'topRight'
+               });
+            }
+         }
+      })
+   } 
+</script> 
+<script type = "text/javascript" >
+   function reject($id,$rid) {
+      $.ajax({
+         url: request() + '?f=projects&s=reject',
+         method: 'POST',
+         data: {
+            id: $id,
+            rid: $rid,
          },
          success: function (data) {
             console.log(data);

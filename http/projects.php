@@ -60,6 +60,7 @@
 			}
         }
 
+
 		if ($s == 'edit') {
 			$id = __secure($_POST['id']);
 			$insert = array(
@@ -135,7 +136,7 @@
 
 		if ($s == 'approve') {
 			$id = __secure($_POST['id']);
-			$request = $db->where('id',$id)->getOne('requests');
+			// $request = $db->where('id',$id)->getOne('requests');
 				$insert = array(
 					'status'	=>	2,
 					'date_modified' => date('Y-m-d H:i:s')
@@ -144,7 +145,30 @@
 					$data = array(
 						'status' => 200,
 						'message'	=>	'Request Approved Successfully',
-						'url' => 'admin.php?page=projectresults',
+						'url' => 'admin.php?page=requests',
+					);
+				}else{
+					$data = array(
+						'status' => 201,
+						'message'	=>	'Something went wrong'
+					);
+				}
+		}
+
+		if ($s == 'reject') {
+			$id = __secure($_POST['id']);
+			$rid = __secure($_POST['rid']);
+			// $request = $db->where('id',$id)->getOne('requests');
+				$insert = array(
+					'status'	=>	0,
+					'date_modified' => date('Y-m-d H:i:s')
+				);
+				if (update_data('project_scores',$insert,'WHERE id = "'.$id.'"')) {
+					$db->delete('requests','WHERE id = "'.$rid.'"');
+					$data = array(
+						'status' => 200,
+						'message'	=>	'Request Rejected Successfully',
+						'url' => 'admin.php?page=requests',
 					);
 				}else{
 					$data = array(

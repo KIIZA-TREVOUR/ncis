@@ -1,0 +1,108 @@
+<?php
+$id = $_GET['id'];
+$score = $db->where('id', $id)->getOne('project_scores'); 
+$student = $db->where('lin', $score->student_lin)->getOne('students'); 
+$class = $db->where('id', $student->class)->getOne('classes');
+$project = $db->where('project_code', $score->project_code)->getOne('projects');
+$subject = $db->where('code', $project->subject_code)->getOne('subjects');
+$staff = $db->where('id', $_SESSION['user_id'])->getOne('staff');
+?>
+
+<div class="card card-primary">
+	<div class="card-header">
+		<h3 class="card-title">Reason for Rejection</h3>
+	</div>
+	<div class="card-body">
+		<form id="request" class="needs-validation" novalidate="">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Student Name</label>
+						<input type="text" required disabled name="name" value="<?=$student->firstname?> <?=$student->firstname?> " class="form-control">
+						<input type="text" required name="lin" value="<?=$student->lin?>" class="form-control"hidden>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Class Name</label>
+						<input type="text" required disabled  value="<?=$class->name?>" class="form-control">
+						<input type="text" required name="cid" value="<?=$project->class_id?>" class="form-control"hidden>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Subject Name</label>
+						<input type="text" required disabled  value="<?=$subject->name?>" class="form-control">
+						<input type="text" required name="subject_code" value="<?=$subject->code?>" class="form-control"hidden>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Project Name</label>
+						<input type="text" required disabled  value="<?=$project->name?>" class="form-control">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Project Score</label>
+						<input type="text" required disabled  value="<?=$score->score?>" class="form-control">
+						<input type="text"disabled required name="pscore" value="<?=$score->score?>" class="form-control"hidden>
+						<input type="text" disabled required name="pid" value="<?=$score->id?>" class="form-control"hidden>
+						<input type="text" disabled required name="staff_email" value="<?=$staff->email?>" class="form-control"hidden>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label">Request(Why the Reject?)</label>
+						<textarea type="text" required name="reason" class="form-control" ></textarea>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="form-label"></label>
+						<button type="submit" required class="btn btn-primary btn-block submit">Reject</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript">
+	$('#request').on('submit',function(e){
+		e.preventDefault();
+		$.ajax({
+			url: request()+'?f=projects&s=reject',
+			method: 'POST',
+			contentType: false,
+			processData: false,
+			data: new FormData(this),
+			beforeSend: function(){
+				$('.submit').html('');
+				$('.submit').addClass('disabled');
+			},
+			success : function(data){
+				console.log(data);
+				$('.submit').html('Submit');
+				$('.submit').removeClass('disabled');
+				if (data.status == 200) {
+					iziToast.info({
+					    title: 'Success',
+					    message: data.message,
+					    position: 'topRight'
+					});
+					setTimeout(function(){
+						window.location.href = data.url;
+					},1000);
+				}else{
+					iziToast.error({
+					    title: 'Error',
+					    message: data.message,
+					    position: 'topRight'
+					});
+				}
+			}
+		})
+	});
+
+	
+</script>
